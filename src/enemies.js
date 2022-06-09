@@ -17,8 +17,8 @@ class Enemy{
         else if (this.y < heroY) this.y += 1;
     }
     
-    drawEnemy(){
-        ctx.clearRect(this.x-10, this.y-10, canvas.width, canvas.height);
+    draw(){
+        //ctx.clearRect(this.x-10, this.y-10, this.width, this.height);
         ctx.drawImage(this.image, this.x, this.y, this.width, this.heigth);
     }
 
