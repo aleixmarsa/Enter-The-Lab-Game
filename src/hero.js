@@ -64,7 +64,6 @@ class Hero{
         let arrayColumn = this.x /celPixels
         switch(movement){
             case 'right':
-                console.log('here')
                 if(collisionArray[arrayRow][arrayColumn+1] === 1) return false;
                 return true;
             case 'left':

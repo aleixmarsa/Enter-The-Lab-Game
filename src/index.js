@@ -1,6 +1,7 @@
 const canvas = document.querySelector('#canvas');
 canvas.width = 800;
 canvas.height = 800;
+canvas.style.cursor = "crosshair";
 //canvas.style.border = '1px solid #000000'
 //canvas.style.backgroundColor = 'grey';
 const ctx = canvas.getContext('2d');
@@ -16,23 +17,22 @@ map.src = './images/maps/map_lvl1.png'
 let greenBulletImg = new Image();
 greenBulletImg.src = './images/hero/green_bullet.png'
 
-let enemy = new Enemy(enemyImg, 700, 200, enemyImg.width, enemyImg.height, 100, 1);
-let hero = new Hero(heroImg,  //the spritesheet image
-                    0,            //x position of hero
-                    96,            //y position of hero
-                    32,         //total width of spritesheet image in pixels
-                    32,          //total height of spritesheet image in pixels
-                    60,           //time(in ms) duration between each frame change (experiment with it to get faster or slower animation)
-                    1,
-                    100);
-
-
-let collisionArray = [];
 const celPixels = 32;
 let direction = 'up';
 let shooting = false;
+let collisionArray = createCollisionArray(mapArray);
 let totalProjectiles = [];
-
+let mousePos;
+//creem enemic a la fila 6 i columna 22
+let enemy = new Enemy(enemyImg, 22*32, 6*32, enemyImg.width, enemyImg.height, 100, 1);
+let hero = new Hero(heroImg,  //the spritesheet image
+                    0,            //x position of hero
+                    96,            //y position of hero
+                    heroImg.width,         //total width of spritesheet image in pixels
+                    heroImg.height,          //total height of spritesheet image in pixels
+                    60,           //time(in ms) duration between each frame change (experiment with it to get faster or slower animation)
+                    1,
+                    100);
 //update function to update all the GameObjects
 function update(object) {
     object.update();
@@ -66,7 +66,6 @@ function controlHero(e){
         if(hero.movementAllowed(direction)) hero.x += 32;    
         heroImg.src = './images/hero/hero_weapon_right.png'
     }else if (e.key === ' '){
-        console.log(direction)
         let offsetX = 0;
         let offsetY = 0;
         switch(direction){
@@ -124,7 +123,21 @@ function createCollisionArray(mapCollisionArray){
     return collisionArrayRows;
 }
 
-function checkCollision(hero){}
+function getMousePos(canvas, e) {
+    let rect = canvas.getBoundingClientRect();
+    return {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    };
+}
+function mousePosition(e){
+    mousePos = getMousePos(canvas, e);
+   // console.log('Mouse position: ' + mousePos.x + ',' + mousePos.y);
+}
+
+function mouseClick(e){
+    console.log('click')
+}
 
 //The Game Loop
 function loop() {
@@ -146,8 +159,10 @@ function loop() {
 
 window.addEventListener('load', initialLoad)
 window.addEventListener("keydown", controlHero)
+window.addEventListener("mousemove", mousePosition)
+window.addEventListener("click", mouseClick)
 // window.addEventListener("keyup", stopHero)
 
-collisionArray = createCollisionArray(mapArray);
+
 loop();
 

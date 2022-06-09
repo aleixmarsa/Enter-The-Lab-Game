@@ -7,7 +7,6 @@ class Enemy{
         this.heigth = heigth;
         this.healthPoints = healthPoints;
         this.attackPoints = attackPoints;
-        
     }
 
     move(heroX, heroY){
@@ -18,12 +17,28 @@ class Enemy{
     }
     
     draw(){
-        //ctx.clearRect(this.x-10, this.y-10, this.width, this.height);
-        ctx.drawImage(this.image, this.x, this.y, this.width, this.heigth);
+        if (this.isAlive()){
+            ctx.drawImage(this.image, this.x, this.y, this.width, this.heigth);
+            collisionArray[this.y/celPixels][this.x/celPixels] = 2
+            collisionArray[this.y/celPixels+1][this.x/celPixels] = 2
+        }
+        else{
+            collisionArray[this.y/celPixels][this.x/celPixels] = 0
+            collisionArray[this.y/celPixels+1][this.x/celPixels] = 0
+        }
     }
 
     attack(hero){
         if (this.x === hero.x && this.y === hero.y) hero.healthStatus(this.attackPoints);
+    }
+
+    receiveDamage(damage){
+        console.log(this.healthPoints)
+        this.healthPoints -= damage;
+    }
+    
+    isAlive(){
+        return this.healthPoints > 0;
     }
 
 }

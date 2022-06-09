@@ -13,9 +13,13 @@ class Projectile{
     draw(){
         switch(this.direction){
             case 'right':
-                if(this.x < canvas.width){
+                if( collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] !==2 &&
+                    collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] !==1){
                     ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
                     this.x += this.speed;
+                }else if (collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] ===2 ){
+                    enemy.receiveDamage(this.damage);
+                    totalProjectiles.splice(totalProjectiles.indexOf(this),1)
                 }else{
                     totalProjectiles.splice(totalProjectiles.indexOf(this),1)
                 }
@@ -37,7 +41,6 @@ class Projectile{
                 }
                 break;
             case 'down':
-                console.log('shooting down')
                 if(this.y < canvas.height){
                     this.y += this.speed;
                     ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
