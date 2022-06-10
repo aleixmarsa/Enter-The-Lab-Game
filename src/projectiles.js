@@ -9,6 +9,9 @@ class Projectile{
         this.ratioXY = ratioXY;
         this.speed = speed;
         this.damage = damage;
+
+        //Checks the ratio between x and y cick position.
+        //Depending on wich axis position is bigger calculates the speed for each axis
         if(ratioXY >= ratioYX){
             this.speedY = speed/(ratioXY + 1);
             this.speedX = ratioXY * this.speedY;
@@ -32,55 +35,71 @@ class Projectile{
             //   3rd quarant: x neg, y pos  |  4th quadrant: x pos, y pos
             //                              |
             case 1:
+                //Checks collisions between bullet and walls(1) and between bullet and enemies(2) 
                 if( collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] !==2 &&
                     collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] !==1){
+                    //There is no collision
                     ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
                     this.x +=this.speedX;
                     this.y -= this.speedY;
                 }else if (collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] ===2 ){
+                    //Collision with an enemy
                     enemy.receiveDamage(this.damage);
                     totalProjectiles.splice(totalProjectiles.indexOf(this),1)
                 }else{
+                    //Collision with a wall
                     totalProjectiles.splice(totalProjectiles.indexOf(this),1)
                 }
                 break;
             case 2:
+                //Checks collisions between bullet and walls(1) and between bullet and enemies(2) 
                 if( collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] !==2 &&
                 collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] !==1){
                     ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+                    //There is no collision
                     this.x -=this.speedX;
                     this.y -= this.speedY;
                 }else if (collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] ===2 ){
+                    //Collision with an enemy
                     enemy.receiveDamage(this.damage);
                     totalProjectiles.splice(totalProjectiles.indexOf(this),1)
                 }else{
+                    //Collision with a wall
                     totalProjectiles.splice(totalProjectiles.indexOf(this),1)
                 }                
 
                 break;
             case 3:
+                //Checks collisions between bullet and walls(1) and between bullet and enemies(2) 
                 if( collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] !==2 &&
                     collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] !==1){
+                    //There is no collision
                     ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
                     this.x -=this.speedX;
                     this.y += this.speedY;
                 }else if (collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] ===2 ){
+                    //Collision with an enemy
                     enemy.receiveDamage(this.damage);
                     totalProjectiles.splice(totalProjectiles.indexOf(this),1)
                 }else{
+                    //Collision with a wall
                     totalProjectiles.splice(totalProjectiles.indexOf(this),1)
                 }
                 break;
             case 4:
+                //Checks collisions between bullet and walls(1) and between bullet and enemies(2) 
                 if( collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] !==2 &&
                     collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] !==1){
+                    //There is no collision
                     ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
                     this.x +=this.speedX;
                     this.y += this.speedY;
                 }else if (collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] ===2 ){
+                    //Collision with an enemy
                     enemy.receiveDamage(this.damage);
                     totalProjectiles.splice(totalProjectiles.indexOf(this),1)
                 }else{
+                    //Collision with a wall
                     totalProjectiles.splice(totalProjectiles.indexOf(this),1)
                 }
                 break;

@@ -1,10 +1,11 @@
 class Enemy{
-    constructor(image,x,y,width,heigth, healthPoints, attackPoints){
+    constructor(image, healthImg, x ,y , width, height, healthPoints, attackPoints){
         this.image = image;
+        this.healthImg = healthImg;          
         this.x = x;
         this.y = y;
         this.width = width;
-        this.heigth = heigth;
+        this.height = height;
         this.healthPoints = healthPoints;
         this.attackPoints = attackPoints;
     }
@@ -18,7 +19,10 @@ class Enemy{
     
     draw(){
         if (this.isAlive()){
-            ctx.drawImage(this.image, this.x, this.y, this.width, this.heigth);
+            ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+            console.log(this.healthPoints);
+            this.healthImg.src = '/images/ui/health_bar_'+this.healthPoints+'.png'
+            ctx.drawImage(this.healthImg , this.x + this.image.width/4, this.y + this.image.height, this.healthImg.width, this.healthImg.height)
             collisionArray[this.y/celPixels][this.x/celPixels] = 2
             collisionArray[this.y/celPixels+1][this.x/celPixels] = 2
         }

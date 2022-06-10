@@ -10,25 +10,29 @@ heroImg.src = './images/hero/hero_weapon_right.png'
 
 let enemyImg = new Image();
 enemyImg.src = './images/enemies/enemy_1_left.png'
+
 let map = new Image();
 map.src = './images/maps/map_lvl1.png'
 
 let greenBulletImg = new Image();
 greenBulletImg.src = './images/projectiles/blue_bullet.png'
 
+let healthBar = new Image();
+
+healthBar.he
+
 const celPixels = 32;
 let direction = 'up';
-let shooting = false;
 let collisionArray = createCollisionArray(mapArray);
 let totalProjectiles = [];
 let mousePos;
 let mousePosPlayer;
-let angle;
 
 //creem enemic a la fila 6 i columna 22
-let enemy = new Enemy(enemyImg, 22*32, 6*32, enemyImg.width, enemyImg.height, 100, 1);
+let enemy = new Enemy(enemyImg, healthBar, 22*32, 6*32, enemyImg.width, enemyImg.height, 6, 1);
 
 let hero = new Hero(heroImg,  //the spritesheet image
+                    healthBar,
                     0,            //x position of hero
                     96,            //y position of hero
                     heroImg.width,         //total width of spritesheet image in pixels
@@ -46,67 +50,17 @@ function draw(object) {
     object.draw();
 }
 
-function controlHero(e){
-
-    if( e.key === 'w'){
-        direction = 'up';
-        if(hero.movementAllowed(direction)) hero.y -= 32;
-        heroImg.src = './images/hero/hero_weapon_up.png'
-    }else if( e.key === 's' ){
-        direction = 'down';
-        if(hero.movementAllowed(direction)) hero.y += 32;
-        heroImg.src = './images/hero/hero_weapon_down.png'
-    }else if( e.key === 'a' ){
-        direction = 'left';
-        if(hero.movementAllowed(direction)) hero.x -= 32;
-        heroImg.src = './images/hero/hero_weapon_left.png'
-    }else if( e.key === 'd' ){
-        direction = 'right';
-        if(hero.movementAllowed(direction)) hero.x += 32;    
-        heroImg.src = './images/hero/hero_weapon_right.png'
-    }else if (e.key === ' '){
-        let offsetX = 0;
-        let offsetY = 0;
-        switch(direction){
-            case 'up':
-                offsetX = 20;
-                offsetY = -16;
-                break;
-            case 'down':
-                offsetX = 24;
-                offsetY = 16;
-                break;
-            case 'left':
-                offsetX = -22;
-                offsetY = 12;
-                break;
-            case 'right':
-                offsetX = 32;
-                offsetY = 16;
-                break;
-        }
-        totalProjectiles.push(
-            new Projectile(greenBulletImg,
-                hero.x + offsetX,
-                hero.y + offsetY,
-                greenBulletImg.width,
-                greenBulletImg.height,
-                direction,
-                16,
-                20)
-        )
-       }
+function keyPressed(e){
+    hero.move(e); 
 }
+
+
 
 // function stopHero(){
 //     hero.spritesheet.src= './images/cyborg/Cyborg_idle_384_96.png'
 //     hero.numberOfFrames = 4;
 //     hero.width = 384;
 // }
-
-function initialLoad(){
-    console.log('iniciat')
-}
 
 function createCollisionArray(mapCollisionArray){
     let collisionArrayRows = [];
@@ -143,7 +97,6 @@ function mouseClick(e){
     const ratioXY = Math.abs(pos.x/pos.y);
     const ratioYX = Math.abs(pos.y/pos.x);
     console.log(pos.x, pos.y)
-    //console.log(angle)
     
     if( pos.x < 0 && pos.y < 0 ){
         quadrant = 2;
@@ -153,9 +106,6 @@ function mouseClick(e){
         quadrant = 4;
     }
 
-    console.log(quadrant)
-
-    //console.log(pos.x, pos.y)
     totalProjectiles.push(
         new Projectile(greenBulletImg,
             hero.x,
@@ -166,13 +116,18 @@ function mouseClick(e){
             ratioXY,
             ratioYX,
             16,
-            20)
+            1)
     )
-    console.log('click')
 }
 
 //The Game Loop
+
+function initialLoad(){
+    loop()
+}
+
 function loop() {
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(map,0,0,map.width,map.height);
     
@@ -184,17 +139,14 @@ function loop() {
     draw(enemy);
     for(let projectile of totalProjectiles){
         draw(projectile)
-        //projectile.drawImageRot(ctx, projectile.Image, projectile.x, projectile.y, projectile.width, projectile.height, angle)
     }
     requestAnimationFrame(loop);
 }
 
-window.addEventListener('load', initialLoad)
-window.addEventListener("keydown", controlHero)
+window.addEventListener("keydown", keyPressed)
 window.addEventListener("mousemove", mousePosition)
 window.addEventListener("click", mouseClick)
+window.addEventListener('load', initialLoad)
 // window.addEventListener("keyup", stopHero)
 
-
-loop();
 

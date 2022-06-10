@@ -1,6 +1,7 @@
 class Hero{
-    constructor(image, x, y, width, height, timePerFrame, numberOfFrames, healthPoints) {
-        this.image = image;             
+    constructor(image, healthImg, x, y, width, height, timePerFrame, numberOfFrames, healthPoints) {
+        this.image = image;   
+        this.healthImg = healthImg;          
         this.x = x;                                 
         this.y = y;                                 
         this.width = width;                         
@@ -45,7 +46,6 @@ class Hero{
 
     
     draw(){
-        //  ctx.clearRect(this.x, this.y, this.width, this.height);
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     }
 
@@ -77,5 +77,29 @@ class Hero{
                 return true;
         }
                 
+    }
+
+    move(e){
+        if( e.keyCode === 87){
+            // Key w pressed
+            direction = 'up';
+            if(this.movementAllowed(direction)) this.y -= 32;
+            this.image.src = './images/hero/hero_weapon_up.png'
+        }else if( e.keyCode === 83 ){
+            // Key d pressed
+            direction = 'down';
+            if(this.movementAllowed(direction)) this.y += 32;
+            this.image.src = './images/hero/hero_weapon_down.png'
+        }else if( e.keyCode === 65 ){
+            // Key s pressed
+            direction = 'left';
+            if(this.movementAllowed(direction)) this.x -= 32;
+            this.image.src = './images/hero/hero_weapon_left.png'
+        }else if( e.keyCode === 68 ){
+            // Key d pressed
+            direction = 'right';
+            if(this.movementAllowed(direction)) this.x += 32;    
+            this.image.src = './images/hero/hero_weapon_right.png'
+        }
     }
 }
