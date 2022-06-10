@@ -47,7 +47,6 @@ function draw(object) {
 }
 
 function controlHero(e){
-    console.log (e.key)
 
     if( e.key === 'w'){
         direction = 'up';
@@ -138,25 +137,25 @@ function mouseClick(e){
     //Gets the click pos relative to canvas
     let pos = getMousePos(canvas, e)
     let quadrant = 1;
-    let posRatioXY;
     //Gets the click pos realive to player
-    pos.x = Math.abs(pos.x - hero.x);
-    pos.y = Math.abs(hero.y - pos.y);
-    ratioXY = pos.x/pos.y;
-    //Gets the angle
-    angle = Math.atan2(pos.y, pos.x)*180/Math.PI
+    pos.x = pos.x - hero.x;
+    pos.y = pos.y - hero.y;
+    const ratioXY = Math.abs(pos.x/pos.y);
+    const ratioYX = Math.abs(pos.y/pos.x);
+    console.log(pos.x, pos.y)
     //console.log(angle)
     
-    if( mousePosPlayer.x < 0 && mousePosPlayer.y < 0 ){
-        let quadrant = 2;
-    }else if( mousePosPlayer.x < 0 && mousePosPlayer.y > 0 ){
-        let quadrant = 3;
-    }else if( mousePosPlayer.x > 0 && mousePosPlayer.y > 0 ){
-        let quadrant = 4;
+    if( pos.x < 0 && pos.y < 0 ){
+        quadrant = 2;
+    }else if( pos.x < 0 && pos.y > 0 ){
+        quadrant = 3;
+    }else if( pos.x > 0 && pos.y > 0 ){
+        quadrant = 4;
     }
 
+    console.log(quadrant)
+
     //console.log(pos.x, pos.y)
-    console.log(angle)
     totalProjectiles.push(
         new Projectile(greenBulletImg,
             hero.x,
@@ -165,6 +164,7 @@ function mouseClick(e){
             greenBulletImg.height,
             quadrant,
             ratioXY,
+            ratioYX,
             16,
             20)
     )
@@ -182,12 +182,11 @@ function loop() {
     // robot.attack(hero);
     draw(hero);
     draw(enemy);
-    requestAnimationFrame(loop);
     for(let projectile of totalProjectiles){
         draw(projectile)
         //projectile.drawImageRot(ctx, projectile.Image, projectile.x, projectile.y, projectile.width, projectile.height, angle)
     }
-    
+    requestAnimationFrame(loop);
 }
 
 window.addEventListener('load', initialLoad)
