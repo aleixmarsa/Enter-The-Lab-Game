@@ -76,7 +76,6 @@ class Hero{
                 if(collisionArray[arrayRow+1][arrayColumn] === 1) return false;
                 return true;
         }
-        
+                
     }
-
 }

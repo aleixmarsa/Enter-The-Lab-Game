@@ -2,8 +2,7 @@ const canvas = document.querySelector('#canvas');
 canvas.width = 800;
 canvas.height = 800;
 canvas.style.cursor = "crosshair";
-//canvas.style.border = '1px solid #000000'
-//canvas.style.backgroundColor = 'grey';
+
 const ctx = canvas.getContext('2d');
 
 let heroImg = new Image;
@@ -15,7 +14,7 @@ let map = new Image();
 map.src = './images/maps/map_lvl1.png'
 
 let greenBulletImg = new Image();
-greenBulletImg.src = './images/hero/green_bullet.png'
+greenBulletImg.src = './images/projectiles/blue_bullet.png'
 
 const celPixels = 32;
 let direction = 'up';
@@ -23,8 +22,12 @@ let shooting = false;
 let collisionArray = createCollisionArray(mapArray);
 let totalProjectiles = [];
 let mousePos;
+let mousePosPlayer;
+let angle;
+
 //creem enemic a la fila 6 i columna 22
 let enemy = new Enemy(enemyImg, 22*32, 6*32, enemyImg.width, enemyImg.height, 100, 1);
+
 let hero = new Hero(heroImg,  //the spritesheet image
                     0,            //x position of hero
                     96,            //y position of hero
@@ -59,9 +62,6 @@ function controlHero(e){
         if(hero.movementAllowed(direction)) hero.x -= 32;
         heroImg.src = './images/hero/hero_weapon_left.png'
     }else if( e.key === 'd' ){
-        // hero.spritesheet.src= './images/cyborg/Cyborg_run_576_96.png';
-        // hero.numberOfFrames = 6;
-        // hero.width = 576;
         direction = 'right';
         if(hero.movementAllowed(direction)) hero.x += 32;    
         heroImg.src = './images/hero/hero_weapon_right.png'
@@ -70,22 +70,18 @@ function controlHero(e){
         let offsetY = 0;
         switch(direction){
             case 'up':
-                greenBulletImg.src = './images/projectiles/green_bullet_vertical.png'
                 offsetX = 20;
                 offsetY = -16;
                 break;
             case 'down':
-                greenBulletImg.src = './images/projectiles/green_bullet_vertical.png'
                 offsetX = 24;
                 offsetY = 16;
                 break;
             case 'left':
-                greenBulletImg.src = './images/projectiles/green_bullet_horizontal.png'
                 offsetX = -22;
                 offsetY = 12;
                 break;
             case 'right':
-                greenBulletImg.src = './images/projectiles/green_bullet_horizontal.png'
                 offsetX = 32;
                 offsetY = 16;
                 break;
@@ -132,10 +128,46 @@ function getMousePos(canvas, e) {
 }
 function mousePosition(e){
     mousePos = getMousePos(canvas, e);
-   // console.log('Mouse position: ' + mousePos.x + ',' + mousePos.y);
+    mousePosPlayer = mousePos;
+    mousePosPlayer.x = mousePos.x - hero.x;
+    mousePosPlayer.y = mousePos.y - hero.y;
+    //console.log('Mouse position: ' + mousePos.x + ',' + mousePos.y);
 }
 
 function mouseClick(e){
+    //Gets the click pos relative to canvas
+    let pos = getMousePos(canvas, e)
+    let quadrant = 1;
+    let posRatioXY;
+    //Gets the click pos realive to player
+    pos.x = Math.abs(pos.x - hero.x);
+    pos.y = Math.abs(hero.y - pos.y);
+    ratioXY = pos.x/pos.y;
+    //Gets the angle
+    angle = Math.atan2(pos.y, pos.x)*180/Math.PI
+    //console.log(angle)
+    
+    if( mousePosPlayer.x < 0 && mousePosPlayer.y < 0 ){
+        let quadrant = 2;
+    }else if( mousePosPlayer.x < 0 && mousePosPlayer.y > 0 ){
+        let quadrant = 3;
+    }else if( mousePosPlayer.x > 0 && mousePosPlayer.y > 0 ){
+        let quadrant = 4;
+    }
+
+    //console.log(pos.x, pos.y)
+    console.log(angle)
+    totalProjectiles.push(
+        new Projectile(greenBulletImg,
+            hero.x,
+            hero.y,
+            greenBulletImg.width,
+            greenBulletImg.height,
+            quadrant,
+            ratioXY,
+            16,
+            20)
+    )
     console.log('click')
 }
 
@@ -153,6 +185,7 @@ function loop() {
     requestAnimationFrame(loop);
     for(let projectile of totalProjectiles){
         draw(projectile)
+        //projectile.drawImageRot(ctx, projectile.Image, projectile.x, projectile.y, projectile.width, projectile.height, angle)
     }
     
 }
