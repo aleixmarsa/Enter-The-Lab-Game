@@ -25,7 +25,23 @@ class Projectile{
         console.log(`Speed y: ${this.speedY}`);
     }
 
+
+    enemyImpact(bulletRow, bulletColumn){
+        
+        for (let enemy of totalEnemies){
+            let enemyRow = Math.floor(enemy.y/celPixels)
+            let enemyColumn = Math.floor(enemy.x/celPixels);
+            if (bulletRow === enemyRow && bulletColumn === enemyColumn){
+                console.log('enemy hitted')
+                enemy.receiveDamage(this.damage);
+            }
+        }
+        totalProjectiles.splice(totalProjectiles.indexOf(this),1)
+    }
+
     draw(){
+        let bulletRow = Math.floor(this.y/celPixels);
+        let bulletColumn = Math.floor(this.x/celPixels);
         switch(this.quadrant){
             //                              |
             //  2nd quadrant: x neg, y neg  |  1st quadrant: x pos, y neg
@@ -36,16 +52,15 @@ class Projectile{
             //                              |
             case 1:
                 //Checks collisions between bullet and walls(1) and between bullet and enemies(2) 
-                if( collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] !==2 &&
-                    collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] !==1){
+                if( collisionArray[bulletRow][bulletColumn] !==2 &&
+                    collisionArray[bulletRow][bulletColumn] !==1){
                     //There is no collision
                     ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
                     this.x +=this.speedX;
                     this.y -= this.speedY;
-                }else if (collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] ===2 ){
+                }else if (collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] === 2 ){
                     //Collision with an enemy
-                    enemy.receiveDamage(this.damage);
-                    totalProjectiles.splice(totalProjectiles.indexOf(this),1)
+                    this.enemyImpact(bulletRow, bulletColumn);
                 }else{
                     //Collision with a wall
                     totalProjectiles.splice(totalProjectiles.indexOf(this),1)
@@ -61,13 +76,11 @@ class Projectile{
                     this.y -= this.speedY;
                 }else if (collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] ===2 ){
                     //Collision with an enemy
-                    enemy.receiveDamage(this.damage);
-                    totalProjectiles.splice(totalProjectiles.indexOf(this),1)
+                    this.enemyImpact(bulletRow, bulletColumn);
                 }else{
                     //Collision with a wall
                     totalProjectiles.splice(totalProjectiles.indexOf(this),1)
                 }                
-
                 break;
             case 3:
                 //Checks collisions between bullet and walls(1) and between bullet and enemies(2) 
@@ -79,8 +92,8 @@ class Projectile{
                     this.y += this.speedY;
                 }else if (collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] ===2 ){
                     //Collision with an enemy
-                    enemy.receiveDamage(this.damage);
-                    totalProjectiles.splice(totalProjectiles.indexOf(this),1)
+                    this.enemyImpact(bulletRow, bulletColumn);
+
                 }else{
                     //Collision with a wall
                     totalProjectiles.splice(totalProjectiles.indexOf(this),1)
@@ -96,8 +109,8 @@ class Projectile{
                     this.y += this.speedY;
                 }else if (collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] ===2 ){
                     //Collision with an enemy
-                    enemy.receiveDamage(this.damage);
-                    totalProjectiles.splice(totalProjectiles.indexOf(this),1)
+                    this.enemyImpact(bulletRow, bulletColumn);
+
                 }else{
                     //Collision with a wall
                     totalProjectiles.splice(totalProjectiles.indexOf(this),1)

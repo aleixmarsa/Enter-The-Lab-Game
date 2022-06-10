@@ -1,7 +1,7 @@
 class Enemy{
-    constructor(image, healthImg, x ,y , width, height, healthPoints, attackPoints){
+    constructor(image, x ,y , width, height, healthPoints, attackPoints){
         this.image = image;
-        this.healthImg = healthImg;          
+        this.healthImg = new Image();          
         this.x = x;
         this.y = y;
         this.width = width;
@@ -20,15 +20,14 @@ class Enemy{
     draw(){
         if (this.isAlive()){
             ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-            console.log(this.healthPoints);
-            this.healthImg.src = '/images/ui/health_bar_'+this.healthPoints+'.png'
-            ctx.drawImage(this.healthImg , this.x + this.image.width/4, this.y + this.image.height, this.healthImg.width, this.healthImg.height)
+            let stringHealth = String(this.healthPoints)
+            console.log(stringHealth)
+            this.healthImg.src = `/images/ui/health_bar_${stringHealth}.png`
+            ctx.drawImage(this.healthImg , this.x, this.y + this.height, this.healthImg.width, this.healthImg.height)
             collisionArray[this.y/celPixels][this.x/celPixels] = 2
-            collisionArray[this.y/celPixels+1][this.x/celPixels] = 2
         }
         else{
             collisionArray[this.y/celPixels][this.x/celPixels] = 0
-            collisionArray[this.y/celPixels+1][this.x/celPixels] = 0
         }
     }
 
@@ -37,12 +36,13 @@ class Enemy{
     }
 
     receiveDamage(damage){
-        console.log(this.healthPoints)
         this.healthPoints -= damage;
+        this.draw()
     }
     
     isAlive(){
         return this.healthPoints > 0;
     }
+    
 
 }

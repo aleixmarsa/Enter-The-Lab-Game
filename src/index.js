@@ -19,20 +19,19 @@ greenBulletImg.src = './images/projectiles/blue_bullet.png'
 
 let healthBar = new Image();
 
-healthBar.he
+
 
 const celPixels = 32;
 let direction = 'up';
 let collisionArray = createCollisionArray(mapArray);
 let totalProjectiles = [];
+let totalEnemies = [];
 let mousePos;
 let mousePosPlayer;
 
 //creem enemic a la fila 6 i columna 22
-let enemy = new Enemy(enemyImg, healthBar, 22*32, 6*32, enemyImg.width, enemyImg.height, 6, 1);
 
 let hero = new Hero(heroImg,  //the spritesheet image
-                    healthBar,
                     0,            //x position of hero
                     96,            //y position of hero
                     heroImg.width,         //total width of spritesheet image in pixels
@@ -96,7 +95,6 @@ function mouseClick(e){
     pos.y = pos.y - hero.y;
     const ratioXY = Math.abs(pos.x/pos.y);
     const ratioYX = Math.abs(pos.y/pos.x);
-    console.log(pos.x, pos.y)
     
     if( pos.x < 0 && pos.y < 0 ){
         quadrant = 2;
@@ -120,9 +118,29 @@ function mouseClick(e){
     )
 }
 
+
+function spawnEnemies(numEnemies){
+    for(let i = 0; i < numEnemies; i++){
+        let created = false;
+        let column;
+        let row;
+        while(!created){
+            column = Math.floor(Math.random()*collisionArray[0].length)
+            row = Math.floor(Math.random()*collisionArray.length)
+            if(collisionArray[row][column] === 0 && collisionArray[row+1][column] === 0) created = true;
+        }
+        totalEnemies.push(
+            new Enemy(enemyImg, column*celPixels, row*celPixels, celPixels, celPixels, 6, 1)
+        )
+    }
+}
+
+
+
 //The Game Loop
 
 function initialLoad(){
+    spawnEnemies(5);
     loop()
 }
 
@@ -136,9 +154,11 @@ function loop() {
     // robot.move(hero.x, hero.y)
     // robot.attack(hero);
     draw(hero);
-    draw(enemy);
     for(let projectile of totalProjectiles){
         draw(projectile)
+    }
+    for(let enemy of totalEnemies){
+        draw(enemy)
     }
     requestAnimationFrame(loop);
 }

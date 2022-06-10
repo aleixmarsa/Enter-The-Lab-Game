@@ -1,7 +1,6 @@
 class Hero{
-    constructor(image, healthImg, x, y, width, height, timePerFrame, numberOfFrames, healthPoints) {
+    constructor(image, x, y, width, height, timePerFrame, numberOfFrames, healthPoints) {
         this.image = image;   
-        this.healthImg = healthImg;          
         this.x = x;                                 
         this.y = y;                                 
         this.width = width;                         
@@ -13,9 +12,7 @@ class Hero{
         this.frameIndex = 0;
         //time the frame index was last updated
         this.lastUpdate = Date.now();
-        this.healthBar = document.getElementById("health")
-        this.healthBar.max = this.healthPoints;
-        this.healthBar.value = this.healthPoints;
+
     }
 
     //to update
@@ -67,7 +64,7 @@ class Hero{
                 if(collisionArray[arrayRow][arrayColumn+1] === 1) return false;
                 return true;
             case 'left':
-                if(collisionArray[arrayRow][arrayColumn-1] === 1) return false;
+                if(collisionArray[arrayRow][arrayColumn-1] === 1 || arrayColumn === 0) return false;
                 return true;
             case 'up':
                 if(collisionArray[arrayRow-1][arrayColumn] === 1) return false;
