@@ -61,42 +61,72 @@ class Hero{
         let arrayColumn = this.x /celPixels
         switch(movement){
             case 'right':
-                if(collisionArray[arrayRow][arrayColumn+1] === 1) return false;
+                if(collisionArray[arrayRow][arrayColumn+1] === 1 || collisionArray[arrayRow][arrayColumn+1] === 2) return false;
                 return true;
             case 'left':
-                if(collisionArray[arrayRow][arrayColumn-1] === 1 || arrayColumn === 0) return false;
+                if(collisionArray[arrayRow][arrayColumn-1] === 1 || collisionArray[arrayRow][arrayColumn-1] === 2 || arrayColumn === 0) return false;
                 return true;
             case 'up':
-                if(collisionArray[arrayRow-1][arrayColumn] === 1) return false;
+                if(collisionArray[arrayRow-1][arrayColumn] === 1 || collisionArray[arrayRow-1][arrayColumn] === 2) return false;
                 return true;
             case 'down':
-                if(collisionArray[arrayRow+1][arrayColumn] === 1) return false;
+                if(collisionArray[arrayRow+1][arrayColumn] === 1 || collisionArray[arrayRow+1][arrayColumn] === 2 ) return false;
                 return true;
         }
                 
     }
 
     move(e){
+        let arrayRow= this.y / celPixels;
+        let arrayColumn = this.x /celPixels
         if( e.keyCode === 87){
             // Key w pressed
             direction = 'up';
-            if(this.movementAllowed(direction)) this.y -= 32;
-            this.image.src = './images/hero/hero_weapon_up.png'
+            if(this.movementAllowed(direction)){
+                collisionArray[arrayRow][arrayColumn] = 0
+                this.y -= 32;
+                collisionArray[arrayRow-1][arrayColumn] = 8
+                console.log(Pathfinder.findPath(collisionArray, collisionArray[Math.floor(totalEnemies[0].x/celPixels)][Math.floor(totalEnemies[0].y/celPixels)], collisionArray[Math.floor(hero.x/celPixels)][Math.floor(hero.y/celPixels)]))  
+
+            } 
+            //this.image.src = './images/hero/hero_weapon_up.png'
         }else if( e.keyCode === 83 ){
             // Key d pressed
             direction = 'down';
-            if(this.movementAllowed(direction)) this.y += 32;
-            this.image.src = './images/hero/hero_weapon_down.png'
+            if(this.movementAllowed(direction)){
+                collisionArray[arrayRow][arrayColumn] = 0
+                this.y += 32;
+                collisionArray[arrayRow+1][arrayColumn] = 8
+            }
+            //this.image.src = './images/hero/hero_weapon_down.png'
         }else if( e.keyCode === 65 ){
             // Key s pressed
             direction = 'left';
-            if(this.movementAllowed(direction)) this.x -= 32;
-            this.image.src = './images/hero/hero_weapon_left.png'
+            if(this.movementAllowed(direction)){
+                collisionArray[arrayRow][arrayColumn] = 0
+                this.x -= 32;
+                collisionArray[arrayRow][arrayColumn-1] = 8
+            }
+            //this.image.src = './images/hero/hero_weapon_left.png'
         }else if( e.keyCode === 68 ){
             // Key d pressed
             direction = 'right';
-            if(this.movementAllowed(direction)) this.x += 32;    
-            this.image.src = './images/hero/hero_weapon_right.png'
+            if(this.movementAllowed(direction)){
+                collisionArray[arrayRow][arrayColumn] = 0
+                this.x += 32;  
+                collisionArray[arrayRow][arrayColumn+1] = 8
+            }  
+            //this.image.src = './images/hero/hero_weapon_right.png'
+        }
+        
+
+    }
+
+    aim(e){
+        if(mousePosPlayer.x >= 0){
+            this.image.src = './images/hero/hero_weapon_right.png' 
+        }else{
+            this.image.src = './images/hero/hero_weapon_left.png'
         }
     }
 }

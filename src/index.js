@@ -29,8 +29,6 @@ let totalEnemies = [];
 let mousePos;
 let mousePosPlayer;
 
-//creem enemic a la fila 6 i columna 22
-
 let hero = new Hero(heroImg,  //the spritesheet image
                     0,            //x position of hero
                     96,            //y position of hero
@@ -52,7 +50,6 @@ function draw(object) {
 function keyPressed(e){
     hero.move(e); 
 }
-
 
 
 // function stopHero(){
@@ -83,6 +80,7 @@ function mousePosition(e){
     mousePosPlayer = mousePos;
     mousePosPlayer.x = mousePos.x - hero.x;
     mousePosPlayer.y = mousePos.y - hero.y;
+    hero.aim(e);
     //console.log('Mouse position: ' + mousePos.x + ',' + mousePos.y);
 }
 
@@ -118,7 +116,6 @@ function mouseClick(e){
     )
 }
 
-
 function spawnEnemies(numEnemies){
     for(let i = 0; i < numEnemies; i++){
         let created = false;
@@ -132,15 +129,38 @@ function spawnEnemies(numEnemies){
         totalEnemies.push(
             new Enemy(enemyImg, column*celPixels, row*celPixels, celPixels, celPixels, 6, 1)
         )
+
+
     }
 }
 
 
+function buildNodes(){
+    // create columns
+    var nodeColumns = [];
+    var columnCount = collisionArray[0].length;
+    var rowCount = collisionArray.length;
+    for ( var col = 0; col < columnCount; ++col ){
+        nodeColumns.push([]);
+        for ( var row = 0; row < rowCount; ++row ){
+            var rowLabel = 'node_c' + col + '_r' + row;
+            var x = col * celPixels;
+            var y = row * celPixels;
+            var node = new Pathfinder.node(col, row, true);
+            node.px_x = x;
+            node.px_y = y;
+            node.label = rowLabel;
+            nodeColumns[col].push(node);                
+        }
+    }
+    return nodeColumns;
+}
 
 //The Game Loop
 
 function initialLoad(){
-    spawnEnemies(5);
+    spawnEnemies(1);
+    buildNodes();
     loop()
 }
 
@@ -149,17 +169,30 @@ function loop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(map,0,0,map.width,map.height);
     
-    //DESCOMENTAR QUAN ENEMICS!!!!!!!!
-    // robot.drawEnemy();
-    // robot.move(hero.x, hero.y)
-    // robot.attack(hero);
     draw(hero);
     for(let projectile of totalProjectiles){
         draw(projectile)
     }
     for(let enemy of totalEnemies){
         draw(enemy)
+       enemy.move()
     }
+    let nodes = buildNodes();
+    let rowEnemy = Math.floor(totalEnemies[0].y/celPixels);
+    let columnEnemy = Math.floor(totalEnemies[0].x/celPixels);
+    let rowHero = Math.floor(hero.y/celPixels);
+    let columnHero = Math.floor(hero.x/celPixels);
+    let path = Pathfinder.findPath(nodes, nodes[rowEnemy][columnEnemy], nodes[rowHero][columnHero] );
+    
+    if(path.length === 1){
+        totalEnemies[0].pathToHeroY = path[0].px_x;
+        totalEnemies[0].pathToHeroX = path[0].px_y;
+    }else if (path.length > 1){
+        totalEnemies[0].pathToHeroY = path[1].px_x;
+        totalEnemies[0].pathToHeroX = path[1].px_y;
+    }
+
+
     requestAnimationFrame(loop);
 }
 

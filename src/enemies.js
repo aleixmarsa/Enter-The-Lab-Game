@@ -10,24 +10,23 @@ class Enemy{
         this.attackPoints = attackPoints;
     }
 
-    move(heroX, heroY){
-        if (this.x > heroX) this.x -= 1;
-        else if(this.x < heroX) this.x += 1;
-        if (this.y > heroY) this.y -= 1;
-        else if (this.y < heroY) this.y += 1;
+    move(){
+        if (this.x > this.pathToHeroX) this.x -= 1;
+        else if(this.x < this.pathToHeroX) this.x += 1;
+        if (this.y > this.pathToHeroY) this.y -= 1;
+        else if (this.y < this.pathToHeroX) this.y += 1;
     }
     
     draw(){
         if (this.isAlive()){
             ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
             let stringHealth = String(this.healthPoints)
-            console.log(stringHealth)
             this.healthImg.src = `/images/ui/health_bar_${stringHealth}.png`
             ctx.drawImage(this.healthImg , this.x, this.y + this.height, this.healthImg.width, this.healthImg.height)
-            collisionArray[this.y/celPixels][this.x/celPixels] = 2
+            collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] = 9
         }
         else{
-            collisionArray[this.y/celPixels][this.x/celPixels] = 0
+            collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] = 0
         }
     }
 
