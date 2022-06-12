@@ -19,7 +19,6 @@ class Projectile{
             this.speedX = speed/(ratioYX + 1);
             this.speedY = ratioYX * this.speedX;
         }
-
         console.log(`Speed: ${this.speedX+this.speedY}`)
         console.log(`Speed x: ${this.speedX}`);
         console.log(`Speed y: ${this.speedY}`);
@@ -27,7 +26,6 @@ class Projectile{
 
 
     enemyImpact(bulletRow, bulletColumn){
-        
         for (let enemy of totalEnemies){
             let enemyRow = Math.floor(enemy.y/celPixels)
             let enemyColumn = Math.floor(enemy.x/celPixels);
@@ -40,84 +38,83 @@ class Projectile{
     }
 
     draw(){
-        let bulletRow = Math.floor(this.y/celPixels);
-        let bulletColumn = Math.floor(this.x/celPixels);
-        switch(this.quadrant){
-            //                              |
-            //  2nd quadrant: x neg, y neg  |  1st quadrant: x pos, y neg
-            //                              |
-            //                       ------hero-------
-            //                              |
-            //   3rd quarant: x neg, y pos  |  4th quadrant: x pos, y pos
-            //                              |
-            case 1:
-                //Checks collisions between bullet and walls(1) and between bullet and enemies(9) 
-                if( collisionArray[bulletRow][bulletColumn] !==9 &&
-                    collisionArray[bulletRow][bulletColumn] !==1){
-                    //There is no collision
-                    ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-                    this.x +=this.speedX;
-                    this.y -= this.speedY;
-                }else if (collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] === 9 ){
-                    //Collision with an enemy
-                    this.enemyImpact(bulletRow, bulletColumn);
-                }else{
-                    //Collision with a wall
-                    totalProjectiles.splice(totalProjectiles.indexOf(this),1)
+        if(!Number.isNaN(this.x) && !Number.isNaN(this.y)){
+            let bulletRow = Math.floor(this.y/celPixels);
+            let bulletColumn = Math.floor(this.x/celPixels);
+            //Checks collisions between bullet and walls(1) and between bullet and enemies(9) 
+            if( ![1,9].includes(collisionArray[bulletRow][bulletColumn])){
+                //There is no collision
+                switch(this.quadrant){
+                    //                              |
+                    //  2nd quadrant: x neg, y neg  |  1st quadrant: x pos, y neg
+                    //                              |
+                    //                      -------hero-------
+                    //                              |
+                    //   3rd quarant: x neg, y pos  |  4th quadrant: x pos, y pos
+                    //                              |
+                    case 1:                      
+                        ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+                        this.x +=this.speedX;
+                        this.y -= this.speedY;
+                        break;
+                    case 2:
+                        ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+                        this.x -=this.speedX;
+                        this.y -= this.speedY;           
+                        break;
+                    case 3:
+                        ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+                        this.x -=this.speedX;
+                        this.y += this.speedY;
+                        break;
+                    case 4:
+                        ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+                        this.x +=this.speedX;
+                        this.y += this.speedY;
+                        break;
                 }
-                break;
-            case 2:
-                //Checks collisions between bullet and walls(1) and between bullet and enemies(2) 
-                if( collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] !==9 &&
-                collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] !==1){
-                    ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-                    //There is no collision
-                    this.x -=this.speedX;
-                    this.y -= this.speedY;
-                }else if (collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] === 9 ){
-                    //Collision with an enemy
-                    this.enemyImpact(bulletRow, bulletColumn);
-                }else{
-                    //Collision with a wall
-                    totalProjectiles.splice(totalProjectiles.indexOf(this),1)
-                }                
-                break;
-            case 3:
-                //Checks collisions between bullet and walls(1) and between bullet and enemies(9) 
-                if( collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] !==9 &&
-                    collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] !==1){
-                    //There is no collision
-                    ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-                    this.x -=this.speedX;
-                    this.y += this.speedY;
-                }else if (collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] === 9 ){
-                    //Collision with an enemy
-                    this.enemyImpact(bulletRow, bulletColumn);
-
-                }else{
-                    //Collision with a wall
-                    totalProjectiles.splice(totalProjectiles.indexOf(this),1)
-                }
-                break;
-            case 4:
-                //Checks collisions between bullet and walls(1) and between bullet and enemies(9) 
-                if( collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] !==9 &&
-                    collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] !==1){
-                    //There is no collision
-                    ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-                    this.x +=this.speedX;
-                    this.y += this.speedY;
-                }else if (collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] ===9 ){
-                    //Collision with an enemy
-                    this.enemyImpact(bulletRow, bulletColumn);
-
-                }else{
-                    //Collision with a wall
-                    totalProjectiles.splice(totalProjectiles.indexOf(this),1)
-                }
-                break;
+            }else if(collisionArray[bulletRow][bulletColumn] ===9 ){
+                //Collision with an enemy
+                this.enemyImpact(bulletRow, bulletColumn);
+    
+            }else{
+                //Collision with a wall
+                totalProjectiles.splice(totalProjectiles.indexOf(this),1)
+            }
         }
        
     }
 
+}
+
+function mouseClick(e){
+    //Gets the click pos relative to canvas
+    let pos = getMousePos(canvas, e)
+    let quadrant = 1;
+    //Gets the click pos realive to player
+    pos.x = pos.x - hero.x;
+    pos.y = pos.y - hero.y;
+    const ratioXY = Math.abs(pos.x/pos.y);
+    const ratioYX = Math.abs(pos.y/pos.x);
+
+    if( pos.x < 0 && pos.y < 0 ){
+        quadrant = 2;
+    }else if( pos.x < 0 && pos.y > 0 ){
+        quadrant = 3;
+    }else if( pos.x > 0 && pos.y > 0 ){
+        quadrant = 4;
+    }
+
+    totalProjectiles.push(
+        new Projectile(greenBulletImg,
+            hero.x,
+            hero.y,
+            greenBulletImg.width,
+            greenBulletImg.height,
+            quadrant,
+            ratioXY,
+            ratioYX,
+            16,
+            1)
+    )
 }

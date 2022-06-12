@@ -31,21 +31,21 @@
                     var adjacent = [];
                     if (node.x >= 1 && collisionArray[node.x-1][node.y] !== 1 && collisionArray[node.x-1][node.y] !== 2){
                         adjacent.push(nodes[node.x-1][node.y])
-                        // if (node.y > 0  && collisionArray[node.x-1][node.y-1] !== 1 && collisionArray[node.x-1][node.y-1] !== 2)
-                        //     adjacent.push(nodes[node.x-1][node.y-1])
-                        // if (node.y < max_y  && collisionArray[node.x-1][node.y+1] !== 1 && collisionArray[node.x-1][node.y+1] !== 2)
-                        //     adjacent.push(nodes[node.x-1][node.y+1])
+                        if (node.y > 0  && collisionArray[node.x-1][node.y-1] !== 1 && collisionArray[node.x-1][node.y-1] !== 2)
+                            adjacent.push(nodes[node.x-1][node.y-1])
+                        if (node.y < max_y  && collisionArray[node.x-1][node.y+1] !== 1 && collisionArray[node.x-1][node.y+1] !== 2)
+                            adjacent.push(nodes[node.x-1][node.y+1])
                     }
                     if (node.x < max_x){
                         if(collisionArray[node.x+1][node.y] !== 1 && collisionArray[node.x+1][node.y] !== 2){
                             adjacent.push(nodes[node.x+1][node.y]);
                         }
-                        // if (node.y > 0 && collisionArray[node.x+1][node.y-1] !== 1 && collisionArray[node.x+1][node.y-1] !== 2){
-                        //     adjacent.push(nodes[node.x+1][node.y-1])
-                        // }
-                        // if (node.y < max_y && collisionArray[node.x+1][node.y+1] !== 1 && collisionArray[node.x+1][node.y+1] !== 2){
-                        //     adjacent.push(nodes[node.x+1][node.y+1])
-                        // }
+                        if (node.y > 0 && collisionArray[node.x+1][node.y-1] !== 1 && collisionArray[node.x+1][node.y-1] !== 2){
+                            adjacent.push(nodes[node.x+1][node.y-1])
+                        }
+                        if (node.y < max_y && collisionArray[node.x+1][node.y+1] !== 1 && collisionArray[node.x+1][node.y+1] !== 2){
+                            adjacent.push(nodes[node.x+1][node.y+1])
+                        }
                     }
                     if (node.y > 0 && collisionArray[node.x][node.y-1] !== 1 && collisionArray[node.x][node.y-1] !== 2){
                         adjacent.push(nodes[node.x][node.y-1])
@@ -59,13 +59,11 @@
                 }
             },
             findPath: function(nodes, start_node, end_node){
-                //Creates is_start property for each node of the nodes matrix
                 nodes.forEach(function(columns){
                     columns.forEach(function(node){
                         node.is_start = false;
                     });
                 })
-                
                 var open_list = [];
                 var closed_list = [];
                 var finished = false;
@@ -124,7 +122,6 @@
             this.fCost = this.hCost + this.gCost;
         };
         Pathfinder.node.prototype.setHCost = function(destination_x, destination_y) {
-            //Cell distance between current pos and final pos
             var total_x = Math.abs(destination_x - this.x);
             var total_y = Math.abs(destination_y - this.y);
             this.hCost =  10 * ( total_x + total_y );
