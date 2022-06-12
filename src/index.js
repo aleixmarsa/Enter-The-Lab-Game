@@ -160,7 +160,6 @@ function buildNodes(){
 
 function initialLoad(){
     spawnEnemies(10);
-    buildNodes();
     loop()
 }
 
@@ -175,8 +174,7 @@ function loop() {
     }
     for(let enemy of totalEnemies){
         draw(enemy)
-       enemy.move()
-       enemy.followHero();
+        enemy.move()
 
     }    
     requestAnimationFrame(loop);

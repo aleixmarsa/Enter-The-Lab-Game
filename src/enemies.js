@@ -40,23 +40,45 @@ class Enemy{
     }
 
     move(){
-        this.checkZone();
-        if(this.attackAllowed){
-            if (this.x > this.pathToHeroX){
-                this.image.src = './images/enemies/enemy_1_left.png';
-                this.x -= 1;
+        if(this.isAlive()){
+            let nodes = buildNodes();
+            let rowEnemy = Math.floor(this.y/celPixels);
+            let columnEnemy = Math.floor(this.x/celPixels);
+            let rowHero = Math.floor(hero.y/celPixels);
+            let columnHero = Math.floor(hero.x/celPixels);
+        
+            this.path = Pathfinder.findPath(nodes, nodes[rowEnemy][columnEnemy], nodes[rowHero][columnHero] );
+            if(this.path.length === 1){
+                this.pathToHeroY = this.path[0].px_x;
+                this.pathToHeroX = this.path[0].px_y;
+            }else if (this.path.length > 1){
+                this.pathToHeroY = this.path[1].px_x;
+                this.pathToHeroX = this.path[1].px_y;
             }
-            else if(this.x < this.pathToHeroX){
-                this.image.src = './images/enemies/enemy_1_right.png';
-                this.x += 1;
+            this.checkZone();
+            if(this.attackAllowed){
+                collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] = 0
+                if (this.x > this.pathToHeroX){
+                    this.image.src = './images/enemies/enemy_1_left.png';
+                    this.x -= 1;
+                }
+                else if(this.x < this.pathToHeroX){
+                    this.image.src = './images/enemies/enemy_1_right.png';
+                    this.x += 1;
+                }
+                if (this.y > this.pathToHeroY){
+                    this.y -= 1;
+                }
+                else if (this.y < this.pathToHeroY){
+                    this.y += 1;
+                }
+                collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] = 9
             }
-            if (this.y > this.pathToHeroY){
-                this.y -= 1;
-            }
-            else if (this.y < this.pathToHeroY){
-                this.y += 1;
-            }
+        }else{
+            collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] = 0
+
         }
+
 
     }
 
@@ -71,7 +93,6 @@ class Enemy{
             collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] = 9
         }
         else{
-            collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] = 0
         }
     }
 
@@ -87,23 +108,5 @@ class Enemy{
     isAlive(){
         return this.healthPoints > 0;
     }
-
-    followHero(){
-        let nodes = buildNodes();
-        let rowEnemy = Math.floor(this.y/celPixels);
-        let columnEnemy = Math.floor(this.x/celPixels);
-        let rowHero = Math.floor(hero.y/celPixels);
-        let columnHero = Math.floor(hero.x/celPixels);
-    
-        this.path = Pathfinder.findPath(nodes, nodes[rowEnemy][columnEnemy], nodes[rowHero][columnHero] );
-        if(this.path.length === 1){
-            this.pathToHeroY = this.path[0].px_x;
-            this.pathToHeroX = this.path[0].px_y;
-        }else if (this.path.length > 1){
-            this.pathToHeroY = this.path[1].px_x;
-            this.pathToHeroX = this.path[1].px_y;
-        }
-    }
-    
 
 }
