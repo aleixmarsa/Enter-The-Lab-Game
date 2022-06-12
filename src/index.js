@@ -127,7 +127,7 @@ function spawnEnemies(numEnemies){
             if(collisionArray[row][column] === 0 && collisionArray[row+1][column] === 0) created = true;
         }
         totalEnemies.push(
-            new Enemy(enemyImg, column*celPixels, row*celPixels, celPixels, celPixels, 6, 1)
+            new Enemy(column*celPixels, row*celPixels, celPixels, celPixels, 6, 1)
         )
 
 
@@ -159,7 +159,7 @@ function buildNodes(){
 //The Game Loop
 
 function initialLoad(){
-    spawnEnemies(1);
+    spawnEnemies(10);
     buildNodes();
     loop()
 }
@@ -176,23 +176,9 @@ function loop() {
     for(let enemy of totalEnemies){
         draw(enemy)
        enemy.move()
-    }
-    let nodes = buildNodes();
-    let rowEnemy = Math.floor(totalEnemies[0].y/celPixels);
-    let columnEnemy = Math.floor(totalEnemies[0].x/celPixels);
-    let rowHero = Math.floor(hero.y/celPixels);
-    let columnHero = Math.floor(hero.x/celPixels);
-    let path = Pathfinder.findPath(nodes, nodes[rowEnemy][columnEnemy], nodes[rowHero][columnHero] );
-    
-    if(path.length === 1){
-        totalEnemies[0].pathToHeroY = path[0].px_x;
-        totalEnemies[0].pathToHeroX = path[0].px_y;
-    }else if (path.length > 1){
-        totalEnemies[0].pathToHeroY = path[1].px_x;
-        totalEnemies[0].pathToHeroX = path[1].px_y;
-    }
+       enemy.followHero();
 
-
+    }    
     requestAnimationFrame(loop);
 }
 
