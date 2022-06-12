@@ -5,3 +5,5 @@
 - Afegir que un tipus d'enemic dispari
 - Afegir que baixi la vida de l'heroi
 - Afegir que si ens ataca un melee ens tiri enrera una cel·la
+
+q
