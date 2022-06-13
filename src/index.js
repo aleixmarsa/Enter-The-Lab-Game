@@ -8,8 +8,7 @@ const ctx = canvas.getContext('2d');
 let heroImg = new Image;
 heroImg.src = './images/hero/hero_weapon_right.png'
 
-let enemyImg = new Image();
-enemyImg.src = './images/enemies/enemy_1_left.png'
+
 
 let map = new Image();
 map.src = './images/maps/map_lvl1.png'
@@ -19,6 +18,10 @@ greenBulletImg.src = './images/projectiles/blue_bullet.png'
 
 let healthBar = new Image();
 
+const meleeImgLeft = './images/enemies/melee_enemy_1_left.png';
+const meleeImgRight = './images/enemies/melee_enemy_1_right.png';
+const rangeImgLeft = './images/enemies/range_enemy_1_left.png';
+const rangeImgRight = './images/enemies/range_enemy_1_right.png';
 
 
 const celPixels = 32;

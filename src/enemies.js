@@ -1,7 +1,8 @@
+
 class Enemy{
-    constructor(x ,y , width, height, healthPoints, attackPoints){
+    constructor(imageSrc,x ,y , width, height, healthPoints, attackPoints){
         this.image = new Image();
-        this.image.src = './images/enemies/enemy_1_left.png';
+        this.image.src = imageSrc
         this.healthImg = new Image();          
         this.x = x;
         this.y = y;
@@ -40,11 +41,11 @@ class Enemy{
             if(this.attackAllowed){
                 collisionArray[this.row][this.column] = 0
                 if (this.x > this.pathToHeroX){
-                    this.image.src = './images/enemies/enemy_1_left.png';
+                    this.image.src = meleeImgLeft;
                     this.x -= 1;
                 }
                 else if(this.x < this.pathToHeroX){
-                    this.image.src = './images/enemies/enemy_1_right.png';
+                    this.image.src = meleeImgRight;
                     this.x += 1;
                 }
                 if (this.y > this.pathToHeroY){
@@ -72,9 +73,8 @@ class Enemy{
             ctx.drawImage(this.healthImg , this.x, this.y + this.height, this.healthImg.width, this.healthImg.height)
             collisionArray[this.row][this.column] = 9
         }
-        else{
-        }
     }
+    
 
     attack(){
 
@@ -104,6 +104,57 @@ class Enemy{
     }
 }
 
+class MeleeRobot extends Enemy{
+    constructor(imageSrc,x ,y , width, height, healthPoints, attackPoints){
+        super(imageSrc,x ,y , width, height, healthPoints, attackPoints)
+
+    }
+
+}
+class RangeRobot extends Enemy{
+    constructor(imageSrc,x ,y , width, height, healthPoints, attackPoints){
+        super(imageSrc,x ,y , width, height, healthPoints, attackPoints)
+
+    }
+    move(){
+        if(this.isAlive()){
+            let nodes = buildNodes();
+            this.calculateRowColumn();
+            hero.calculateRowColumn();
+        
+            this.path = Pathfinder.findPath( nodes, nodes[this.row][this.column], nodes[hero.row][hero.column] );
+            if(this.path.length >= 1){
+                this.pathToHeroY = this.path[0].px_x;
+                this.pathToHeroX = this.path[0].px_y;
+            }
+            this.checkZone();
+            if(this.attackAllowed){
+                collisionArray[this.row][this.column] = 0
+                if (this.x > this.pathToHeroX){
+                    this.image.src = rangeImgLeft;
+                    this.x -= 1;
+                }
+                else if(this.x < this.pathToHeroX){
+                    this.image.src = rangeImgRight;
+                    this.x += 1;
+                }
+                if (this.y > this.pathToHeroY){
+                    this.y -= 1;
+                }
+                else if (this.y < this.pathToHeroY){
+                    this.y += 1;
+                }
+                 this.calculateRowColumn();
+                collisionArray[this.row][this.column] = 9
+            }
+            this.attack()
+        }else{
+            collisionArray[this.row][this.column] = 0
+            totalEnemies.splice(totalEnemies.indexOf(this),1)
+        }
+    }
+}
+
 function spawnEnemies(numEnemies){
 
     for(let i = 0; i < numEnemies; i++){
@@ -116,7 +167,22 @@ function spawnEnemies(numEnemies){
             if(collisionArray[row][column] === 0 && collisionArray[row+1][column] === 0) created = true;
         }
         totalEnemies.push(
-            new Enemy(column*celPixels, row*celPixels, celPixels, celPixels, 6, 1)
+            new MeleeRobot(meleeImgLeft,column*celPixels, row*celPixels, celPixels, celPixels, 6, 1)
+        )
+    }
+
+    for(let i = 0; i < numEnemies; i++){
+        let created = false;
+        let column;
+        let row;
+        while(!created){
+            column = Math.floor(Math.random()*collisionArray[0].length)
+            row = Math.floor(Math.random()*collisionArray.length)
+            if(collisionArray[row][column] === 0 && collisionArray[row+1][column] === 0) created = true;
+        }
+        totalEnemies.push(
+            new RangeRobot(rangeImgLeft,column*celPixels, row*celPixels, celPixels, celPixels, 6, 1)
         )
     }
 }
+
