@@ -83,7 +83,8 @@ class Enemy{
        
         if ((hero.row === this.row+1 && hero.column === this.column)  || 
             (hero.column === this.column+1 && hero.row === this.row) ||
-            (hero.row === this.row  && hero.column === this.column)){
+            (hero.column === this.column-1 && hero.row === this.row) ||
+            (hero.row === this.row-1  && hero.column === this.column)){
             console.log('hero hitted')
             hero.receiveDamage(this.attackPoints, this);
         }
@@ -98,8 +99,8 @@ class Enemy{
     }
 
     calculateRowColumn(){
-        this.row= Math.floor(this.y / celPixels);
-        this.column = Math.floor(this.x /celPixels);
+        this.row= Math.round(this.y / celPixels);
+        this.column = Math.round(this.x /celPixels);
     }
 }
 

@@ -72,7 +72,9 @@ class Hero{
 
     move(e){
         this.calculateRowColumn();
-        if( e.keyCode === 87 || e === 'downHit'){
+        console.log('valor e = '+e)
+        console.log('valor matriu = ' + collisionArray[this.row][this.column-1])
+        if( e.keyCode === 87 || e === 'moveUp'){
             // Key w pressed
             direction = 'up';
             if(this.movementAllowed(direction)){
@@ -81,7 +83,7 @@ class Hero{
                 collisionArray[this.row-1][this.column] = 8
 
             } 
-        }else if( e.keyCode === 83 || e === 'upHit' ){
+        }else if( e.keyCode === 83 ||  e === 'moveDown'){
             // Key d pressed
             direction = 'down';
             if(this.movementAllowed(direction)){
@@ -89,7 +91,7 @@ class Hero{
                 this.y += celPixels;
                 collisionArray[this.row+1][this.column] = 8
             }
-        }else if( e.keyCode === 65  || e === 'leftHit'){
+        }else if( e.keyCode === 65  || e === 'moveLeft'){
             // Key s pressed
             direction = 'left';
             if(this.movementAllowed(direction)){
@@ -97,7 +99,7 @@ class Hero{
                 this.x -= celPixels;
                 collisionArray[this.row][this.column-1] = 8
             }
-        }else if( e.keyCode === 68 || e === 'rightHit' ){
+        }else if( e.keyCode === 68 || e === 'moveRight'){
             // Key d pressed
             direction = 'right';
             if(this.movementAllowed(direction)){
@@ -126,13 +128,13 @@ class Hero{
             console.log(this.healthPoints)
             this.healthPoints -= damage;
             if(this.row < enemy.row){
-                this.move('downHit')
+                this.move(this.checkFreeAdjacentCell())
             }else if (this.row > enemy.row){
-                this.move('upHit')
+                this.move(this.checkFreeAdjacentCell())
             }else if (this.column > enemy.column){
-                this.move('rightHit')
+                this.move(this.checkFreeAdjacentCell())
             }else{
-                this.move('leftHit')
+                this.move(this.checkFreeAdjacentCell())
             }
 
             
@@ -144,5 +146,22 @@ class Hero{
     calculateRowColumn(){
         this.row= Math.floor(this.y / celPixels);
         this.column = Math.floor(this.x /celPixels);
+    }
+
+    checkFreeAdjacentCell(){
+        this.calculateRowColumn()
+        if([0,3].includes(collisionArray[this.row-1][this.column])){
+            return 'moveUp'
+        }
+        if([0,3].includes(collisionArray[this.row+1][this.column])){
+            return 'moveDown'
+        }
+        if([0,3].includes(collisionArray[this.row][this.column+1])){
+            return 'moveRight'
+        }
+        if([0,3].includes(collisionArray[this.row][this.column-1])){
+            return 'moveLeft'
+        }
+
     }
 }
