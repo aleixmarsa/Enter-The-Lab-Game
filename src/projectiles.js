@@ -61,7 +61,7 @@ class Projectile{
                     //                              |
                     //   3rd quarant: x neg, y pos  |  4th quadrant: x pos, y pos
                     //                              |
-                    case 1:                      
+                    case 1:               
                         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
                         this.x += this.speedX;
                         this.y -= this.speedY;
@@ -108,113 +108,6 @@ class Projectile{
        
     }
 
-
-    // drawHero(){
-    //     this.calculateRowColumn()
-    //     if(!Number.isNaN(this.x) && !Number.isNaN(this.y) && this.row != undefined && this.column != undefined){
-    //         //Checks collisions between bullet and walls(1) and between bullet and enemies(9)
-    //         if((![1,9].includes(collisionArray[this.row][this.column]))){
-    //             //There is no collision
-    //             switch(this.quadrant){
-    //                 //                              |
-    //                 //  2nd quadrant: x neg, y neg  |  1st quadrant: x pos, y neg
-    //                 //                              |
-    //                 //                      -------hero-------
-    //                 //                              |
-    //                 //   3rd quarant: x neg, y pos  |  4th quadrant: x pos, y pos
-    //                 //                              |
-    //                 case 1:                      
-    //                     ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-    //                     this.x += this.speedX;
-    //                     this.y -= this.speedY;
-    //                     break;
-    //                 case 2:
-    //                     ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-    //                     this.x -= this.speedX;
-    //                     this.y -= this.speedY;           
-    //                     break;
-    //                 case 3:
-    //                     ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-    //                     this.x -= this.speedX;
-    //                     this.y += this.speedY;
-    //                     break;
-    //                 case 4:
-    //                     ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-    //                     this.x += this.speedX;
-    //                     this.y += this.speedY;
-    //                     break;
-    //             }
-    //         }else if(collisionArray[this.row][this.column] === 9){
-    //             //Collision with an enemy
-    //             this.enemyImpact();
-    //             totalProjectiles.splice(totalProjectiles.indexOf(this),1)
-    
-    //         }else{
-    //             //Collision with a wall
-    //             console.log('destroy')
-    //             totalProjectiles.splice(totalProjectiles.indexOf(this),1)
-    //         }
-    //     }else{
-    //         console.log('NaN')
-    //     }
-       
-    // }
-
-    // drawRobot(enemy){
-    //     this.calculateRowColumn()
-    //     console.log('enemy: '+ enemy.y)
-    //     console.log('bullet: '+this.y)
-    //     console.log(this.quadrant)
-    //     if(!Number.isNaN(this.x) && !Number.isNaN(this.y) && this.row != undefined && this.column != undefined){
-    //         //Checks collisions between bullet and walls(1) and between bullet and enemies(9)
-    //         if((![1,8].includes(collisionArray[this.row][this.column]))){
-    //             //There is no collision
-    //             switch(this.quadrant){
-    //                 //                              |
-    //                 //  2nd quadrant: x neg, y neg  |  1st quadrant: x pos, y neg
-    //                 //                              |
-    //                 //                      -------hero-------
-    //                 //                              |
-    //                 //   3rd quarant: x neg, y pos  |  4th quadrant: x pos, y pos
-    //                 //                              |
-    //                 case 1:                      
-    //                     ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-    //                     this.x += this.speedX;
-    //                     this.y -= this.speedY;
-    //                     break;
-    //                 case 2:
-    //                     ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-    //                     this.x -= this.speedX;
-    //                     this.y -= this.speedY;           
-    //                     break;
-    //                 case 3:
-    //                     ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-    //                     this.x -= this.speedX;
-    //                     this.y += this.speedY;
-    //                     break;
-    //                 case 4:
-    //                     ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-    //                     this.x += this.speedX;
-    //                     this.y += this.speedY;
-    //                     break;
-    //             }
-    //         }else if(collisionArray[this.row][this.column] === 8){
-    //             console.log('hero hitted')
-    //             hero.receiveDamage(enemy.attackPoints, enemy);
-    //             enemy.projectiles.splice(enemy.projectiles.indexOf(this),1)
-
-    //         }
-    //         else{
-    //             //Collision with a wall
-    //             enemy.projectiles.splice(enemy.projectiles.indexOf(this),1)
-    //         }
-    //     }else{
-    //         // console.log('NaN')
-    //     }
-       
-    // }
-
-
     calculateRowColumn(){
         this.row= Math.floor(this.y / celPixels);
         this.column = Math.floor(this.x /celPixels);
@@ -243,6 +136,8 @@ function mouseClick(e){
         quadrant = 3;
     }else if( pos.x > 0 && pos.y > 0 ){
         quadrant = 4;
+    }else{
+
     }
 
     totalProjectiles.push(

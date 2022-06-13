@@ -17,6 +17,10 @@ map.src = './images/maps/map_lvl1.png'
 let blueBulletImg = new Image();
 blueBulletImg.src = './images/projectiles/blue_bullet.png'
 
+let greenBulletImg = new Image();
+greenBulletImg.src = './images/projectiles/green_bullet.png'
+
+
 let healthBar = new Image();
 
 const meleeImgStop = './images/enemies/melee_enemy_stop_right.png';
@@ -25,8 +29,6 @@ const meleeImgRight = './images/enemies/melee_enemy_run_right.png';
 const rageImgStop = './images/enemies/range_enemy_stop_right.png';
 const rangeImgLeft = './images/enemies/range_enemy_run_left.png';
 const rangeImgRight = './images/enemies/range_enemy_run_right.png';
-
-const bodyContainerImg = './images/items/body_container.png'
 
 const celPixels = 32;
 let direction = 'up';
@@ -56,30 +58,6 @@ let hero = new Hero(heroSprite,  //the spritesheet image
                     4,
                     11);
 
-
-let bodyContainer = new Item(bodyContainerImg,
-                            37,
-                            11,
-                            67,
-                            43,
-                            300,
-                            3);
-   
-let bodyContainer2 = new Item(bodyContainerImg,
-                            485,
-                            396,
-                            67,
-                            43,
-                            300,
-                            3);
-                            
-let bodyContainer3 = new Item(bodyContainerImg,
-                            453,
-                            683,
-                            67,
-                            43,
-                            300,
-                            3);
 
 //update function to update all the GameObjects
 function update(object) {
@@ -130,12 +108,7 @@ function loop() {
     ctx.drawImage(map,0,0,map.width,map.height);
     hero.update();
     hero.draw();
-    bodyContainer.update()
-    bodyContainer.draw_sprite();
-    bodyContainer2.update()
-    bodyContainer2.draw_sprite();
-    bodyContainer3.update()
-    bodyContainer3.draw_sprite();
+    drawItems();
     for(let projectile of totalProjectiles){
         projectile.draw(hero)
     }
@@ -149,6 +122,9 @@ function loop() {
                 projectile.draw(enemy);
             }
         }
+    }
+    if(totalEnemies.length === 0){
+        map.src = './images/maps/map_lvl1_open.png'
     }
     requestAnimationFrame(loop);
 }

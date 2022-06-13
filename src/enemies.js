@@ -230,7 +230,7 @@ class RangeRobot extends Enemy{
         }
 
         this.projectiles.push(
-            new Projectile(blueBulletImg,
+            new Projectile(greenBulletImg,
                 this.x,
                 this.y,
                 blueBulletImg.width,
