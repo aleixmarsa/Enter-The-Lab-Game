@@ -1,5 +1,5 @@
-- Netejar i refactoritzar 
-- Corregir matriu durant moviment d'enemics (diagonals)
+- Netejar i refactoritzar
+- Canviar posició des d'on dispara.
 - Afegir vida hero
 - Afegir enemic nou
 - Afegir que un tipus d'enemic dispari

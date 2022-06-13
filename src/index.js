@@ -36,7 +36,7 @@ let hero = new Hero(heroImg,  //the spritesheet image
                     heroImg.height,          //total height of spritesheet image in pixels
                     60,           //time(in ms) duration between each frame change (experiment with it to get faster or slower animation)
                     1,
-                    100);
+                    11);
                     
 //update function to update all the GameObjects
 function update(object) {

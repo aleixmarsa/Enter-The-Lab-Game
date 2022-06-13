@@ -1,6 +1,7 @@
 class Hero{
     constructor(image, x, y, width, height, timePerFrame, numberOfFrames, healthPoints) {
         this.image = image;   
+        this.healthImg = new Image();
         this.x = x;                                 
         this.y = y;                                 
         this.width = width;                         
@@ -44,16 +45,14 @@ class Hero{
     
     draw(){
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+        this.healthImg.src = `/images/ui/health_bar_hero_${this.healthPoints}.png`
+        ctx.drawImage(this.healthImg , this.x, this.y + this.height, this.healthImg.width, this.healthImg.height)
     }
 
 
-    healthStatus(damage){
-        if( this.isAlive() ) this.healthBar.value -= damage;
-        else window.alert('Game Over')
-    }
     
     isAlive(){
-        return this.healthBar.value !== 0;
+        return this.healthPoints !== 0;
     }
 
     movementAllowed(movement){
@@ -75,7 +74,7 @@ class Hero{
     move(e){
         let arrayRow= Math.floor(this.y / celPixels);
         let arrayColumn = Math.floor(this.x /celPixels);
-        if( e.keyCode === 87){
+        if( e.keyCode === 87 || e === 'downHit'){
             // Key w pressed
             direction = 'up';
             if(this.movementAllowed(direction)){
@@ -84,7 +83,7 @@ class Hero{
                 collisionArray[arrayRow-1][arrayColumn] = 8
 
             } 
-        }else if( e.keyCode === 83 ){
+        }else if( e.keyCode === 83 || e === 'upHit' ){
             // Key d pressed
             direction = 'down';
             if(this.movementAllowed(direction)){
@@ -92,7 +91,7 @@ class Hero{
                 this.y += celPixels;
                 collisionArray[arrayRow+1][arrayColumn] = 8
             }
-        }else if( e.keyCode === 65 ){
+        }else if( e.keyCode === 65  || e === 'leftHit'){
             // Key s pressed
             direction = 'left';
             if(this.movementAllowed(direction)){
@@ -100,7 +99,7 @@ class Hero{
                 this.x -= celPixels;
                 collisionArray[arrayRow][arrayColumn-1] = 8
             }
-        }else if( e.keyCode === 68 ){
+        }else if( e.keyCode === 68 || e === 'rightHit' ){
             // Key d pressed
             direction = 'right';
             if(this.movementAllowed(direction)){
@@ -119,5 +118,30 @@ class Hero{
         }else{
             this.image.src = './images/hero/hero_weapon_left.png'
         }
+    }
+
+    receiveDamage(damage, enemy){
+        let enemyRow= Math.floor(enemy.y / celPixels);
+        let enemyColumn = Math.floor(enemy.x /celPixels);
+        let heroRow= Math.floor(this.y / celPixels);
+        let heroColumn = Math.floor(this.x /celPixels);
+
+        if( this.isAlive() ){
+            console.log(this.healthPoints)
+            this.healthPoints -= damage;
+            if(heroRow < enemyRow){
+                this.move('downHit')
+            }else if (heroRow > enemyRow){
+                this.move('upHit')
+            }else if (heroColumn > enemyColumn){
+                this.move('rightHit')
+            }else{
+                this.move('leftHit')
+            }
+
+            
+        }
+        
+
     }
 }

@@ -57,8 +57,11 @@ class Enemy{
                 }
                 collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] = 9
             }
+            this.attack()
         }else{
             collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] = 0
+            totalEnemies.splice(totalEnemies.indexOf(this),1)
+
 
         }
 
@@ -69,8 +72,7 @@ class Enemy{
     draw(){
         if (this.isAlive()){
             ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-            let stringHealth = String(this.healthPoints)
-            this.healthImg.src = `/images/ui/health_bar_${stringHealth}.png`
+            this.healthImg.src = `/images/ui/health_bar_${this.healthPoints}.png`
             ctx.drawImage(this.healthImg , this.x, this.y + this.height, this.healthImg.width, this.healthImg.height)
             collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] = 9
         }
@@ -78,13 +80,23 @@ class Enemy{
         }
     }
 
-    attack(hero){
-        if (this.x === hero.x && this.y === hero.y) hero.healthStatus(this.attackPoints);
+    attack(){
+        let enemyRow = Math.floor(this.y/celPixels);
+        let enemyColumn = Math.floor(this.x/celPixels);
+        let heroRow = Math.floor(hero.y/celPixels);
+        let heroColumn = Math.floor(hero.x/celPixels);
+        
+        if ((heroRow === enemyRow+1 && heroColumn === enemyColumn)  || 
+            (heroColumn === enemyColumn+1 && heroRow === enemyRow) ||
+            (heroRow === enemyRow-1  && heroColumn === enemyColumn) ||
+            (heroColumn === enemyColumn-1 && heroRow === enemyRow)){
+            console.log('hero hitted')
+            hero.receiveDamage(this.attackPoints, this);
+        }
     }
 
     receiveDamage(damage){
         this.healthPoints -= damage;
-        this.draw()
     }
     
     isAlive(){
