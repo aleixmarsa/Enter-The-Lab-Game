@@ -27,24 +27,23 @@ class Hero{
         }
     }
 
-    // //to draw on the canvas, parameter is the ctx of the canvas to be drawn on
-    // draw_sprite = function() {
-    //     ctx.clearRect(this.x-20,this.y-20,this.width, this.height+40);
-    //     ctx.drawImage(this.spritesheet, // Sprite Image
-    //                       this.frameIndex*this.width/this.numberOfFrames, //sx Sprites x coordinate where the frame starts
-    //                       0,    //sy Sprites y coordinate where to frame starts
-    //                       this.width/this.numberOfFrames, //sWidth frame width
-    //                       this.height,  //sHeight frame height
-    //                       this.x,   //dx Canvas x coordinate where the image is positioned
-    //                       this.y,   //dy Canvas y coordinate where the image is positioned
-    //                       this.width/this.numberOfFrames,   //dWidth Image width to be drawn
-    //                       this.height);    //dHeight Image height to be drawn
-    //    console.log(this.width/this.numberOfFrames)
-    // }
+    //to draw on the canvas, parameter is the ctx of the canvas to be drawn on
+    draw_sprite() {
+        ctx.drawImage(this.image, // Sprite Image
+                          this.frameIndex*this.width/this.numberOfFrames, //sx Sprites x coordinate where the frame starts
+                          0,    //sy Sprites y coordinate where to frame starts
+                          this.width/this.numberOfFrames, //sWidth frame width
+                          this.height,  //sHeight frame height
+                          this.x,   //dx Canvas x coordinate where the image is positioned
+                          this.y,   //dy Canvas y coordinate where the image is positioned
+                          this.width/this.numberOfFrames,   //dWidth Image width to be drawn
+                          this.height);    //dHeight Image height to be drawn
+    }
 
     
     draw(){
-        ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+        this.draw_sprite()
+        //ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
         this.healthImg.src = `/images/ui/health_bar_hero_${this.healthPoints}.png`
         ctx.drawImage(this.healthImg , this.x, this.y + this.height, this.healthImg.width, this.healthImg.height)
     }
@@ -79,8 +78,9 @@ class Hero{
                 collisionArray[this.row][this.column] = 0
                 this.y -= celPixels;
                 collisionArray[this.row-1][this.column] = 8
+                movement = true;
+            }
 
-            } 
         }else if( e.keyCode === 83 ||  e === 'moveDown'){
             // Key d pressed
             direction = 'down';
@@ -88,6 +88,7 @@ class Hero{
                 collisionArray[this.row][this.column] = 0
                 this.y += celPixels;
                 collisionArray[this.row+1][this.column] = 8
+                movement = true;
             }
         }else if( e.keyCode === 65  || e === 'moveLeft'){
             // Key s pressed
@@ -96,6 +97,7 @@ class Hero{
                 collisionArray[this.row][this.column] = 0
                 this.x -= celPixels;
                 collisionArray[this.row][this.column-1] = 8
+                movement = true;
             }
         }else if( e.keyCode === 68 || e === 'moveRight'){
             // Key d pressed
@@ -104,18 +106,33 @@ class Hero{
                 collisionArray[this.row][this.column] = 0
                 this.x += celPixels;  
                 collisionArray[this.row][this.column+1] = 8
+                movement = true;
             }  
         }
-        
 
     }
 
     aim(e){
-        if(mousePosPlayer.x >= 0){
-            this.image.src = './images/hero/hero_weapon_right.png' 
-        }else{
-            this.image.src = './images/hero/hero_weapon_left.png'
+       if(movement){
+            if(mousePosPlayer.x >= 0){
+                //this.image.src = './images/hero/hero_weapon_right.png' 
+                this.image.src = './images/hero/hero_run_right.png';
+            }else{
+                //this.image.src = './images/hero/hero_weapon_left.png';
+                this.image.src = './images/hero/hero_run_left.png';
+            }
         }
+        else{
+            if(mousePosPlayer.x >= 0){
+                //this.image.src = './images/hero/hero_weapon_right.png' 
+                this.image.src = './images/hero/hero_stop_right.png';
+            }else{
+                //this.image.src = './images/hero/hero_weapon_left.png';
+                this.image.src = './images/hero/hero_stop_left.png';
+            }
+            
+        }
+
     }
 
     receiveDamage(damage, enemy){
@@ -123,7 +140,6 @@ class Hero{
         enemy.calculateRowColumn();
 
         if( this.isAlive() ){
-            console.log(this.healthPoints)
             this.healthPoints -= damage;
             if(enemy.constructor.name === 'MeleeRobot'){
                 if(this.row < enemy.row){

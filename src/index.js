@@ -5,10 +5,11 @@ canvas.style.cursor = "crosshair";
 
 const ctx = canvas.getContext('2d');
 
-let heroImg = new Image;
-heroImg.src = './images/hero/hero_weapon_right.png'
+// let heroImg = new Image();
+// heroImg.src = './images/hero/hero_weapon_right.png'
 
-
+let heroSprite= new Image();
+heroSprite.src = './images/hero/hero_run_right.png';
 
 let map = new Image();
 map.src = './images/maps/map_lvl1.png'
@@ -18,11 +19,14 @@ blueBulletImg.src = './images/projectiles/blue_bullet.png'
 
 let healthBar = new Image();
 
-const meleeImgLeft = './images/enemies/melee_enemy_1_left.png';
-const meleeImgRight = './images/enemies/melee_enemy_1_right.png';
-const rangeImgLeft = './images/enemies/range_enemy_1_left.png';
-const rangeImgRight = './images/enemies/range_enemy_1_right.png';
+const meleeImgStop = './images/enemies/melee_enemy_stop_right.png';
+const meleeImgLeft = './images/enemies/melee_enemy_run_left.png';
+const meleeImgRight = './images/enemies/melee_enemy_run_right.png';
+const rageImgStop = './images/enemies/range_enemy_stop_right.png';
+const rangeImgLeft = './images/enemies/range_enemy_run_left.png';
+const rangeImgRight = './images/enemies/range_enemy_run_right.png';
 
+const bodyContainerImg = './images/items/body_container.png'
 
 const celPixels = 32;
 let direction = 'up';
@@ -31,16 +35,52 @@ let totalProjectiles = [];
 let totalEnemies = [];
 let mousePos;
 let mousePosPlayer;
+let movement = false;
 
-let hero = new Hero(heroImg,  //the spritesheet image
+// let hero = new Hero(heroImg,  //the spritesheet image
+//                     0,            //x position of hero
+//                     96,            //y position of hero
+//                     heroImg.width,         //total width of spritesheet image in pixels
+//                     heroImg.height,          //total height of spritesheet image in pixels
+//                     60,           //time(in ms) duration between each frame change (experiment with it to get faster or slower animation)
+//                     1,
+//                     11);
+     
+
+let hero = new Hero(heroSprite,  //the spritesheet image
                     0,            //x position of hero
                     96,            //y position of hero
-                    heroImg.width,         //total width of spritesheet image in pixels
-                    heroImg.height,          //total height of spritesheet image in pixels
-                    60,           //time(in ms) duration between each frame change (experiment with it to get faster or slower animation)
-                    1,
+                    heroSprite.width,         //total width of spritesheet image in pixels
+                    heroSprite.height,          //total height of spritesheet image in pixels
+                    150,           //time(in ms) duration between each frame change (experiment with it to get faster or slower animation)
+                    4,
                     11);
-                    
+
+
+let bodyContainer = new Item(bodyContainerImg,
+                            37,
+                            11,
+                            67,
+                            43,
+                            300,
+                            3);
+   
+let bodyContainer2 = new Item(bodyContainerImg,
+                            485,
+                            396,
+                            67,
+                            43,
+                            300,
+                            3);
+                            
+let bodyContainer3 = new Item(bodyContainerImg,
+                            453,
+                            683,
+                            67,
+                            43,
+                            300,
+                            3);
+
 //update function to update all the GameObjects
 function update(object) {
     object.update();
@@ -49,6 +89,10 @@ function update(object) {
 
 function keyPressed(e){
     hero.move(e); 
+}
+
+function keyRelease(e){
+    movement = false;
 }
 
 
@@ -76,36 +120,44 @@ function mousePosition(e){
 }
 
 function initialLoad(){
-    spawnEnemies(10,10);
+    spawnEnemies(5,5);
     loop()
 }
 
 //The Game Loop
 function loop() {
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(map,0,0,map.width,map.height);
-    
+    hero.update();
     hero.draw();
+    bodyContainer.update()
+    bodyContainer.draw_sprite();
+    bodyContainer2.update()
+    bodyContainer2.draw_sprite();
+    bodyContainer3.update()
+    bodyContainer3.draw_sprite();
     for(let projectile of totalProjectiles){
-        projectile.drawHero()
+        projectile.draw(hero)
     }
+    
     for(let enemy of totalEnemies){
+        enemy.update();
         enemy.draw()
         enemy.move()
         if(enemy.hasOwnProperty('projectiles')){
             for(let projectile of enemy.projectiles){
-                projectile.drawRobot(enemy);
+                projectile.draw(enemy);
             }
         }
     }
     requestAnimationFrame(loop);
 }
 
-window.addEventListener("keydown", keyPressed)
-window.addEventListener("mousemove", mousePosition)
-window.addEventListener("click", mouseClick)
+window.addEventListener('keydown', keyPressed)
+window.addEventListener('mousemove', mousePosition)
+window.addEventListener('click', mouseClick)
 window.addEventListener('load', initialLoad)
+window.addEventListener('keyup', keyRelease)
 // window.addEventListener("keyup", stopHero)
 
 

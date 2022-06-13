@@ -1,4 +1,2 @@
 - Netejar i refactoritzar
 - Canviar posició des d'on dispara.
-- Afegir enemic nou
-- Afegir que un tipus d'enemic dispari

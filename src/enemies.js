@@ -1,7 +1,7 @@
 let idInterval;
 
 class Enemy{
-    constructor(imageSrc,x ,y , width, height, healthPoints, attackPoints){
+    constructor(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints){
         this.image = new Image();
         this.image.src = imageSrc
         this.healthImg = new Image();          
@@ -9,10 +9,28 @@ class Enemy{
         this.y = y;
         this.width = width;
         this.height = height;
+        this.timePerFrame = timePerFrame; 
         this.healthPoints = healthPoints;
+        this.numberOfFrames = numberOfFrames;
         this.attackPoints = attackPoints;
         this.attackAllowed = false;
         this.path;
+        //current frame index pointer
+        this.frameIndex = 0;
+        //time the frame index was last updated
+        this.lastUpdate = Date.now();
+
+    }
+
+    //to update
+    update = function() {
+        if(Date.now() - this.lastUpdate >= this.timePerFrame) {
+            this.frameIndex++;
+            if(this.frameIndex >= this.numberOfFrames) {
+                this.frameIndex = 0;
+            }
+            this.lastUpdate = Date.now();
+        }
     }
 
     checkZone(){
@@ -69,13 +87,27 @@ class Enemy{
     draw(){
         if (this.isAlive()){
             this.calculateRowColumn();
-            ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+            this.draw_sprite();
+            //ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
             this.healthImg.src = `/images/ui/health_bar_${this.healthPoints}.png`
             ctx.drawImage(this.healthImg , this.x, this.y + this.height, this.healthImg.width, this.healthImg.height)
             collisionArray[this.row][this.column] = 9
         }
     }
     
+
+    draw_sprite() {
+        ctx.drawImage(this.image, // Sprite Image
+                          this.frameIndex*this.width/this.numberOfFrames, //sx Sprites x coordinate where the frame starts
+                          0,    //sy Sprites y coordinate where to frame starts
+                          this.width/this.numberOfFrames, //sWidth frame width
+                          this.height,  //sHeight frame height
+                          this.x,   //dx Canvas x coordinate where the image is positioned
+                          this.y,   //dy Canvas y coordinate where the image is positioned
+                          this.width/this.numberOfFrames,   //dWidth Image width to be drawn
+                          this.height);    //dHeight Image height to be drawn
+    }
+
 
     attack(){
 
@@ -86,7 +118,6 @@ class Enemy{
             (hero.column === this.column+1 && hero.row === this.row) ||
             (hero.column === this.column-1 && hero.row === this.row) ||
             (hero.row === this.row-1  && hero.column === this.column)){
-            console.log('hero hitted')
             hero.receiveDamage(this.attackPoints, this);
         }
     }
@@ -106,17 +137,17 @@ class Enemy{
 }
 
 class MeleeRobot extends Enemy{
-    constructor(imageSrc,x ,y , width, height, healthPoints, attackPoints){
-        super(imageSrc,x ,y , width, height, healthPoints, attackPoints)
+    constructor(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints){
+        super(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints)
 
     }
 
 }
 class RangeRobot extends Enemy{
-    constructor(imageSrc,x ,y , width, height, healthPoints, attackPoints){
-        super(imageSrc,x ,y , width, height, healthPoints, attackPoints)
+    constructor(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints){
+        super(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints)
         this.projectiles = [];
-        this.frameIndex = 0;
+        this.frameCount = 0;
 
     }
     move(){
@@ -149,10 +180,10 @@ class RangeRobot extends Enemy{
                 }
                  this.calculateRowColumn();
                 collisionArray[this.row][this.column] = 9
-                if (this.frameIndex%100 === 0){
+                if (this.frameCount%100 === 0){
                     this.aim()
                 }
-                this.frameIndex++;
+                this.frameCount++;
             }
         }else{
             collisionArray[this.row][this.column] = 0
@@ -161,16 +192,12 @@ class RangeRobot extends Enemy{
     }
 
     attack(){
-
         this.calculateRowColumn();
         hero.calculateRowColumn()
-
-
         if ((hero.row === this.row+15 && hero.column === this.column)  || 
             (hero.column === this.column+1 && hero.row === this.row) ||
             (hero.column === this.column-1 && hero.row === this.row) ||
             (hero.row === this.row-1  && hero.column === this.column)){
-            console.log('hero hitted')
 
             hero.receiveDamage(this.attackPoints, this);
         }
@@ -194,9 +221,6 @@ class RangeRobot extends Enemy{
         }
         const ratioXY = Math.abs(pos.x/pos.y);
         const ratioYX = Math.abs(pos.y/pos.x);
-        console.log('ratioXY: ' + ratioXY)
-        console.log('ratioYX: ' + ratioXY)
-
         if( pos.x < 0 && pos.y < 0 ){
             quadrant = 2;
         }else if( pos.x < 0 && pos.y > 0 ){
@@ -226,7 +250,6 @@ class RangeRobot extends Enemy{
 }
 
 function spawnEnemies(meleeEnemies, rangeEnemies){
-
     for(let i = 0; i < meleeEnemies; i++){
         let created = false;
         let column;
@@ -237,7 +260,7 @@ function spawnEnemies(meleeEnemies, rangeEnemies){
             if(collisionArray[row][column] === 0 && collisionArray[row+1][column] === 0) created = true;
         }
         totalEnemies.push(
-            new MeleeRobot(meleeImgLeft,column*celPixels, row*celPixels, celPixels, celPixels, 6, 1)
+            new MeleeRobot(meleeImgStop,column*celPixels, row*celPixels, 128, celPixels,150,4,6,1)
         )
     }
 
@@ -251,7 +274,7 @@ function spawnEnemies(meleeEnemies, rangeEnemies){
             if(collisionArray[row][column] === 0 && collisionArray[row+1][column] === 0) created = true;
         }
         totalEnemies.push(
-            new RangeRobot(rangeImgLeft,column*celPixels, row*celPixels, celPixels, celPixels, 6, 1)
+            new RangeRobot(rageImgStop,column*celPixels, row*celPixels, 128, celPixels,150,4,6,1)
         )
     }
 }
