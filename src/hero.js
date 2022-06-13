@@ -3,7 +3,7 @@ class Hero{
         this.image = image;   
         this.healthImg = new Image();
         this.x = x;                                 
-        this.y = y;                                 
+        this.y = y;                            
         this.width = width;                         
         this.height = height;                       
         this.timePerFrame = timePerFrame;            
@@ -56,56 +56,54 @@ class Hero{
     }
 
     movementAllowed(movement){
-        let arrayRow= this.y / celPixels;
-        let arrayColumn = this.x /celPixels
+        this.calculateRowColumn();
         switch(movement){
             case 'right':
-                return [1,2].includes(collisionArray[arrayRow][arrayColumn+1]) ? false : true;
+                return [1,2].includes(collisionArray[this.row][this.column+1]) ? false : true;
             case 'left':    
-                return [1,2].includes(collisionArray[arrayRow][arrayColumn-1]) || arrayColumn === 0 ? false : true;
+                return [1,2].includes(collisionArray[this.row][this.column-1]) || this.column === 0 ? false : true;
             case 'up':
-                return [1,2].includes(collisionArray[arrayRow-1][arrayColumn]) ? false : true;
+                return [1,2].includes(collisionArray[this.row-1][this.column]) ? false : true;
             case 'down':
-                return [1,2].includes(collisionArray[arrayRow+1][arrayColumn]) ? false : true;
+                return [1,2].includes(collisionArray[this.row+1][this.column]) ? false : true;
         }
                 
     }
 
     move(e){
-        let arrayRow= Math.floor(this.y / celPixels);
-        let arrayColumn = Math.floor(this.x /celPixels);
+        this.calculateRowColumn();
         if( e.keyCode === 87 || e === 'downHit'){
             // Key w pressed
             direction = 'up';
             if(this.movementAllowed(direction)){
-                collisionArray[arrayRow][arrayColumn] = 0
+                collisionArray[this.row][this.column] = 0
                 this.y -= celPixels;
-                collisionArray[arrayRow-1][arrayColumn] = 8
+                collisionArray[this.row-1][this.column] = 8
 
             } 
         }else if( e.keyCode === 83 || e === 'upHit' ){
             // Key d pressed
             direction = 'down';
             if(this.movementAllowed(direction)){
-                collisionArray[arrayRow][arrayColumn] = 0
+                collisionArray[this.row][this.column] = 0
                 this.y += celPixels;
-                collisionArray[arrayRow+1][arrayColumn] = 8
+                collisionArray[this.row+1][this.column] = 8
             }
         }else if( e.keyCode === 65  || e === 'leftHit'){
             // Key s pressed
             direction = 'left';
             if(this.movementAllowed(direction)){
-                collisionArray[arrayRow][arrayColumn] = 0
+                collisionArray[this.row][this.column] = 0
                 this.x -= celPixels;
-                collisionArray[arrayRow][arrayColumn-1] = 8
+                collisionArray[this.row][this.column-1] = 8
             }
         }else if( e.keyCode === 68 || e === 'rightHit' ){
             // Key d pressed
             direction = 'right';
             if(this.movementAllowed(direction)){
-                collisionArray[arrayRow][arrayColumn] = 0
+                collisionArray[this.row][this.column] = 0
                 this.x += celPixels;  
-                collisionArray[arrayRow][arrayColumn+1] = 8
+                collisionArray[this.row][this.column+1] = 8
             }  
         }
         
@@ -121,19 +119,17 @@ class Hero{
     }
 
     receiveDamage(damage, enemy){
-        let enemyRow= Math.floor(enemy.y / celPixels);
-        let enemyColumn = Math.floor(enemy.x /celPixels);
-        let heroRow= Math.floor(this.y / celPixels);
-        let heroColumn = Math.floor(this.x /celPixels);
+        this.calculateRowColumn();
+        enemy.calculateRowColumn();
 
         if( this.isAlive() ){
             console.log(this.healthPoints)
             this.healthPoints -= damage;
-            if(heroRow < enemyRow){
+            if(this.row < enemy.row){
                 this.move('downHit')
-            }else if (heroRow > enemyRow){
+            }else if (this.row > enemy.row){
                 this.move('upHit')
-            }else if (heroColumn > enemyColumn){
+            }else if (this.column > enemy.column){
                 this.move('rightHit')
             }else{
                 this.move('leftHit')
@@ -143,5 +139,10 @@ class Hero{
         }
         
 
+    }
+
+    calculateRowColumn(){
+        this.row= Math.floor(this.y / celPixels);
+        this.column = Math.floor(this.x /celPixels);
     }
 }

@@ -25,11 +25,11 @@ class Projectile{
     }
 
 
-    enemyImpact(bulletRow, bulletColumn){
+    enemyImpact(){
+        this.calculateRowColumn();
         for (let enemy of totalEnemies){
-            let enemyRow = Math.floor(enemy.y/celPixels)
-            let enemyColumn = Math.floor(enemy.x/celPixels);
-            if (bulletRow === enemyRow && bulletColumn === enemyColumn){
+            enemy.calculateRowColumn();
+            if (this.row === enemy.row && this.column === enemy.column){
                 console.log('enemy hitted')
                 enemy.receiveDamage(this.damage);
             }
@@ -39,10 +39,9 @@ class Projectile{
 
     draw(){
         if(!Number.isNaN(this.x) && !Number.isNaN(this.y)){
-            let bulletRow = Math.floor(this.y/celPixels);
-            let bulletColumn = Math.floor(this.x/celPixels);
+            this.calculateRowColumn()
             //Checks collisions between bullet and walls(1) and between bullet and enemies(9) 
-            if( ![1,9].includes(collisionArray[bulletRow][bulletColumn])){
+            if( ![1,9].includes(collisionArray[this.row][this.column])){
                 //There is no collision
                 switch(this.quadrant){
                     //                              |
@@ -73,9 +72,9 @@ class Projectile{
                         this.y += this.speedY;
                         break;
                 }
-            }else if(collisionArray[bulletRow][bulletColumn] ===9 ){
+            }else if(collisionArray[this.row][this.column] ===9 ){
                 //Collision with an enemy
-                this.enemyImpact(bulletRow, bulletColumn);
+                this.enemyImpact();
     
             }else{
                 //Collision with a wall
@@ -83,6 +82,11 @@ class Projectile{
             }
         }
        
+    }
+
+    calculateRowColumn(){
+        this.row= Math.floor(this.y / celPixels);
+        this.column = Math.floor(this.x /celPixels);
     }
 
 }

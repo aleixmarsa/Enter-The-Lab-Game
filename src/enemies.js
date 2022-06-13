@@ -28,19 +28,17 @@ class Enemy{
     move(){
         if(this.isAlive()){
             let nodes = buildNodes();
-            let rowEnemy = Math.floor(this.y/celPixels);
-            let columnEnemy = Math.floor(this.x/celPixels);
-            let rowHero = Math.floor(hero.y/celPixels);
-            let columnHero = Math.floor(hero.x/celPixels);
+            this.calculateRowColumn();
+            hero.calculateRowColumn();
         
-            this.path = Pathfinder.findPath( nodes, nodes[rowEnemy][columnEnemy], nodes[rowHero][columnHero] );
+            this.path = Pathfinder.findPath( nodes, nodes[this.row][this.column], nodes[hero.row][hero.column] );
             if(this.path.length >= 1){
                 this.pathToHeroY = this.path[0].px_x;
                 this.pathToHeroX = this.path[0].px_y;
             }
             this.checkZone();
             if(this.attackAllowed){
-                collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] = 0
+                collisionArray[this.row][this.column] = 0
                 if (this.x > this.pathToHeroX){
                     this.image.src = './images/enemies/enemy_1_left.png';
                     this.x -= 1;
@@ -55,41 +53,37 @@ class Enemy{
                 else if (this.y < this.pathToHeroY){
                     this.y += 1;
                 }
-                collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] = 9
+                 this.calculateRowColumn();
+                collisionArray[this.row][this.column] = 9
             }
             this.attack()
         }else{
-            collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] = 0
+            collisionArray[this.row][this.column] = 0
             totalEnemies.splice(totalEnemies.indexOf(this),1)
-
-
         }
-
-
     }
 
   
     draw(){
         if (this.isAlive()){
+            this.calculateRowColumn();
             ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
             this.healthImg.src = `/images/ui/health_bar_${this.healthPoints}.png`
             ctx.drawImage(this.healthImg , this.x, this.y + this.height, this.healthImg.width, this.healthImg.height)
-            collisionArray[Math.floor(this.y/celPixels)][Math.floor(this.x/celPixels)] = 9
+            collisionArray[this.row][this.column] = 9
         }
         else{
         }
     }
 
     attack(){
-        let enemyRow = Math.floor(this.y/celPixels);
-        let enemyColumn = Math.floor(this.x/celPixels);
-        let heroRow = Math.floor(hero.y/celPixels);
-        let heroColumn = Math.floor(hero.x/celPixels);
-        
-        if ((heroRow === enemyRow+1 && heroColumn === enemyColumn)  || 
-            (heroColumn === enemyColumn+1 && heroRow === enemyRow) ||
-            (heroRow === enemyRow-1  && heroColumn === enemyColumn) ||
-            (heroColumn === enemyColumn-1 && heroRow === enemyRow)){
+
+        this.calculateRowColumn();
+        hero.calculateRowColumn()
+       
+        if ((hero.row === this.row+1 && hero.column === this.column)  || 
+            (hero.column === this.column+1 && hero.row === this.row) ||
+            (hero.row === this.row  && hero.column === this.column)){
             console.log('hero hitted')
             hero.receiveDamage(this.attackPoints, this);
         }
@@ -101,6 +95,11 @@ class Enemy{
     
     isAlive(){
         return this.healthPoints > 0;
+    }
+
+    calculateRowColumn(){
+        this.row= Math.floor(this.y / celPixels);
+        this.column = Math.floor(this.x /celPixels);
     }
 }
 
