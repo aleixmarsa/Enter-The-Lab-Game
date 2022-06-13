@@ -13,8 +13,8 @@ heroImg.src = './images/hero/hero_weapon_right.png'
 let map = new Image();
 map.src = './images/maps/map_lvl1.png'
 
-let greenBulletImg = new Image();
-greenBulletImg.src = './images/projectiles/blue_bullet.png'
+let blueBulletImg = new Image();
+blueBulletImg.src = './images/projectiles/blue_bullet.png'
 
 let healthBar = new Image();
 
@@ -76,7 +76,7 @@ function mousePosition(e){
 }
 
 function initialLoad(){
-    spawnEnemies(10);
+    spawnEnemies(10,10);
     loop()
 }
 
@@ -88,13 +88,17 @@ function loop() {
     
     hero.draw();
     for(let projectile of totalProjectiles){
-        projectile.draw()
+        projectile.drawHero()
     }
     for(let enemy of totalEnemies){
         enemy.draw()
         enemy.move()
-
-    }    
+        if(enemy.hasOwnProperty('projectiles')){
+            for(let projectile of enemy.projectiles){
+                projectile.drawRobot(enemy);
+            }
+        }
+    }
     requestAnimationFrame(loop);
 }
 

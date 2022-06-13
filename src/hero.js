@@ -72,8 +72,6 @@ class Hero{
 
     move(e){
         this.calculateRowColumn();
-        console.log('valor e = '+e)
-        console.log('valor matriu = ' + collisionArray[this.row][this.column-1])
         if( e.keyCode === 87 || e === 'moveUp'){
             // Key w pressed
             direction = 'up';
@@ -127,17 +125,17 @@ class Hero{
         if( this.isAlive() ){
             console.log(this.healthPoints)
             this.healthPoints -= damage;
-            if(this.row < enemy.row){
-                this.move(this.checkFreeAdjacentCell())
-            }else if (this.row > enemy.row){
-                this.move(this.checkFreeAdjacentCell())
-            }else if (this.column > enemy.column){
-                this.move(this.checkFreeAdjacentCell())
-            }else{
-                this.move(this.checkFreeAdjacentCell())
-            }
-
-            
+            if(enemy.constructor.name === 'MeleeRobot'){
+                if(this.row < enemy.row){
+                    this.move(this.checkFreeAdjacentCell())
+                }else if (this.row > enemy.row){
+                    this.move(this.checkFreeAdjacentCell())
+                }else if (this.column > enemy.column){
+                    this.move(this.checkFreeAdjacentCell())
+                }else{
+                    this.move(this.checkFreeAdjacentCell())
+                }
+            }            
         }
         
 

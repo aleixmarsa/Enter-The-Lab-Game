@@ -7,6 +7,7 @@ class Projectile{
         this.height = height;
         this.quadrant = quadrant;
         this.ratioXY = ratioXY;
+        this.ratioYX = ratioXY
         this.speed = speed;
         this.damage = damage;
 
@@ -19,9 +20,9 @@ class Projectile{
             this.speedX = speed/(ratioYX + 1);
             this.speedY = ratioYX * this.speedX;
         }
-        console.log(`Speed: ${this.speedX+this.speedY}`)
-        console.log(`Speed x: ${this.speedX}`);
-        console.log(`Speed y: ${this.speedY}`);
+        // console.log(`Speed: ${this.speedX+this.speedY}`)
+        // console.log(`Speed x: ${this.speedX}`);
+        // console.log(`Speed y: ${this.speedY}`);
     }
 
 
@@ -37,11 +38,23 @@ class Projectile{
         totalProjectiles.splice(totalProjectiles.indexOf(this),1)
     }
 
-    draw(){
-        if(!Number.isNaN(this.x) && !Number.isNaN(this.y)){
-            this.calculateRowColumn()
-            //Checks collisions between bullet and walls(1) and between bullet and enemies(9) 
-            if( ![1,9].includes(collisionArray[this.row][this.column])){
+    heroImpact(){
+        this.calculateRowColumn();
+        hero.calculateRowColumn();
+            if (this.row === hero.row && this.column === hero.column){
+                console.log('hero hitted')
+                hero.receiveDamage(this.damage);
+            }
+        totalProjectiles.splice(totalProjectiles.indexOf(this),1)
+    }
+
+    draw_backup(shooter){
+        this.calculateRowColumn()
+        console.log(shooter.constructor.name)
+        if(!Number.isNaN(this.x) && !Number.isNaN(this.y) && this.row != undefined && this.column != undefined){
+            //Checks collisions between bullet and walls(1) and between bullet and enemies(9)
+            if((![1,9].includes(collisionArray[this.row][this.column]) && shooter.constructor.name === 'Hero') ||
+                (![1,3].includes(collisionArray[this.row][this.column]) && shooter.constructor.name === 'RangeRobot')){
                 //There is no collision
                 switch(this.quadrant){
                     //                              |
@@ -53,36 +66,159 @@ class Projectile{
                     //                              |
                     case 1:                      
                         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-                        this.x +=this.speedX;
+                        this.x += this.speedX;
                         this.y -= this.speedY;
                         break;
                     case 2:
                         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-                        this.x -=this.speedX;
+                        this.x -= this.speedX;
                         this.y -= this.speedY;           
                         break;
                     case 3:
                         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-                        this.x -=this.speedX;
+                        this.x -= this.speedX;
                         this.y += this.speedY;
                         break;
                     case 4:
                         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-                        this.x +=this.speedX;
+                        this.x += this.speedX;
                         this.y += this.speedY;
                         break;
                 }
-            }else if(collisionArray[this.row][this.column] ===9 ){
+            }else if(collisionArray[this.row][this.column] === 9 && shooter.constructor.name === 'Hero' ){
                 //Collision with an enemy
                 this.enemyImpact();
-    
-            }else{
-                //Collision with a wall
                 totalProjectiles.splice(totalProjectiles.indexOf(this),1)
+    
+            }else if(collisionArray[this.row][this.column] === 3 && shooter.constructor.name === 'RangeRobot' ){
+                console.log('hero destroy')
+                this.heroImpact();
+                shooter.projectiles.splice(shooter.projectiles.indexOf(this),1)
+
             }
+            else{
+                console.log('destroy')
+                if(shooter.constructor.name === 'Hero'){
+                    totalProjectiles.splice(totalProjectiles.indexOf(this),1)
+
+                }else{
+                    shooter.projectiles.splice(shooter.projectiles.indexOf(this),1)
+
+                }
+                //Collision with a wall
+            }
+        }else{
+            console.log('NaN')
         }
        
     }
+
+
+    drawHero(){
+        this.calculateRowColumn()
+        if(!Number.isNaN(this.x) && !Number.isNaN(this.y) && this.row != undefined && this.column != undefined){
+            //Checks collisions between bullet and walls(1) and between bullet and enemies(9)
+            if((![1,9].includes(collisionArray[this.row][this.column]))){
+                //There is no collision
+                switch(this.quadrant){
+                    //                              |
+                    //  2nd quadrant: x neg, y neg  |  1st quadrant: x pos, y neg
+                    //                              |
+                    //                      -------hero-------
+                    //                              |
+                    //   3rd quarant: x neg, y pos  |  4th quadrant: x pos, y pos
+                    //                              |
+                    case 1:                      
+                        ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+                        this.x += this.speedX;
+                        this.y -= this.speedY;
+                        break;
+                    case 2:
+                        ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+                        this.x -= this.speedX;
+                        this.y -= this.speedY;           
+                        break;
+                    case 3:
+                        ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+                        this.x -= this.speedX;
+                        this.y += this.speedY;
+                        break;
+                    case 4:
+                        ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+                        this.x += this.speedX;
+                        this.y += this.speedY;
+                        break;
+                }
+            }else if(collisionArray[this.row][this.column] === 9){
+                //Collision with an enemy
+                this.enemyImpact();
+                totalProjectiles.splice(totalProjectiles.indexOf(this),1)
+    
+            }else{
+                //Collision with a wall
+                console.log('destroy')
+                totalProjectiles.splice(totalProjectiles.indexOf(this),1)
+            }
+        }else{
+            console.log('NaN')
+        }
+       
+    }
+
+    drawRobot(enemy){
+        this.calculateRowColumn()
+        console.log('enemy: '+ enemy.y)
+        console.log('bullet: '+this.y)
+        console.log(this.quadrant)
+        if(!Number.isNaN(this.x) && !Number.isNaN(this.y) && this.row != undefined && this.column != undefined){
+            //Checks collisions between bullet and walls(1) and between bullet and enemies(9)
+            if((![1,8].includes(collisionArray[this.row][this.column]))){
+                //There is no collision
+                switch(this.quadrant){
+                    //                              |
+                    //  2nd quadrant: x neg, y neg  |  1st quadrant: x pos, y neg
+                    //                              |
+                    //                      -------hero-------
+                    //                              |
+                    //   3rd quarant: x neg, y pos  |  4th quadrant: x pos, y pos
+                    //                              |
+                    case 1:                      
+                        ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+                        this.x += this.speedX;
+                        this.y -= this.speedY;
+                        break;
+                    case 2:
+                        ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+                        this.x -= this.speedX;
+                        this.y -= this.speedY;           
+                        break;
+                    case 3:
+                        ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+                        this.x -= this.speedX;
+                        this.y += this.speedY;
+                        break;
+                    case 4:
+                        ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+                        this.x += this.speedX;
+                        this.y += this.speedY;
+                        break;
+                }
+            }else if(collisionArray[this.row][this.column] === 8){
+                console.log('hero hitted')
+                hero.receiveDamage(enemy.attackPoints, enemy);
+                enemy.projectiles.splice(enemy.projectiles.indexOf(this),1)
+
+            }
+            else{
+                //Collision with a wall
+                enemy.projectiles.splice(enemy.projectiles.indexOf(this),1)
+            }
+        }else{
+            // console.log('NaN')
+        }
+       
+    }
+
 
     calculateRowColumn(){
         this.row= Math.floor(this.y / celPixels);
@@ -98,6 +234,11 @@ function mouseClick(e){
     //Gets the click pos realive to player
     pos.x = pos.x - hero.x;
     pos.y = pos.y - hero.y;
+    if(pos.x === 0){
+        pos.x = 1;
+    }else if(pos.y === 0){
+        pos.y = 1;
+    }
     const ratioXY = Math.abs(pos.x/pos.y);
     const ratioYX = Math.abs(pos.y/pos.x);
 
@@ -110,11 +251,11 @@ function mouseClick(e){
     }
 
     totalProjectiles.push(
-        new Projectile(greenBulletImg,
+        new Projectile(blueBulletImg,
             hero.x,
             hero.y,
-            greenBulletImg.width,
-            greenBulletImg.height,
+            blueBulletImg.width,
+            blueBulletImg.height,
             quadrant,
             ratioXY,
             ratioYX,

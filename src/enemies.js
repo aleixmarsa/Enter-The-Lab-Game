@@ -1,3 +1,4 @@
+let idInterval;
 
 class Enemy{
     constructor(imageSrc,x ,y , width, height, healthPoints, attackPoints){
@@ -114,6 +115,8 @@ class MeleeRobot extends Enemy{
 class RangeRobot extends Enemy{
     constructor(imageSrc,x ,y , width, height, healthPoints, attackPoints){
         super(imageSrc,x ,y , width, height, healthPoints, attackPoints)
+        this.projectiles = [];
+        this.frameIndex = 0;
 
     }
     move(){
@@ -146,18 +149,85 @@ class RangeRobot extends Enemy{
                 }
                  this.calculateRowColumn();
                 collisionArray[this.row][this.column] = 9
+                if (this.frameIndex%100 === 0){
+                    this.aim()
+                }
+                this.frameIndex++;
             }
-            this.attack()
         }else{
             collisionArray[this.row][this.column] = 0
             totalEnemies.splice(totalEnemies.indexOf(this),1)
         }
     }
+
+    attack(){
+
+        this.calculateRowColumn();
+        hero.calculateRowColumn()
+
+
+        if ((hero.row === this.row+15 && hero.column === this.column)  || 
+            (hero.column === this.column+1 && hero.row === this.row) ||
+            (hero.column === this.column-1 && hero.row === this.row) ||
+            (hero.row === this.row-1  && hero.column === this.column)){
+            console.log('hero hitted')
+
+            hero.receiveDamage(this.attackPoints, this);
+        }
+    }
+
+    aim(){
+            //Gets the click pos relative to canvas
+        let pos = {
+            x: this.x,
+            y: this.y
+        }
+
+        let quadrant = 1;
+        //Gets the click pos realive to player
+        pos.x = hero.x - pos.x;
+        pos.y = hero.y - pos.y; 
+        if(pos.x === 0){
+            pos.x = 1;
+        }else if(pos.y === 0){
+            pos.y = 1;
+        }
+        const ratioXY = Math.abs(pos.x/pos.y);
+        const ratioYX = Math.abs(pos.y/pos.x);
+        console.log('ratioXY: ' + ratioXY)
+        console.log('ratioYX: ' + ratioXY)
+
+        if( pos.x < 0 && pos.y < 0 ){
+            quadrant = 2;
+        }else if( pos.x < 0 && pos.y > 0 ){
+            quadrant = 3;
+        }else if( pos.x > 0 && pos.y > 0 ){
+            quadrant = 4;
+        }
+
+        this.projectiles.push(
+            new Projectile(blueBulletImg,
+                this.x,
+                this.y,
+                blueBulletImg.width,
+                blueBulletImg.height,
+                quadrant,
+                ratioXY,
+                ratioYX,
+                16,
+                1)
+        )
+
+    }
+    receiveDamage(damage){
+        this.healthPoints -= damage*2;
+    }
+
 }
 
-function spawnEnemies(numEnemies){
+function spawnEnemies(meleeEnemies, rangeEnemies){
 
-    for(let i = 0; i < numEnemies; i++){
+    for(let i = 0; i < meleeEnemies; i++){
         let created = false;
         let column;
         let row;
@@ -171,7 +241,7 @@ function spawnEnemies(numEnemies){
         )
     }
 
-    for(let i = 0; i < numEnemies; i++){
+    for(let i = 0; i < rangeEnemies; i++){
         let created = false;
         let column;
         let row;
