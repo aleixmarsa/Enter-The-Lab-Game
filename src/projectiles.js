@@ -1,3 +1,6 @@
+const heroShootingSound = new sound("./music/hero_shooting.wav");   
+
+
 class Projectile{
     constructor(image, x, y, width, height,quadrant, ratioXY, ratioYX, speed, damage){
         this.image = image;
@@ -117,6 +120,7 @@ class Projectile{
 
 function mouseClick(e){
     //Gets the click pos relative to canvas
+    heroShootingSound.play();
     let pos = getMousePos(canvas, e)
     let quadrant = 1;
     //Gets the click pos realive to player

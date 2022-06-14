@@ -1,7 +1,7 @@
-let idInterval;
+const enemyDestroyedSound = new sound("./music/melee_destroyed.wav");   
 
 class Enemy{
-    constructor(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints){
+    constructor(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames, healthPoints, attackPoints){
         this.image = new Image();
         this.image.src = imageSrc
         this.healthImg = new Image();
@@ -18,6 +18,7 @@ class Enemy{
         this.path;
         //current frame index pointer
         this.frameIndex = 0;
+        this.deathFrame = 0;
         //time the frame index was last updated
         this.lastUpdate = Date.now();
         this.moving = false;
@@ -34,6 +35,11 @@ class Enemy{
                 if(this.frameIndex >= this.numberOfFrames) {
                     this.frameIndex = 0;
                 }
+                this.lastUpdate = Date.now();
+            }
+        }else{
+            if(Date.now() - this.lastUpdate >= this.timePerFrame) {
+                this.deathFrame++;
                 this.lastUpdate = Date.now();
             }
         }
@@ -85,7 +91,7 @@ class Enemy{
                      this.calculateRowColumn();
                     collisionArray[this.row][this.column] = 9
                     if(type === 'range'){
-                        if (this.frameCount%10 === 0){
+                        if (this.frameCount%200 === 0){
                             this.aim()
                         }
                         this.frameCount++;     
@@ -93,22 +99,7 @@ class Enemy{
                 }
                 this.attack()
             }else{
-                let random = Math.random()
-                console.log(random)
-                if(random > 0.5){
-                    totalItems.push(
-                        new Item(healthItemImg,
-                            this.x,
-                            this.y,
-                            13,
-                            13
-                        )
-                    )
-                }
-    
-                collisionArray[this.row][this.column] = 0
-                totalEnemies.splice(totalEnemies.indexOf(this),1)
-    
+                collisionArray[this.row][this.column] = 0    
             }
         }
     }
@@ -123,22 +114,37 @@ class Enemy{
     }
     
 
+
+
     draw_sprite() {
-        if(this.isAlive()){
-                ctx.drawImage(this.image, // Sprite Image
-                this.frameIndex*this.width/this.numberOfFrames, //sx Sprites x coordinate where the frame starts
-                0,    //sy Sprites y coordinate where to frame starts
-                this.width/this.numberOfFrames, //sWidth frame width
-                this.height,  //sHeight frame height
-                this.x,   //dx Canvas x coordinate where the image is positioned
-                this.y,   //dy Canvas y coordinate where the image is positioned
-                this.width/this.numberOfFrames,   //dWidth Image width to be drawn
-                this.height);    //dHeight Image height to be drawn
+        if(!this.isAlive()){
+            this.deathParameters();
+            if(this.deathFrame <= this.numberOfFrames-1){
+                this.frameIndex = this.deathFrame;
+            }else{
+                this.generateItem();
+                totalEnemies.splice(totalEnemies.indexOf(this),1)
+            }
         }
+        ctx.drawImage(this.image, // Sprite Image
+                    this.frameIndex*this.width/this.numberOfFrames, //sx Sprites x coordinate where the frame starts
+                    0,    //sy Sprites y coordinate where to frame starts
+                    this.width/this.numberOfFrames, //sWidth frame width
+                    this.height,  //sHeight frame height
+                    this.x,   //dx Canvas x coordinate where the image is positioned
+                    this.y,   //dy Canvas y coordinate where the image is positioned
+                    this.width/this.numberOfFrames,   //dWidth Image width to be drawn
+                    this.height);    //dHeight Image height to be drawn
 
     }
 
-
+    deathParameters(){
+        this.numberOfFrames = 7;
+        this.image.src = this.deathImg;
+        this.width = 236;
+        this.height = 32;
+        this.timePerFrame = 100;
+    }
     attack(){
 
         this.calculateRowColumn();
@@ -153,24 +159,46 @@ class Enemy{
     }
 
     receiveDamage(damage){
-        this.healthPoints -= damage;
+        if(this.healthPoints > 0){
+            this.healthPoints -= damage;
+        }
     }
     
     isAlive(){
-        return this.healthPoints > 0;
+        if(this.healthPoints > 0){
+            return true;
+        }
+        enemyDestroyedSound.play();
+        return false;
     }
 
     calculateRowColumn(){
         this.row= Math.round(this.y / celPixels);
         this.column = Math.round(this.x /celPixels);
     }
+
+    generateItem(){
+        let random = Math.random()
+                console.log(random)
+                if(random > 0.5){
+                    totalItems.push(
+                        new Item(healthItemImg,
+                            this.x,
+                            this.y,
+                            13,
+                            13
+                        )
+                    )
+                }
+    }
 }
 
 class MeleeRobot extends Enemy{
     constructor(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints){
         super(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints)
-        this.runImgLeft = meleeImgLeft
-        this.runImgRight = meleeImgRight
+        this.runImgLeft = meleeImgLeft;
+        this.runImgRight = meleeImgRight;
+        this.deathImg = meleeImgDeath;
 
     }
 
@@ -178,11 +206,20 @@ class MeleeRobot extends Enemy{
 class RangeRobot extends Enemy{
     constructor(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints){
         super(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints)
-        this.runImgLeft = rangeImgLeft
-        this.runImgRight = rangeImgRight
+        this.runImgLeft = rangeImgLeft;
+        this.runImgRight = rangeImgRight;
+        this.deathImg = rangeImgDeath;
         this.projectiles = [];
         this.frameCount = 0;
 
+    }
+
+    deathParameters(){
+        this.numberOfFrames = 8;
+        this.image.src = this.deathImg;
+        this.width = 272;
+        this.height = 32;
+        this.timePerFrame = 100;
     }
     
 
@@ -243,6 +280,8 @@ class RangeRobot extends Enemy{
         this.healthPoints -= damage*2;
     }
 
+
+
 }
 
 function spawnEnemies(meleeEnemies, rangeEnemies){
@@ -270,7 +309,7 @@ function spawnEnemies(meleeEnemies, rangeEnemies){
             if(collisionArray[row][column] === 0 && collisionArray[row+1][column] === 0) created = true;
         }
         totalEnemies.push(
-            new RangeRobot(rageImgStop,column*celPixels, row*celPixels, 128, celPixels,150,4,6,1)
+            new RangeRobot(rangeImgStop,column*celPixels, row*celPixels, 128, celPixels,150,4,6,1)
         )
     }
 }

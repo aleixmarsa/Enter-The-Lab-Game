@@ -1,3 +1,6 @@
+const healingSound = new sound("./music/healing.wav");   
+const deadSound = new sound("./music/hero_dead.wav");   
+
 class Hero{
     constructor(imageSrc, x, y, width, height, timePerFrame, numberOfFrames, healthPoints) {
         this.image = new Image();
@@ -39,44 +42,43 @@ class Hero{
 
     }
 
-    //to draw on the canvas, parameter is the ctx of the canvas to be drawn on
-    draw_sprite() {
+
+    
+    draw(){
         if(!this.isAlive()){
+            this.numberOfFrames = 6;
             if(this.deathFrame <= this.numberOfFrames-1){
                 this.image.src = heroDeathImg;
                 this.width = 204;
                 this.height = 32;
-                this.numberOfFrames = 6;
-                this.timePerFrame = 200;
+                this.timePerFrame = 300;
+                this.frameIndex = this.deathFrame;
             }else{
-                alert('Game Over')
+                gameOver = true;
+                //alert('Game Over')
             }
         }
         ctx.drawImage(this.image, // Sprite Image
-        this.frameIndex*this.width/this.numberOfFrames, //sx Sprites x coordinate where the frame starts
-        0,    //sy Sprites y coordinate where to frame starts
-        this.width/this.numberOfFrames, //sWidth frame width
-        this.height,  //sHeight frame height
-        this.x,   //dx Canvas x coordinate where the image is positioned
-        this.y,   //dy Canvas y coordinate where the image is positioned
-        this.width/this.numberOfFrames,   //dWidth Image width to be drawn
-        this.height);    //dHeight Image height to be drawn
-     }
-
-
-
-    
-    draw(){
-        this.draw_sprite()
-        //ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+                    this.frameIndex*this.width/this.numberOfFrames, //sx Sprites x coordinate where the frame starts
+                    0,    //sy Sprites y coordinate where to frame starts
+                    this.width/this.numberOfFrames, //sWidth frame width
+                    this.height,  //sHeight frame height
+                    this.x,   //dx Canvas x coordinate where the image is positioned
+                    this.y,   //dy Canvas y coordinate where the image is positioned
+                    this.width/this.numberOfFrames,   //dWidth Image width to be drawn
+                    this.height);    //dHeight Image height to be drawn
         this.healthImg.src = `/images/ui/health_bar_hero_${this.healthPoints}.png`
         ctx.drawImage(this.healthImg , this.x, this.y + this.height, this.healthImg.width, this.healthImg.height)
-    }
 
+    }        
 
     
     isAlive(){
-        return this.healthPoints > 0;
+        if(this.healthPoints > 0){
+            return true;
+        }
+        deadSound.play();
+        return false;
     }
 
     movementAllowed(movement){
@@ -135,7 +137,7 @@ class Hero{
                     movement = true;
                 }  
             }
-            this.receiveHealth();
+            this.healing();
         }
     }
 
@@ -206,12 +208,13 @@ class Hero{
 
     }
 
-    receiveHealth(){
+    healing(){
         this.calculateRowColumn();
         for(let item of totalItems){
             item.calculateRowColumn();
             if(this.row === item.row && this.column === item.column){
                 if(this.healthPoints < this.maxHealth){
+                    healingSound.play();
                     this.healthPoints+=2;
                     totalItems.splice(totalItems.indexOf(item),1)
                 }

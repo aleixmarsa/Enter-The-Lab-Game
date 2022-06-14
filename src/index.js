@@ -26,11 +26,12 @@ greenBulletImg.src = './images/projectiles/green_bullet.png'
 
 let healthBar = new Image();
 
-const meleeImgStart ='./images/enemies/melee_enemy_start.png'
+const meleeImgDeath ='./images/enemies/melee_death.png'
 const meleeImgStop = './images/enemies/melee_enemy_stop_right.png';
 const meleeImgLeft = './images/enemies/melee_enemy_run_left.png';
 const meleeImgRight = './images/enemies/melee_enemy_run_right.png';
-const rageImgStop = './images/enemies/range_enemy_stop_right.png';
+const rangeImgDeath ='./images/enemies/range_death.png'
+const rangeImgStop = './images/enemies/range_enemy_stop_right.png';
 const rangeImgLeft = './images/enemies/range_enemy_run_left.png';
 const rangeImgRight = './images/enemies/range_enemy_run_right.png';
 
@@ -43,7 +44,9 @@ let totalItems = [];
 let mousePos;
 let mousePosPlayer;
 let movement = false;
-    
+let gameOver = false;
+
+const backgroundMusic = new sound("./music/background_music.mp3");   
 
 let hero = new Hero(heroStopRightImg,  //the spritesheet image
                     0,            //x position of hero
@@ -88,8 +91,9 @@ function mousePosition(e){
     //console.log('Mouse position: ' + mousePos.x + ',' + mousePos.y);
 }
 
-function initialLoad(){
-    spawnEnemies(0,5);
+function initialLoad(){    
+    backgroundMusic.play();
+    spawnEnemies(10,10);
     loop()
 }
 
@@ -125,7 +129,7 @@ function loop() {
         map.src = './images/maps/map_lvl1_open.png'
     }
     
-    requestAnimationFrame(loop);
+    if(!gameOver) requestAnimationFrame(loop);
 }
 
 window.addEventListener('keydown', keyPressed)
