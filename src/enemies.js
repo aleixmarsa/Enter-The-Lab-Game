@@ -4,7 +4,9 @@ class Enemy{
     constructor(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints){
         this.image = new Image();
         this.image.src = imageSrc
-        this.healthImg = new Image();          
+        this.healthImg = new Image();
+        this.runImgLeft;
+        this.runImgRight;    
         this.x = x;
         this.y = y;
         this.width = width;
@@ -13,99 +15,127 @@ class Enemy{
         this.healthPoints = healthPoints;
         this.numberOfFrames = numberOfFrames;
         this.attackPoints = attackPoints;
-        this.attackAllowed = false;
         this.path;
         //current frame index pointer
         this.frameIndex = 0;
         //time the frame index was last updated
         this.lastUpdate = Date.now();
+        this.moving = false;
+        this.heroDetected = false;
 
     }
 
     //to update
+
     update = function() {
-        if(Date.now() - this.lastUpdate >= this.timePerFrame) {
-            this.frameIndex++;
-            if(this.frameIndex >= this.numberOfFrames) {
-                this.frameIndex = 0;
-            }
-            this.lastUpdate = Date.now();
-        }
-    }
-
-    checkZone(){
-        if ((this.x >= 288 && this.y <=128 && hero.x >= 288 && hero.y <=128 ) ||
-            (this.x < 288 && this.y >= 320 && this.y < 480 && hero.x < 288 && hero.y >= 320 && hero.y < 480 ) ||
-            (this.x < 288 && this.y >= 480 && this.y < 640 && hero.x < 288 && hero.y >= 480 && hero.y < 640 ) ||
-            (this.x < 288 && this.y >= 640 && this.y < 800 && hero.x < 288 && hero.y >= 640 && hero.y < 800 ) ||
-            (this.x >= 384 && this.y >= 320 && hero.x >= 384 && hero.y >= 320) ||
-            (this.y >= 192 && this.y < 320 && hero.y >= 192 && hero.y < 320) ||
-            (this.y >= 288 && this.x >= 288 && this.x < 384 && hero.y >= 192 && hero.x >= 288 && hero.x < 384)){
-                this.attackAllowed = true;
-            }
-    }
-
-    move(){
         if(this.isAlive()){
-            let nodes = buildNodes();
-            this.calculateRowColumn();
-            hero.calculateRowColumn();
-        
-            this.path = Pathfinder.findPath( nodes, nodes[this.row][this.column], nodes[hero.row][hero.column] );
-            if(this.path.length >= 1){
-                this.pathToHeroY = this.path[0].px_x;
-                this.pathToHeroX = this.path[0].px_y;
+            if(Date.now() - this.lastUpdate >= this.timePerFrame) {
+                this.frameIndex++;
+                if(this.frameIndex >= this.numberOfFrames) {
+                    this.frameIndex = 0;
+                }
+                this.lastUpdate = Date.now();
             }
-            this.checkZone();
-            if(this.attackAllowed){
+        }
+
+    }
+    
+    checkZone(){
+        if ((this.x >= 9*celPixels && this.y < 6*celPixels && (hero.x >= 9*celPixels && hero.y < 6*celPixels || hero.x >= 15*celPixels && hero.y < 9*celPixels)) || //IronHack Room
+            (this.x < 9*celPixels && this.y >= 10*celPixels && this.y < 15*celPixels && (hero.x < 9*celPixels && hero.y >= 10*celPixels && hero.y < 15*celPixels || hero.x < 12*celPixels && hero.y >= 11*celPixels)) || //First small room
+            (this.x < 9*celPixels && this.y >= 15*celPixels && this.y < 20*celPixels && (hero.x < 9*celPixels && hero.y >= 15*celPixels && hero.y < 20*celPixels || hero.x < 12*celPixels && hero.y >= 16*celPixels)) || //Second small room
+            (this.x < 9*celPixels && this.y >= 20*celPixels && this.y < 25*celPixels && (hero.x < 9*celPixels && hero.y >= 20*celPixels && hero.y < 25*celPixels || hero.x < 12*celPixels && hero.y >= 21*celPixels)) || //Third small room
+            (this.x >= 12*celPixels && this.y >= 10*celPixels && hero.x >= 11*celPixels && hero.y >= 10*celPixels) || //Big room
+            (this.y >= 5*celPixels && this.y < 10*celPixels && hero.y >= 5*celPixels && hero.y < 10*celPixels) || // Horizontal corridor
+            (this.y >= 9*celPixels && this.x >= 8*celPixels && this.x < 12*celPixels && hero.y >= 6*celPixels && hero.x >= 8*celPixels && hero.x < 12*celPixels)){ // Vertical corridor            
+                this.heroDetected = true;
+            }
+    }
+
+    move(type){
+        if(hero.isAlive()){
+            if(this.isAlive()){
+                let nodes = buildNodes();
+                this.calculateRowColumn();
+                hero.calculateRowColumn();
+            
+                this.path = Pathfinder.findPath( nodes, nodes[this.row][this.column], nodes[hero.row][hero.column] );
+                if(this.path.length >= 1){
+                    this.pathToHeroY = this.path[0].px_x;
+                    this.pathToHeroX = this.path[0].px_y;
+                }
+                this.checkZone();
+                this.draw()
+                if(this.heroDetected){
+                    collisionArray[this.row][this.column] = 0
+                    if (this.x > this.pathToHeroX){
+                        this.image.src = this.runImgLeft;
+                        this.x -= 1;
+                    }
+                    else if(this.x < this.pathToHeroX){
+                        this.image.src = this.runImgRight;
+                        this.x += 1;
+                    }
+                    if (this.y > this.pathToHeroY){
+                        this.y -= 1;
+                    }
+                    else if (this.y < this.pathToHeroY){
+                        this.y += 1;
+                    }
+                     this.calculateRowColumn();
+                    collisionArray[this.row][this.column] = 9
+                    if(type === 'range'){
+                        if (this.frameCount%10 === 0){
+                            this.aim()
+                        }
+                        this.frameCount++;     
+                    }
+                }
+                this.attack()
+            }else{
+                let random = Math.random()
+                console.log(random)
+                if(random > 0.5){
+                    totalItems.push(
+                        new Item(healthItemImg,
+                            this.x,
+                            this.y,
+                            13,
+                            13
+                        )
+                    )
+                }
+    
                 collisionArray[this.row][this.column] = 0
-                if (this.x > this.pathToHeroX){
-                    this.image.src = meleeImgLeft;
-                    this.x -= 1;
-                }
-                else if(this.x < this.pathToHeroX){
-                    this.image.src = meleeImgRight;
-                    this.x += 1;
-                }
-                if (this.y > this.pathToHeroY){
-                    this.y -= 1;
-                }
-                else if (this.y < this.pathToHeroY){
-                    this.y += 1;
-                }
-                 this.calculateRowColumn();
-                collisionArray[this.row][this.column] = 9
+                totalEnemies.splice(totalEnemies.indexOf(this),1)
+    
             }
-            this.attack()
-        }else{
-            collisionArray[this.row][this.column] = 0
-            totalEnemies.splice(totalEnemies.indexOf(this),1)
         }
     }
 
   
     draw(){
-        if (this.isAlive()){
-            this.calculateRowColumn();
-            this.draw_sprite();
-            //ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-            this.healthImg.src = `/images/ui/health_bar_${this.healthPoints}.png`
-            ctx.drawImage(this.healthImg , this.x, this.y + this.height, this.healthImg.width, this.healthImg.height)
-            collisionArray[this.row][this.column] = 9
-        }
+        this.calculateRowColumn();
+        this.draw_sprite();
+        this.healthImg.src = `/images/ui/health_bar_${this.healthPoints}.png`
+        ctx.drawImage(this.healthImg , this.x, this.y + this.height, this.healthImg.width, this.healthImg.height)
+        collisionArray[this.row][this.column] = 9
     }
     
 
     draw_sprite() {
-        ctx.drawImage(this.image, // Sprite Image
-                          this.frameIndex*this.width/this.numberOfFrames, //sx Sprites x coordinate where the frame starts
-                          0,    //sy Sprites y coordinate where to frame starts
-                          this.width/this.numberOfFrames, //sWidth frame width
-                          this.height,  //sHeight frame height
-                          this.x,   //dx Canvas x coordinate where the image is positioned
-                          this.y,   //dy Canvas y coordinate where the image is positioned
-                          this.width/this.numberOfFrames,   //dWidth Image width to be drawn
-                          this.height);    //dHeight Image height to be drawn
+        if(this.isAlive()){
+                ctx.drawImage(this.image, // Sprite Image
+                this.frameIndex*this.width/this.numberOfFrames, //sx Sprites x coordinate where the frame starts
+                0,    //sy Sprites y coordinate where to frame starts
+                this.width/this.numberOfFrames, //sWidth frame width
+                this.height,  //sHeight frame height
+                this.x,   //dx Canvas x coordinate where the image is positioned
+                this.y,   //dy Canvas y coordinate where the image is positioned
+                this.width/this.numberOfFrames,   //dWidth Image width to be drawn
+                this.height);    //dHeight Image height to be drawn
+        }
+
     }
 
 
@@ -139,6 +169,8 @@ class Enemy{
 class MeleeRobot extends Enemy{
     constructor(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints){
         super(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints)
+        this.runImgLeft = meleeImgLeft
+        this.runImgRight = meleeImgRight
 
     }
 
@@ -146,50 +178,13 @@ class MeleeRobot extends Enemy{
 class RangeRobot extends Enemy{
     constructor(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints){
         super(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints)
+        this.runImgLeft = rangeImgLeft
+        this.runImgRight = rangeImgRight
         this.projectiles = [];
         this.frameCount = 0;
 
     }
-    move(){
-        if(this.isAlive()){
-            let nodes = buildNodes();
-            this.calculateRowColumn();
-            hero.calculateRowColumn();
-        
-            this.path = Pathfinder.findPath( nodes, nodes[this.row][this.column], nodes[hero.row][hero.column] );
-            if(this.path.length >= 1){
-                this.pathToHeroY = this.path[0].px_x;
-                this.pathToHeroX = this.path[0].px_y;
-            }
-            this.checkZone();
-            if(this.attackAllowed){
-                collisionArray[this.row][this.column] = 0
-                if (this.x > this.pathToHeroX){
-                    this.image.src = rangeImgLeft;
-                    this.x -= 1;
-                }
-                else if(this.x < this.pathToHeroX){
-                    this.image.src = rangeImgRight;
-                    this.x += 1;
-                }
-                if (this.y > this.pathToHeroY){
-                    this.y -= 1;
-                }
-                else if (this.y < this.pathToHeroY){
-                    this.y += 1;
-                }
-                 this.calculateRowColumn();
-                collisionArray[this.row][this.column] = 9
-                if (this.frameCount%100 === 0){
-                    this.aim()
-                }
-                this.frameCount++;
-            }
-        }else{
-            collisionArray[this.row][this.column] = 0
-            totalEnemies.splice(totalEnemies.indexOf(this),1)
-        }
-    }
+    
 
     attack(){
         this.calculateRowColumn();
@@ -243,6 +238,7 @@ class RangeRobot extends Enemy{
         )
 
     }
+    
     receiveDamage(damage){
         this.healthPoints -= damage*2;
     }

@@ -31,21 +31,13 @@
                     var adjacent = [];
                     if (node.x >= 1 && collisionArray[node.x-1][node.y] !== 1 && collisionArray[node.x-1][node.y] !== 2){
                         adjacent.push(nodes[node.x-1][node.y])
-                        // if (node.y > 0  && collisionArray[node.x-1][node.y-1] !== 1 && collisionArray[node.x-1][node.y-1] !== 2)
-                        //     adjacent.push(nodes[node.x-1][node.y-1])
-                        // if (node.y < max_y  && collisionArray[node.x-1][node.y+1] !== 1 && collisionArray[node.x-1][node.y+1] !== 2)
-                        //     adjacent.push(nodes[node.x-1][node.y+1])
+
                     }
                     if (node.x < max_x){
                         if(collisionArray[node.x+1][node.y] !== 1 && collisionArray[node.x+1][node.y] !== 2){
                             adjacent.push(nodes[node.x+1][node.y]);
                         }
-                        // if (node.y > 0 && collisionArray[node.x+1][node.y-1] !== 1 && collisionArray[node.x+1][node.y-1] !== 2){
-                        //     adjacent.push(nodes[node.x+1][node.y-1])
-                        // }
-                        // if (node.y < max_y && collisionArray[node.x+1][node.y+1] !== 1 && collisionArray[node.x+1][node.y+1] !== 2){
-                        //     adjacent.push(nodes[node.x+1][node.y+1])
-                        // }
+
                     }
                     if (node.y > 0 && collisionArray[node.x][node.y-1] !== 1 && collisionArray[node.x][node.y-1] !== 2){
                         adjacent.push(nodes[node.x][node.y-1])

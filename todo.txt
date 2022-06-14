@@ -1,5 +1,4 @@
 - Netejar i refactoritzar
 - Canviar posició des d'on dispara.
-- Millorar visió enemics
 - Afegir pocions
 - Afegir boss

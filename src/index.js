@@ -11,6 +11,9 @@ const ctx = canvas.getContext('2d');
 let heroSprite= new Image();
 heroSprite.src = './images/hero/hero_run_right.png';
 
+const heroStopRightImg = './images/hero/hero_stop_right.png'
+const heroDeathImg = './images/hero/hero_death.png'
+
 let map = new Image();
 map.src = './images/maps/map_lvl1.png'
 
@@ -23,6 +26,7 @@ greenBulletImg.src = './images/projectiles/green_bullet.png'
 
 let healthBar = new Image();
 
+const meleeImgStart ='./images/enemies/melee_enemy_start.png'
 const meleeImgStop = './images/enemies/melee_enemy_stop_right.png';
 const meleeImgLeft = './images/enemies/melee_enemy_run_left.png';
 const meleeImgRight = './images/enemies/melee_enemy_run_right.png';
@@ -35,21 +39,13 @@ let direction = 'up';
 let collisionArray = createCollisionArray(mapArray);
 let totalProjectiles = [];
 let totalEnemies = [];
+let totalItems = [];
 let mousePos;
 let mousePosPlayer;
 let movement = false;
+    
 
-// let hero = new Hero(heroImg,  //the spritesheet image
-//                     0,            //x position of hero
-//                     96,            //y position of hero
-//                     heroImg.width,         //total width of spritesheet image in pixels
-//                     heroImg.height,          //total height of spritesheet image in pixels
-//                     60,           //time(in ms) duration between each frame change (experiment with it to get faster or slower animation)
-//                     1,
-//                     11);
-     
-
-let hero = new Hero(heroSprite,  //the spritesheet image
+let hero = new Hero(heroStopRightImg,  //the spritesheet image
                     0,            //x position of hero
                     96,            //y position of hero
                     heroSprite.width,         //total width of spritesheet image in pixels
@@ -74,11 +70,6 @@ function keyRelease(e){
 }
 
 
-// function stopHero(){
-//     hero.spritesheet.src= './images/cyborg/Cyborg_idle_384_96.png'
-//     hero.numberOfFrames = 4;
-//     hero.width = 384;
-// }
 
 function getMousePos(canvas, e) {
     let rect = canvas.getBoundingClientRect();
@@ -98,7 +89,7 @@ function mousePosition(e){
 }
 
 function initialLoad(){
-    spawnEnemies(5,5);
+    spawnEnemies(0,5);
     loop()
 }
 
@@ -108,7 +99,8 @@ function loop() {
     ctx.drawImage(map,0,0,map.width,map.height);
     hero.update();
     hero.draw();
-    drawItems();
+    drawDecoration();
+    
     for(let projectile of totalProjectiles){
         projectile.draw(hero)
     }
@@ -116,16 +108,23 @@ function loop() {
     for(let enemy of totalEnemies){
         enemy.update();
         enemy.draw()
-        enemy.move()
         if(enemy.hasOwnProperty('projectiles')){
+            enemy.move('range')
             for(let projectile of enemy.projectiles){
                 projectile.draw(enemy);
             }
+        }else{
+            enemy.move('melee')
         }
     }
+    for (let item of totalItems){
+        item.draw();
+    }
+
     if(totalEnemies.length === 0){
         map.src = './images/maps/map_lvl1_open.png'
     }
+    
     requestAnimationFrame(loop);
 }
 
@@ -134,6 +133,5 @@ window.addEventListener('mousemove', mousePosition)
 window.addEventListener('click', mouseClick)
 window.addEventListener('load', initialLoad)
 window.addEventListener('keyup', keyRelease)
-// window.addEventListener("keyup", stopHero)
 
 

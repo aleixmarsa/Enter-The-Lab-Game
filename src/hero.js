@@ -1,6 +1,7 @@
 class Hero{
-    constructor(image, x, y, width, height, timePerFrame, numberOfFrames, healthPoints) {
-        this.image = image;   
+    constructor(imageSrc, x, y, width, height, timePerFrame, numberOfFrames, healthPoints) {
+        this.image = new Image();
+        this.image.src = imageSrc
         this.healthImg = new Image();
         this.x = x;                                 
         this.y = y;                            
@@ -9,8 +10,10 @@ class Hero{
         this.timePerFrame = timePerFrame;            
         this.numberOfFrames = numberOfFrames || 1; 
         this.healthPoints = healthPoints;
+        this.maxHealth = healthPoints;
         //current frame index pointer
         this.frameIndex = 0;
+        this.deathFrame = 0;
         //time the frame index was last updated
         this.lastUpdate = Date.now();
 
@@ -18,27 +21,49 @@ class Hero{
 
     //to update
     update = function() {
-        if(Date.now() - this.lastUpdate >= this.timePerFrame) {
-            this.frameIndex++;
-            if(this.frameIndex >= this.numberOfFrames) {
-                this.frameIndex = 0;
+        if(this.isAlive()){
+            if(Date.now() - this.lastUpdate >= this.timePerFrame) {
+                this.frameIndex++;
+                if(this.frameIndex >= this.numberOfFrames) {
+                    this.frameIndex = 0;
+                }
+                this.lastUpdate = Date.now();
             }
-            this.lastUpdate = Date.now();
+        }else{
+            if(Date.now() - this.lastUpdate >= this.timePerFrame) {
+                this.deathFrame++;
+
+                this.lastUpdate = Date.now();
+            }
         }
+
     }
 
     //to draw on the canvas, parameter is the ctx of the canvas to be drawn on
     draw_sprite() {
+        if(!this.isAlive()){
+            if(this.deathFrame <= this.numberOfFrames-1){
+                this.image.src = heroDeathImg;
+                this.width = 204;
+                this.height = 32;
+                this.numberOfFrames = 6;
+                this.timePerFrame = 200;
+            }else{
+                alert('Game Over')
+            }
+        }
         ctx.drawImage(this.image, // Sprite Image
-                          this.frameIndex*this.width/this.numberOfFrames, //sx Sprites x coordinate where the frame starts
-                          0,    //sy Sprites y coordinate where to frame starts
-                          this.width/this.numberOfFrames, //sWidth frame width
-                          this.height,  //sHeight frame height
-                          this.x,   //dx Canvas x coordinate where the image is positioned
-                          this.y,   //dy Canvas y coordinate where the image is positioned
-                          this.width/this.numberOfFrames,   //dWidth Image width to be drawn
-                          this.height);    //dHeight Image height to be drawn
-    }
+        this.frameIndex*this.width/this.numberOfFrames, //sx Sprites x coordinate where the frame starts
+        0,    //sy Sprites y coordinate where to frame starts
+        this.width/this.numberOfFrames, //sWidth frame width
+        this.height,  //sHeight frame height
+        this.x,   //dx Canvas x coordinate where the image is positioned
+        this.y,   //dy Canvas y coordinate where the image is positioned
+        this.width/this.numberOfFrames,   //dWidth Image width to be drawn
+        this.height);    //dHeight Image height to be drawn
+     }
+
+
 
     
     draw(){
@@ -51,7 +76,7 @@ class Hero{
 
     
     isAlive(){
-        return this.healthPoints !== 0;
+        return this.healthPoints > 0;
     }
 
     movementAllowed(movement){
@@ -70,70 +95,73 @@ class Hero{
     }
 
     move(e){
-        this.calculateRowColumn();
-        if( e.keyCode === 87 || e === 'moveUp'){
-            // Key w pressed
-            direction = 'up';
-            if(this.movementAllowed(direction)){
-                collisionArray[this.row][this.column] = 0
-                this.y -= celPixels;
-                collisionArray[this.row-1][this.column] = 8
-                movement = true;
+        if(this.isAlive()){
+            this.calculateRowColumn();
+            if( e.keyCode === 87 || e === 'moveUp'){
+                // Key w pressed
+                direction = 'up';
+                if(this.movementAllowed(direction)){
+                    collisionArray[this.row][this.column] = 0
+                    this.y -= celPixels;
+                    collisionArray[this.row-1][this.column] = 8
+                    movement = true;
+                }
+    
+            }else if( e.keyCode === 83 ||  e === 'moveDown'){
+                // Key d pressed
+                direction = 'down';
+                if(this.movementAllowed(direction)){
+                    collisionArray[this.row][this.column] = 0
+                    this.y += celPixels;
+                    collisionArray[this.row+1][this.column] = 8
+                    movement = true;
+                }
+            }else if( e.keyCode === 65  || e === 'moveLeft'){
+                // Key s pressed
+                direction = 'left';
+                if(this.movementAllowed(direction)){
+                    collisionArray[this.row][this.column] = 0
+                    this.x -= celPixels;
+                    collisionArray[this.row][this.column-1] = 8
+                    movement = true;
+                }
+            }else if( e.keyCode === 68 || e === 'moveRight'){
+                // Key d pressed
+                direction = 'right';
+                if(this.movementAllowed(direction)){
+                    collisionArray[this.row][this.column] = 0
+                    this.x += celPixels;  
+                    collisionArray[this.row][this.column+1] = 8
+                    movement = true;
+                }  
             }
-
-        }else if( e.keyCode === 83 ||  e === 'moveDown'){
-            // Key d pressed
-            direction = 'down';
-            if(this.movementAllowed(direction)){
-                collisionArray[this.row][this.column] = 0
-                this.y += celPixels;
-                collisionArray[this.row+1][this.column] = 8
-                movement = true;
-            }
-        }else if( e.keyCode === 65  || e === 'moveLeft'){
-            // Key s pressed
-            direction = 'left';
-            if(this.movementAllowed(direction)){
-                collisionArray[this.row][this.column] = 0
-                this.x -= celPixels;
-                collisionArray[this.row][this.column-1] = 8
-                movement = true;
-            }
-        }else if( e.keyCode === 68 || e === 'moveRight'){
-            // Key d pressed
-            direction = 'right';
-            if(this.movementAllowed(direction)){
-                collisionArray[this.row][this.column] = 0
-                this.x += celPixels;  
-                collisionArray[this.row][this.column+1] = 8
-                movement = true;
-            }  
+            this.receiveHealth();
         }
-
     }
 
     aim(e){
-       if(movement){
-            if(mousePosPlayer.x >= 0){
-                //this.image.src = './images/hero/hero_weapon_right.png' 
-                this.image.src = './images/hero/hero_run_right.png';
-            }else{
-                //this.image.src = './images/hero/hero_weapon_left.png';
-                this.image.src = './images/hero/hero_run_left.png';
+        if(this.isAlive()){
+            if(movement){
+                if(mousePosPlayer.x >= 0){
+                    //this.image.src = './images/hero/hero_weapon_right.png' 
+                    this.image.src = './images/hero/hero_run_right.png';
+                }else{
+                    //this.image.src = './images/hero/hero_weapon_left.png';
+                    this.image.src = './images/hero/hero_run_left.png';
+                }
+            }
+            else{
+                if(mousePosPlayer.x >= 0){
+                    //this.image.src = './images/hero/hero_weapon_right.png' 
+                    this.image.src = './images/hero/hero_stop_right.png';
+                }else{
+                    //this.image.src = './images/hero/hero_weapon_left.png';
+                    this.image.src = './images/hero/hero_stop_left.png';
+                }
             }
         }
-        else{
-            if(mousePosPlayer.x >= 0){
-                //this.image.src = './images/hero/hero_weapon_right.png' 
-                this.image.src = './images/hero/hero_stop_right.png';
-            }else{
-                //this.image.src = './images/hero/hero_weapon_left.png';
-                this.image.src = './images/hero/hero_stop_left.png';
-            }
-            
-        }
-
     }
+
 
     receiveDamage(damage, enemy){
         this.calculateRowColumn();
@@ -152,8 +180,7 @@ class Hero{
                     this.move(this.checkFreeAdjacentCell())
                 }
             }            
-        }
-        
+        }       
 
     }
 
@@ -177,5 +204,21 @@ class Hero{
             return 'moveLeft'
         }
 
+    }
+
+    receiveHealth(){
+        this.calculateRowColumn();
+        for(let item of totalItems){
+            item.calculateRowColumn();
+            if(this.row === item.row && this.column === item.column){
+                if(this.healthPoints < this.maxHealth){
+                    this.healthPoints+=2;
+                    totalItems.splice(totalItems.indexOf(item),1)
+                }
+            }
+        }
+        if (this.healthPoints > this.maxHealth){
+            this.healthPoints = this.maxHealth;
+        }
     }
 }
