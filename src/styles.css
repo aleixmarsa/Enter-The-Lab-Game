@@ -1,6 +1,6 @@
 body {
   font-family: sans-serif;
-  background-image: url('../images/screens/start_background.png');
+  background-image: url('/images/screens/start_background.png');
   background-repeat:no-repeat;
   background-position: center center;
   background-size: cover;
@@ -31,13 +31,46 @@ body {
   margin-bottom: auto;
   margin-left: auto;
   margin-right: auto;
+}
+
+#game_title{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 50px;
+}
+
+#controls{
+  width: 800px;
   display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 50px;
+
+}
+
+#keys{
+  width: 200px;
+  height: 200px;
+  display: block;
+  margin-top: 70px;
+  margin-right: 50px;
+
+}
+
+
+#mouse{
+  width: 180px;
+  height: 260px;
+  height: auto;
+  display: block;
+
 }
 
 .button{
+  display: block;
+  margin-top: 100px;
+  margin-left: 30px;
   width: 300px;
 }
 
