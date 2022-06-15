@@ -22,11 +22,10 @@ const heroDeathImg = './images/hero/hero_death.png'
 let map = new Image();
 map.src = './images/maps/map_lvl1.png'
 
-let blueBulletImg = new Image();
-blueBulletImg.src = './images/projectiles/blue_bullet.png'
+let blueBulletImg = './images/projectiles/blue_bullet.png'
 
-let greenBulletImg = new Image();
-greenBulletImg.src = './images/projectiles/green_bullet.png'
+let greenBulletImg = './images/projectiles/green_bullet.png'
+const healthItemImg = './images/items/potion.png';
 
 
 let healthBar = new Image();
@@ -56,10 +55,11 @@ let startDOM =  document.querySelector('#start-game');
 let requestId;
 let gameStarted = false;
 const backgroundMusic = new Sound("./music/background_music.mp3");
-const gameOverMusic = ("./music/game_over.mp3");   
+const gameOverMusic = new Sound("./music/game_over.mp3");   
 
 
 const enemyDestroyedSound ='./music/melee_destroyed.wav';   
+const heroDeadSound = "./music/hero_dead.wav";   
 
 
 
@@ -70,7 +70,9 @@ let hero = new Hero(heroStopRightImg,  //the spritesheet image
                     32,          //total height of spritesheet image in pixels
                     150,           //time(in ms) duration between each frame change (experiment with it to get faster or slower animation)
                     4,
-                    11);
+                    11,
+                    1,
+                    heroDeadSound);
 
 
 //update function to update all the GameObjects

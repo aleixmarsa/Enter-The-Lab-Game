@@ -1,54 +1,18 @@
 const healingSound = new Sound("./music/healing.wav");   
-const deadSound = new Sound("./music/hero_dead.wav");   
 
-class Hero{
-    constructor(imageSrc, x, y, width, height, timePerFrame, numberOfFrames, healthPoints) {
-        this.image = new Image();
-        this.image.src = imageSrc
-        this.healthImg = new Image();
-        this.x = x;                                 
-        this.y = y;                            
-        this.width = width;                         
-        this.height = height;                       
-        this.timePerFrame = timePerFrame;            
-        this.numberOfFrames = numberOfFrames || 1; 
-        this.healthPoints = healthPoints;
+class Hero extends AliveObject{
+    constructor(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames, healthPoints, attackPoints, deathSoundSrc){
+        super(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames, healthPoints, attackPoints, deathSoundSrc);
         this.maxHealth = healthPoints;
-        //current frame index pointer
-        this.frameIndex = 0;
-        this.deathFrame = 0;
-        //time the frame index was last updated
-        this.lastUpdate = Date.now();
-
+    
     }
-
-    //to update
-    update = function() {
-        if(this.isAlive()){
-            if(Date.now() - this.lastUpdate >= this.timePerFrame) {
-                this.frameIndex++;
-                if(this.frameIndex >= this.numberOfFrames) {
-                    this.frameIndex = 0;
-                }
-                this.lastUpdate = Date.now();
-            }
-        }else{
-            if(Date.now() - this.lastUpdate >= this.timePerFrame) {
-                this.deathFrame++;
-
-                this.lastUpdate = Date.now();
-            }
-        }
-
-    }
-
 
     
     draw(){
         if(!this.isAlive()){
             this.numberOfFrames = 6;
             if(this.deathFrame <= this.numberOfFrames-1){
-                deadSound.play();
+                this.deathSound.play();
                 this.image.src = heroDeathImg;
                 this.width = 204;
                 this.height = 32;
@@ -68,19 +32,14 @@ class Hero{
                     this.y,   //dy Canvas y coordinate where the image is positioned
                     this.width/this.numberOfFrames,   //dWidth Image width to be drawn
                     this.height);    //dHeight Image height to be drawn
-
-        this.healthImg.src = `./images/ui/health_bar_hero_${this.healthPoints}.png`
+        if(this.healthPoints >= 0){
+            this.healthImg.src = `./images/ui/health_bar_hero_${this.healthPoints}.png`
+        }
         ctx.drawImage(this.healthImg , this.x, this.y + this.height, this.healthImg.width, this.healthImg.height)
 
     }        
 
     
-    isAlive(){
-        if(this.healthPoints > 0){
-            return true;
-        }
-        return false;
-    }
 
     movementAllowed(movement){
         this.calculateRowColumn();
@@ -93,8 +52,7 @@ class Hero{
                 return [1,2].includes(collisionArray[this.row-1][this.column]) ? false : true;
             case 'down':
                 return [1,2].includes(collisionArray[this.row+1][this.column]) ? false : true;
-        }
-                
+        }          
     }
 
     move(e){
@@ -187,11 +145,6 @@ class Hero{
             this.healthPoints = 0;
         }       
 
-    }
-
-    calculateRowColumn(){
-        this.row= Math.floor(this.y / celPixels);
-        this.column = Math.floor(this.x /celPixels);
     }
 
     checkFreeAdjacentCell(){

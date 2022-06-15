@@ -66,15 +66,8 @@ class Enemy extends AliveObject{
         }
     }
 
-      draw(){
-        this.calculateRowColumn();
-        this.draw_sprite();
-        this.healthImg.src = `./images/ui/health_bar_${this.healthPoints}.png`
-        ctx.drawImage(this.healthImg , this.x, this.y + this.height, this.healthImg.width, this.healthImg.height)
-        collisionArray[this.row][this.column] = 9
-    }
-    
-    draw_sprite() {
+   
+    draw() {
         if(!this.isAlive()){
             this.deathSound.play();
             this.deathParameters();
@@ -94,10 +87,12 @@ class Enemy extends AliveObject{
                     this.y,   //dy Canvas y coordinate where the image is positioned
                     this.width/this.numberOfFrames,   //dWidth Image width to be drawn
                     this.height);    //dHeight Image height to be drawn
-
+        if(this.healthPoints >= 0){
+            this.healthImg.src = `./images/ui/health_bar_${this.healthPoints}.png`
+        }
+        ctx.drawImage(this.healthImg , this.x, this.y + this.height, this.healthImg.width, this.healthImg.height)
     }
   
-
     receiveDamage(damage){
         if(this.healthPoints > 0){
             this.healthPoints -= damage;
@@ -107,13 +102,12 @@ class Enemy extends AliveObject{
         }
     }
 
-
     generateItem(){
         let random = Math.random()
                 console.log(random)
                 if(random > 0.5){
                     totalItems.push(
-                        new Item(healthItemImg,
+                        new GameObject(healthItemImg,
                             this.x,
                             this.y,
                             13,
@@ -146,7 +140,7 @@ class MeleeRobot extends Enemy{
         this.calculateRowColumn();
         hero.calculateRowColumn()
        
-        if ((hero.row === this.row+1 && hero.column === this.column)  || 
+        if ((hero.row === this.row+1 && hero.column === this.column) || 
             (hero.column === this.column+1 && hero.row === this.row) ||
             (hero.column === this.column-1 && hero.row === this.row) ||
             (hero.row === this.row-1  && hero.column === this.column)){
@@ -225,13 +219,13 @@ class RangeRobot extends Enemy{
             new Projectile(greenBulletImg,
                 this.x,
                 this.y,
-                blueBulletImg.width,
-                blueBulletImg.height,
+                12,
+                12,
                 quadrant,
                 ratioXY,
                 ratioYX,
                 16,
-                1)
+                this.damage)
         )
 
     }
@@ -258,7 +252,6 @@ function spawnEnemies(meleeEnemies, rangeEnemies){
             new MeleeRobot(meleeImgStop,column*celPixels, row*celPixels, 128, celPixels,150,4,6,7,enemyDestroyedSound)
         )
     }
-
     for(let i = 0; i < rangeEnemies; i++){
         let created = false;
         let column;

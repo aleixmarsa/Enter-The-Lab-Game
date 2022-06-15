@@ -24,7 +24,7 @@ class SpriteObject extends GameObject{
     constructor(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames){
         super(imageSrc,x ,y , width, height)
         this.timePerFrame = timePerFrame;
-        this.numberOfFrames = numberOfFrames;
+        this.numberOfFrames = numberOfFrames || 1;
         //current frame index pointer
         this.frameIndex = 0;
     }
