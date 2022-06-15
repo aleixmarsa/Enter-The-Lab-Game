@@ -1,3 +1,4 @@
+
 class Decoration{
     constructor(imageSrc, x, y, width, height, timePerFrame, numberOfFrames) {
         this.image = new Image();

@@ -5,8 +5,6 @@ canvas.style.cursor = "crosshair";
 
 const ctx = canvas.getContext('2d');
 
-// let heroImg = new Image();
-// heroImg.src = './images/hero/hero_weapon_right.png'
 
 let heroSprite= new Image();
 heroSprite.src = './images/hero/hero_run_right.png';
@@ -37,7 +35,7 @@ const rangeImgRight = './images/enemies/range_enemy_run_right.png';
 
 const celPixels = 32;
 let direction = 'up';
-let collisionArray = createCollisionArray(mapArray);
+let collisionArray;
 let totalProjectiles = [];
 let totalEnemies = [];
 let totalItems = [];
@@ -45,14 +43,21 @@ let mousePos;
 let mousePosPlayer;
 let movement = false;
 let gameOver = false;
+let gameOverDOM = document.querySelector('#game-over')
+       
+let startDOM =  document.querySelector('#start-game');
+let requestId;
+let gameStarted = false;
+const backgroundMusic = new sound("./music/background_music.mp3");
+const gameOverMusic = new sound("./music/game_over.mp3");   
 
-const backgroundMusic = new sound("./music/background_music.mp3");   
+
 
 let hero = new Hero(heroStopRightImg,  //the spritesheet image
                     0,            //x position of hero
                     96,            //y position of hero
-                    heroSprite.width,         //total width of spritesheet image in pixels
-                    heroSprite.height,          //total height of spritesheet image in pixels
+                    128,         //total width of spritesheet image in pixels
+                    32,          //total height of spritesheet image in pixels
                     150,           //time(in ms) duration between each frame change (experiment with it to get faster or slower animation)
                     4,
                     11);
@@ -70,6 +75,12 @@ function keyPressed(e){
 
 function keyRelease(e){
     movement = false;
+}
+
+function mouseClick(e){
+    if(gameStarted){
+        shoot(e);
+    }
 }
 
 
@@ -92,6 +103,8 @@ function mousePosition(e){
 }
 
 function initialLoad(){    
+    gameStarted = true;
+    collisionArray = createCollisionArray(mapArray);
     backgroundMusic.play();
     spawnEnemies(10,10);
     loop()
@@ -106,6 +119,7 @@ function loop() {
     drawDecoration();
     
     for(let projectile of totalProjectiles){
+        debugger;
         projectile.draw(hero)
     }
     
@@ -129,13 +143,29 @@ function loop() {
         map.src = './images/maps/map_lvl1_open.png'
     }
     
-    if(!gameOver) requestAnimationFrame(loop);
+    if(!gameOver){
+        requestId = requestAnimationFrame(loop);
+    }else{
+        backgroundMusic.stop();
+        gameOverMusic.play()
+        cancelAnimationFrame(requestId)
+        gameOverDOM.style.display = 'block';
+
+    }
 }
+
+function start(){
+    console.log(startDOM)
+    startDOM.style.display = 'none';
+    canvas.style.display = 'block';
+    initialLoad();
+}
+
 
 window.addEventListener('keydown', keyPressed)
 window.addEventListener('mousemove', mousePosition)
 window.addEventListener('click', mouseClick)
-window.addEventListener('load', initialLoad)
+//window.addEventListener('load', initialLoad)
 window.addEventListener('keyup', keyRelease)
 
 

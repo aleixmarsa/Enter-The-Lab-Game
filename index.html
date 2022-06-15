@@ -4,12 +4,20 @@
 <head>
 	<title>Future Survivors</title>
 	<meta charset="UTF-8" />
+	<link rel="stylesheet" href="./src/styles.css">
+
 
 </head>
 
 <body>
-	<!-- <div id="game-over"> <img src="./images/screens/game_over_black.png"></div> -->
+	<div id="game-over"> <img src="./images/screens/game_over.png"></div>
 	<canvas id="canvas"></canvas>
+	<div id="start-game">
+		<img src="./images/screens/title.png" alt="">
+		<a href="#" onclick="start()">Start Game</a>
+	</div>
+
+
 	<script src="src/sounds.js"></script>
 	<script src="src/map.js"></script>
 	<script src="src/items.js"></script>
@@ -19,6 +27,7 @@
 	<script src="src/hero.js"></script>
 	<script src="src/enemies.js"></script>
 	<script src="src/index.js"></script>
+	
 </body>
 
 </html>

@@ -48,6 +48,7 @@ class Hero{
         if(!this.isAlive()){
             this.numberOfFrames = 6;
             if(this.deathFrame <= this.numberOfFrames-1){
+                deadSound.play();
                 this.image.src = heroDeathImg;
                 this.width = 204;
                 this.height = 32;
@@ -77,7 +78,6 @@ class Hero{
         if(this.healthPoints > 0){
             return true;
         }
-        deadSound.play();
         return false;
     }
 

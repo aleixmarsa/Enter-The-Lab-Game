@@ -118,42 +118,45 @@ class Projectile{
 
 }
 
-function mouseClick(e){
-    //Gets the click pos relative to canvas
-    heroShootingSound.play();
-    let pos = getMousePos(canvas, e)
-    let quadrant = 1;
-    //Gets the click pos realive to player
-    pos.x = pos.x - hero.x;
-    pos.y = pos.y - hero.y;
-    if(pos.x === 0){
-        pos.x = 1;
-    }else if(pos.y === 0){
-        pos.y = 1;
+function shoot(e){
+    if (hero.isAlive()){
+        //Gets the click pos relative to canvas
+        heroShootingSound.play();
+        let pos = getMousePos(canvas, e)
+        let quadrant = 1;
+        //Gets the click pos realive to player
+        pos.x = pos.x - hero.x;
+        pos.y = pos.y - hero.y;
+        if(pos.x === 0){
+            pos.x = 1;
+        }else if(pos.y === 0){
+            pos.y = 1;
+        }
+        const ratioXY = Math.abs(pos.x/pos.y);
+        const ratioYX = Math.abs(pos.y/pos.x);
+
+        if( pos.x < 0 && pos.y < 0 ){
+            quadrant = 2;
+        }else if( pos.x < 0 && pos.y > 0 ){
+            quadrant = 3;
+        }else if( pos.x > 0 && pos.y > 0 ){
+            quadrant = 4;
+        }else{
+        
+        }
+
+        totalProjectiles.push(
+            new Projectile(blueBulletImg,
+                hero.x,
+                hero.y,
+                blueBulletImg.width,
+                blueBulletImg.height,
+                quadrant,
+                ratioXY,
+                ratioYX,
+                16,
+                1)
+        )
     }
-    const ratioXY = Math.abs(pos.x/pos.y);
-    const ratioYX = Math.abs(pos.y/pos.x);
-
-    if( pos.x < 0 && pos.y < 0 ){
-        quadrant = 2;
-    }else if( pos.x < 0 && pos.y > 0 ){
-        quadrant = 3;
-    }else if( pos.x > 0 && pos.y > 0 ){
-        quadrant = 4;
-    }else{
-
-    }
-
-    totalProjectiles.push(
-        new Projectile(blueBulletImg,
-            hero.x,
-            hero.y,
-            blueBulletImg.width,
-            blueBulletImg.height,
-            quadrant,
-            ratioXY,
-            ratioYX,
-            16,
-            1)
-    )
+    
 }

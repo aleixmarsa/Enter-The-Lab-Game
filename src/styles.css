@@ -1,3 +1,36 @@
 body {
   font-family: sans-serif;
+  background-image: url('/images/screens/start_background.png');
+  background-repeat:no-repeat;
+  background-position: center center;
+  background-size: cover;
+}
+
+#game-over{
+  position: absolute;
+  display: none;
+  margin-left: 550px;
+}
+
+#canvas{
+  display: none;
+  padding-left: 0;
+  padding-right: 0;
+  margin-top: 8px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#start-game{
+
+  border: 1px solid red;
+  display: block;
+  width: 800px;
+  height: 800px;
+  margin-top: 80px;
+  padding-left: 0;
+  padding-right: 0;
+  margin-bottom: auto;
+  margin-left: auto;
+  margin-right: auto;
 }
