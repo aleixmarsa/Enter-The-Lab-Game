@@ -1,5 +1,5 @@
-const healingSound = new sound("./music/healing.wav");   
-const deadSound = new sound("./music/hero_dead.wav");   
+const healingSound = new Sound("./music/healing.wav");   
+const deadSound = new Sound("./music/hero_dead.wav");   
 
 class Hero{
     constructor(imageSrc, x, y, width, height, timePerFrame, numberOfFrames, healthPoints) {
@@ -68,6 +68,7 @@ class Hero{
                     this.y,   //dy Canvas y coordinate where the image is positioned
                     this.width/this.numberOfFrames,   //dWidth Image width to be drawn
                     this.height);    //dHeight Image height to be drawn
+
         this.healthImg.src = `./images/ui/health_bar_hero_${this.healthPoints}.png`
         ctx.drawImage(this.healthImg , this.x, this.y + this.height, this.healthImg.width, this.healthImg.height)
 
@@ -165,13 +166,12 @@ class Hero{
     }
 
 
-    receiveDamage(damage, enemy){
+    receiveDamage(damage, enemy, enemyProjectile){
         this.calculateRowColumn();
-        enemy.calculateRowColumn();
 
         if( this.isAlive() ){
             this.healthPoints -= damage;
-            if(enemy.constructor.name === 'MeleeRobot'){
+            if(enemy.constructor.name === 'RangeRobot' && !enemyProjectile){
                 if(this.row < enemy.row){
                     this.move(this.checkFreeAdjacentCell())
                 }else if (this.row > enemy.row){
@@ -182,6 +182,9 @@ class Hero{
                     this.move(this.checkFreeAdjacentCell())
                 }
             }            
+        }
+        if(this.healthPoints < 0){
+            this.healthPoints = 0;
         }       
 
     }

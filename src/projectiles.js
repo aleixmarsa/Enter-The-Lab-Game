@@ -1,4 +1,4 @@
-const heroShootingSound = new sound("./music/hero_shooting.wav");   
+const heroShootingSound = new Sound("./music/hero_shooting.wav");   
 
 
 class Projectile{
@@ -91,7 +91,7 @@ class Projectile{
                 totalProjectiles.splice(totalProjectiles.indexOf(this),1)
     
             }else if(collisionArray[this.row][this.column] === 8 && shooter.constructor.name === 'RangeRobot' ){
-                hero.receiveDamage(shooter.attackPoints, shooter);
+                hero.receiveDamage(shooter.attackPoints, shooter, true);
                 shooter.projectiles.splice(shooter.projectiles.indexOf(this),1)
 
             }

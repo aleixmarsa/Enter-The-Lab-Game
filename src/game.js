@@ -6,11 +6,18 @@ canvas.style.cursor = "crosshair";
 const ctx = canvas.getContext('2d');
 
 
-let heroSprite= new Image();
-heroSprite.src = './images/hero/hero_run_right.png';
+// let heroSprite= new Image();
+// heroSprite.src = './images/hero/hero_run_right.png';
+
+
+
+//Images
 
 const heroStopRightImg = './images/hero/hero_stop_right.png'
 const heroDeathImg = './images/hero/hero_death.png'
+
+
+
 
 let map = new Image();
 map.src = './images/maps/map_lvl1.png'
@@ -48,8 +55,11 @@ let gameOverDOM = document.querySelector('#game-over')
 let startDOM =  document.querySelector('#start-game');
 let requestId;
 let gameStarted = false;
-const backgroundMusic = new sound("./music/background_music.mp3");
-const gameOverMusic = new sound("./music/game_over.mp3");   
+const backgroundMusic = new Sound("./music/background_music.mp3");
+const gameOverMusic = ("./music/game_over.mp3");   
+
+
+const enemyDestroyedSound ='./music/melee_destroyed.wav';   
 
 
 

@@ -1,49 +1,14 @@
-const enemyDestroyedSound = new sound("./music/melee_destroyed.wav");   
+// const enemyDestroyedSound = new Sound("./music/melee_destroyed.wav");   
 
-class Enemy{
-    constructor(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames, healthPoints, attackPoints){
-        this.image = new Image();
-        this.image.src = imageSrc
-        this.healthImg = new Image();
+class Enemy extends AliveObject{
+
+    constructor(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames, healthPoints, attackPoints, deathSoundSrc){
+        super(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames, healthPoints, attackPoints, deathSoundSrc)
         this.runImgLeft;
         this.runImgRight;    
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.timePerFrame = timePerFrame; 
-        this.healthPoints = healthPoints;
-        this.numberOfFrames = numberOfFrames;
-        this.attackPoints = attackPoints;
         this.path;
-        //current frame index pointer
-        this.frameIndex = 0;
-        this.deathFrame = 0;
-        //time the frame index was last updated
-        this.lastUpdate = Date.now();
         this.moving = false;
         this.heroDetected = false;
-
-    }
-
-    //to update
-
-    update = function() {
-        if(this.isAlive()){
-            if(Date.now() - this.lastUpdate >= this.timePerFrame) {
-                this.frameIndex++;
-                if(this.frameIndex >= this.numberOfFrames) {
-                    this.frameIndex = 0;
-                }
-                this.lastUpdate = Date.now();
-            }
-        }else{
-            if(Date.now() - this.lastUpdate >= this.timePerFrame) {
-                this.deathFrame++;
-                this.lastUpdate = Date.now();
-            }
-        }
-
     }
     
     checkZone(){
@@ -58,7 +23,7 @@ class Enemy{
             }
     }
 
-    move(type){
+    move(){
         if(hero.isAlive()){
             if(this.isAlive()){
                 let nodes = buildNodes();
@@ -90,22 +55,18 @@ class Enemy{
                     }
                      this.calculateRowColumn();
                     collisionArray[this.row][this.column] = 9
-                    if(type === 'range'){
-                        if (this.frameCount%200 === 0){
-                            this.aim()
-                        }
-                        this.frameCount++;     
-                    }
+
+                    this.attack()
+                      
                 }
-                this.attack()
+                
             }else{
                 collisionArray[this.row][this.column] = 0    
             }
         }
     }
 
-  
-    draw(){
+      draw(){
         this.calculateRowColumn();
         this.draw_sprite();
         this.healthImg.src = `./images/ui/health_bar_${this.healthPoints}.png`
@@ -113,11 +74,9 @@ class Enemy{
         collisionArray[this.row][this.column] = 9
     }
     
-
-
-
     draw_sprite() {
         if(!this.isAlive()){
+            this.deathSound.play();
             this.deathParameters();
             if(this.deathFrame <= this.numberOfFrames-1){
                 this.frameIndex = this.deathFrame;
@@ -137,45 +96,17 @@ class Enemy{
                     this.height);    //dHeight Image height to be drawn
 
     }
-
-    deathParameters(){
-        this.numberOfFrames = 7;
-        this.image.src = this.deathImg;
-        this.width = 236;
-        this.height = 32;
-        this.timePerFrame = 100;
-    }
-    attack(){
-
-        this.calculateRowColumn();
-        hero.calculateRowColumn()
-       
-        if ((hero.row === this.row+1 && hero.column === this.column)  || 
-            (hero.column === this.column+1 && hero.row === this.row) ||
-            (hero.column === this.column-1 && hero.row === this.row) ||
-            (hero.row === this.row-1  && hero.column === this.column)){
-            hero.receiveDamage(this.attackPoints, this);
-        }
-    }
+  
 
     receiveDamage(damage){
         if(this.healthPoints > 0){
             this.healthPoints -= damage;
         }
-    }
-    
-    isAlive(){
-        if(this.healthPoints > 0){
-            return true;
+        if(this.healthPoints < 0){
+            this.healthPoints = 0;
         }
-        enemyDestroyedSound.play();
-        return false;
     }
 
-    calculateRowColumn(){
-        this.row= Math.round(this.y / celPixels);
-        this.column = Math.round(this.x /celPixels);
-    }
 
     generateItem(){
         let random = Math.random()
@@ -194,24 +125,49 @@ class Enemy{
 }
 
 class MeleeRobot extends Enemy{
-    constructor(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints){
-        super(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints)
+    constructor(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints, deathSoundSrc){
+        super(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints,deathSoundSrc)
         this.runImgLeft = meleeImgLeft;
         this.runImgRight = meleeImgRight;
         this.deathImg = meleeImgDeath;
 
     }
 
+    deathParameters(){
+        this.numberOfFrames = 7;
+        this.image.src = this.deathImg;
+        this.width = 236;
+        this.height = 32;
+        this.timePerFrame = 100;
+    }
+
+    attack(){
+
+        this.calculateRowColumn();
+        hero.calculateRowColumn()
+       
+        if ((hero.row === this.row+1 && hero.column === this.column)  || 
+            (hero.column === this.column+1 && hero.row === this.row) ||
+            (hero.column === this.column-1 && hero.row === this.row) ||
+            (hero.row === this.row-1  && hero.column === this.column)){
+            hero.receiveDamage(this.attackPoints, this);
+            //Simulates robot auto destroy
+            this.healthPoints = 0;
+        }
+    }
+
 }
+
+
 class RangeRobot extends Enemy{
-    constructor(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints){
-        super(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints)
+    constructor(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints, deathSoundSrc){
+        super(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints, deathSoundSrc)
         this.runImgLeft = rangeImgLeft;
         this.runImgRight = rangeImgRight;
         this.deathImg = rangeImgDeath;
         this.projectiles = [];
         this.frameCount = 0;
-
+        this.frameCount = 0;
     }
 
     deathParameters(){
@@ -226,13 +182,17 @@ class RangeRobot extends Enemy{
     attack(){
         this.calculateRowColumn();
         hero.calculateRowColumn()
-        if ((hero.row === this.row+15 && hero.column === this.column)  || 
+        if ((hero.row === this.row+1 && hero.column === this.column)  || 
             (hero.column === this.column+1 && hero.row === this.row) ||
             (hero.column === this.column-1 && hero.row === this.row) ||
             (hero.row === this.row-1  && hero.column === this.column)){
 
             hero.receiveDamage(this.attackPoints, this);
         }
+        if (this.frameCount%100 === 0){
+            this.aim()
+        }
+        this.frameCount++;   
     }
 
     aim(){
@@ -278,10 +238,10 @@ class RangeRobot extends Enemy{
     
     receiveDamage(damage){
         this.healthPoints -= damage*2;
+        if(this.healthPoints < 0){
+            this.healthPoints === 0;
+        }
     }
-
-
-
 }
 
 function spawnEnemies(meleeEnemies, rangeEnemies){
@@ -295,7 +255,7 @@ function spawnEnemies(meleeEnemies, rangeEnemies){
             if(collisionArray[row][column] === 0 && collisionArray[row+1][column] === 0) created = true;
         }
         totalEnemies.push(
-            new MeleeRobot(meleeImgStop,column*celPixels, row*celPixels, 128, celPixels,150,4,6,1)
+            new MeleeRobot(meleeImgStop,column*celPixels, row*celPixels, 128, celPixels,150,4,6,7,enemyDestroyedSound)
         )
     }
 
@@ -309,7 +269,7 @@ function spawnEnemies(meleeEnemies, rangeEnemies){
             if(collisionArray[row][column] === 0 && collisionArray[row+1][column] === 0) created = true;
         }
         totalEnemies.push(
-            new RangeRobot(rangeImgStop,column*celPixels, row*celPixels, 128, celPixels,150,4,6,1)
+            new RangeRobot(rangeImgStop,column*celPixels, row*celPixels, 128, celPixels,150,4,6,1,enemyDestroyedSound)
         )
     }
 }
