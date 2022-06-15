@@ -1,8 +1,10 @@
-const healingSound = new Sound("./music/healing.wav");   
+const healingSound = new Sound("./music/healing.wav");
+const damagedSound = new Sound("./music/hero_damaged.wav")   
 const heroDeathImg = './images/hero/hero_death.png'
 let direction = 'up';
 let movement = false;
 const heroDestroyedSound = "./music/hero_dead.wav";   
+
 
 
 
@@ -42,8 +44,10 @@ class Hero extends AliveObject{
         if(this.healthPoints >= 0){
             this.healthImg.src = `./images/ui/health_bar_hero_${this.healthPoints}.png`
         }
+        
+        healthDOM.innerHTML = this.healthPoints > 0 ?  (this.healthPoints-1)*10 : 0;
+            
         ctx.drawImage(this.healthImg , this.x, this.y + this.height, this.healthImg.width, this.healthImg.height)
-
     }        
 
     
@@ -135,6 +139,7 @@ class Hero extends AliveObject{
         this.calculateRowColumn();
 
         if( this.isAlive() ){
+            damagedSound.play();
             this.healthPoints -= damage;
             if(enemy.constructor.name === 'RangeRobot' && !enemyProjectile){
                 if(this.row < enemy.row){

@@ -19,11 +19,14 @@ const gameRunDOM = document.querySelector('#game-running');
 const gameOverDOM = document.querySelector('#game-over')
 const startDOM =  document.querySelector('#start-game');
 const gameWinDOM = document.querySelector('#game-win')
+const enemiesDOM = document.querySelector('#enemies-left')
+const healthDOM = document.querySelector('#health-points')
+
 
 let requestId;
 let gameStarted = false;
-let meleeEnemies = 2;
-let rangeEnemies = 0;
+let meleeEnemies = 5;
+let rangeEnemies = 5;
 const backgroundMusic = new Sound('./music/background_music.mp3');
 const gameOverMusic = new Sound('./music/game_over.mp3');   
 const gameWinMusic = new Sound('./music/game_win.mp3')
@@ -104,7 +107,8 @@ function start(){
     startDOM.style.display = 'none';
     gameOverDOM.style.display = 'none'
     gameWinDOM.style.display = 'none'
-    canvas.style.display = 'block';
+    gameRunDOM.style.display = 'block'
+    // canvas.style.display = 'block';
     window.addEventListener('keydown', keyPressed)
     window.addEventListener('mousemove', mousePosition)
     window.addEventListener('click', mouseClick)

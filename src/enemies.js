@@ -294,6 +294,7 @@ function drawEnemies(){
             enemy.move('melee')
         }
     }
+    enemiesDOM.innerHTML= totalEnemies.length;
 }
 
 
