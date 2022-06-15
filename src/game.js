@@ -2,84 +2,38 @@ const canvas = document.querySelector('#canvas');
 canvas.width = 800;
 canvas.height = 800;
 canvas.style.cursor = "crosshair";
-
 const ctx = canvas.getContext('2d');
 
-
-// let heroSprite= new Image();
-// heroSprite.src = './images/hero/hero_run_right.png';
-
-
-
-//Images
-
-const heroStopRightImg = './images/hero/hero_stop_right.png'
-const heroDeathImg = './images/hero/hero_death.png'
-
-
-
-
-let map = new Image();
-map.src = './images/maps/map_lvl1.png'
-
-let blueBulletImg = './images/projectiles/blue_bullet.png'
-
-let greenBulletImg = './images/projectiles/green_bullet.png'
-const healthItemImg = './images/items/potion.png';
-
-
-let healthBar = new Image();
-
-const meleeImgDeath ='./images/enemies/melee_death.png'
-const meleeImgStop = './images/enemies/melee_enemy_stop_right.png';
-const meleeImgLeft = './images/enemies/melee_enemy_run_left.png';
-const meleeImgRight = './images/enemies/melee_enemy_run_right.png';
-const rangeImgDeath ='./images/enemies/range_death.png'
-const rangeImgStop = './images/enemies/range_enemy_stop_right.png';
-const rangeImgLeft = './images/enemies/range_enemy_run_left.png';
-const rangeImgRight = './images/enemies/range_enemy_run_right.png';
-
 const celPixels = 32;
-let direction = 'up';
+let hero;
+let map;
+let map_done;
 let collisionArray;
 let totalProjectiles = [];
 let totalEnemies = [];
 let totalItems = [];
 let mousePos;
 let mousePosPlayer;
-let movement = false;
 let gameOver = false;
-let gameOverDOM = document.querySelector('#game-over')
-       
-let startDOM =  document.querySelector('#start-game');
+const gameRunDOM = document.querySelector('#game-running');
+const gameOverDOM = document.querySelector('#game-over')
+const startDOM =  document.querySelector('#start-game');
+const gameWinDOM = document.querySelector('#game-win')
+
 let requestId;
 let gameStarted = false;
-const backgroundMusic = new Sound("./music/background_music.mp3");
-const gameOverMusic = new Sound("./music/game_over.mp3");   
+let meleeEnemies = 2;
+let rangeEnemies = 0;
+const backgroundMusic = new Sound('./music/background_music.mp3');
+const gameOverMusic = new Sound('./music/game_over.mp3');   
+const gameWinMusic = new Sound('./music/game_win.mp3')
 
-
-const enemyDestroyedSound ='./music/melee_destroyed.wav';   
-const heroDeadSound = "./music/hero_dead.wav";   
-
-
-
-let hero = new Hero(heroStopRightImg,  //the spritesheet image
-                    0,            //x position of hero
-                    96,            //y position of hero
-                    128,         //total width of spritesheet image in pixels
-                    32,          //total height of spritesheet image in pixels
-                    150,           //time(in ms) duration between each frame change (experiment with it to get faster or slower animation)
-                    4,
-                    11,
-                    1,
-                    heroDeadSound);
 
 
 //update function to update all the GameObjects
 function update(object) {
     object.update();
 }
-
 
 function keyPressed(e){
     hero.move(e); 
@@ -94,8 +48,6 @@ function mouseClick(e){
         shoot(e);
     }
 }
-
-
 
 function getMousePos(canvas, e) {
     let rect = canvas.getBoundingClientRect();
@@ -114,70 +66,65 @@ function mousePosition(e){
     //console.log('Mouse position: ' + mousePos.x + ',' + mousePos.y);
 }
 
-function initialLoad(){    
-    gameStarted = true;
-    collisionArray = createCollisionArray(mapArray);
-    backgroundMusic.play();
-    spawnEnemies(10,10);
-    loop()
-}
 
-//The Game Loop
-function loop() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(map,0,0,map.width,map.height);
-    hero.update();
-    hero.draw();
-    drawDecoration();
-    
-    for(let projectile of totalProjectiles){
-        //test
-        projectile.draw(hero)
-    }
-    
-    for(let enemy of totalEnemies){
-        enemy.update();
-        enemy.draw()
-        if(enemy.hasOwnProperty('projectiles')){
-            enemy.move('range')
-            for(let projectile of enemy.projectiles){
-                projectile.draw(enemy);
-            }
-        }else{
-            enemy.move('melee')
-        }
-    }
-    for (let item of totalItems){
-        item.draw();
-    }
-
-    if(totalEnemies.length === 0){
-        map.src = './images/maps/map_lvl1_open.png'
-    }
-    
+function gameStatus(){
     if(!gameOver){
         requestId = requestAnimationFrame(loop);
+        if(map_done && hero.x > map.width){
+            backgroundMusic.stop();
+            gameWinMusic.play();
+            cancelAnimationFrame(requestId)
+            gameWinDOM.style.display = 'block';
+        }
     }else{
         backgroundMusic.stop();
         gameOverMusic.play()
         cancelAnimationFrame(requestId)
-        gameOverDOM.style.display = 'block';
+        gameOverDOM.style.display = 'flex';
 
     }
+}
+
+
+//The Game Loop
+function loop() {
+    map.clear();
+    map.draw();
+    hero.draw();
+    drawDecoration();
+    drawProjectiles();
+    drawEnemies();
+    drawItems();
+    checkMap()   
+    gameStatus();
 }
 
 function start(){
     console.log(startDOM)
     startDOM.style.display = 'none';
+    gameOverDOM.style.display = 'none'
+    gameWinDOM.style.display = 'none'
     canvas.style.display = 'block';
-    initialLoad();
+    window.addEventListener('keydown', keyPressed)
+    window.addEventListener('mousemove', mousePosition)
+    window.addEventListener('click', mouseClick)
+    window.addEventListener('keyup', keyRelease)
+    gameStarted = true;
+    gameOver = false;
+    mapDone = false;
+    removeEnemies();
+    removeItems()
+    gameOverMusic.stop();
+    backgroundMusic.play();
+    spawnMap();
+    collisionArray = createCollisionArray(mapArray);
+    spawnHero();
+    spawnEnemies(meleeEnemies,rangeEnemies);
+    loop()
 }
 
 
-window.addEventListener('keydown', keyPressed)
-window.addEventListener('mousemove', mousePosition)
-window.addEventListener('click', mouseClick)
-//window.addEventListener('load', initialLoad)
-window.addEventListener('keyup', keyRelease)
+
+
 
 

@@ -3,7 +3,7 @@ class Sound {
     constructor (src){
         this.sound = document.createElement("audio");
         this.sound.src = src;
-        this.sound.volume = 0.4
+        this.sound.volume = 0.3;
         this.sound.setAttribute("preload", "auto");
         this.sound.setAttribute("controls", "none");
         this.sound.style.display = "none";

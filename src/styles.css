@@ -1,3 +1,9 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+h1{
+  font-family: 'Press Start 2P';  
+}
 body {
   font-family: sans-serif;
   background-image: url('../images/screens/start_background.png');
@@ -6,17 +12,48 @@ body {
   background-size: cover;
 }
 
+/* #game-running{
+  display: none;  width: 800px;
+  height: 800px;
+  margin-top: 80px;
+  padding-left: 0;
+  padding-right: 0;
+  margin-bottom: auto;
+  margin-left: auto;
+  margin-right: auto;
+} */
+
 #game-over{
   position: absolute;
   display: none;
-  margin-left: 550px;
+  flex-direction: column;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+
+}
+
+#game-over-img{
+  margin-top: 100px;
+}
+
+#retry-btn{
+  margin-top: 120px;
+  width: 300px;
+}
+
+#retry-btn:hover{
+  width: 310px;
 }
 
 #canvas{
+  /* display: block; */
   display: none;
   padding-left: 0;
   padding-right: 0;
-  margin-top: 50px;
+  margin-top: 80px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -33,7 +70,7 @@ body {
   margin-right: auto;
 }
 
-#game_title{
+#game-title{
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -67,13 +104,26 @@ body {
 
 }
 
-.button{
+#start-btn{
   display: block;
   margin-top: 100px;
-  margin-left: 120px;
+  margin-left: 240px;
   width: 300px;
 }
 
-.button:hover{
+#start-btn:hover{
   width: 310px;
+}
+
+
+#game-win{
+  position: absolute;
+  display: none;
+
+
+}
+
+#game-win-img{
+  margin-left: 529px;
+  margin-top: 200px;
 }

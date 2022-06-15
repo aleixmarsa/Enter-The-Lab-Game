@@ -13,6 +13,10 @@ class GameObject{
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     }
 
+    clear(){
+        ctx.clearRect(this.x, this.y, this.width, this.width);
+    }
+
     calculateRowColumn(){
         this.row= Math.floor(this.y / celPixels);
         this.column = Math.floor(this.x /celPixels);
@@ -25,6 +29,8 @@ class SpriteObject extends GameObject{
         super(imageSrc,x ,y , width, height)
         this.timePerFrame = timePerFrame;
         this.numberOfFrames = numberOfFrames || 1;
+        //time the frame index was last updated
+        this.lastUpdate = Date.now();
         //current frame index pointer
         this.frameIndex = 0;
     }
@@ -45,7 +51,17 @@ class SpriteObject extends GameObject{
         this.row= Math.round(this.y / celPixels);
         this.column = Math.round(this.x /celPixels);
     }
-}
+
+    update(){
+        if(Date.now() - this.lastUpdate >= this.timePerFrame) {
+            this.frameIndex++;
+            if(this.frameIndex >= this.numberOfFrames) {
+                this.frameIndex = 0;
+            }
+            this.lastUpdate = Date.now();
+        }
+    }
+}   
 
 class AliveObject extends SpriteObject{
 
@@ -54,8 +70,6 @@ class AliveObject extends SpriteObject{
         this.healthImg = new Image();
         this.healthPoints = healthPoints;
         this.attackPoints = attackPoints;        
-        //time the frame index was last updated
-        this.lastUpdate = Date.now();
         this.deathFrame = 0;
         this.deathSound = new Sound(deathSoundSrc);
     }

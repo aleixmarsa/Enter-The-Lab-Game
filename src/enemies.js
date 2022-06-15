@@ -1,4 +1,18 @@
-// const enemyDestroyedSound = new Sound("./music/melee_destroyed.wav");   
+const meleeImgDeath ='./images/enemies/melee_death.png'
+const meleeImgStop = './images/enemies/melee_enemy_stop_right.png';
+const meleeImgLeft = './images/enemies/melee_enemy_run_left.png';
+const meleeImgRight = './images/enemies/melee_enemy_run_right.png';
+const rangeImgDeath ='./images/enemies/range_death.png'
+const rangeImgStop = './images/enemies/range_enemy_stop_right.png';
+const rangeImgLeft = './images/enemies/range_enemy_run_left.png';
+const rangeImgRight = './images/enemies/range_enemy_run_right.png';
+
+let greenBulletImg = './images/projectiles/green_bullet.png'
+const healthItemImg = './images/items/potion.png';
+
+const enemyDestroyedSound ='./music/melee_destroyed.wav';   
+
+
 
 class Enemy extends AliveObject{
 
@@ -224,7 +238,7 @@ class RangeRobot extends Enemy{
                 quadrant,
                 ratioXY,
                 ratioYX,
-                16,
+                10,
                 this.damage)
         )
 
@@ -267,3 +281,34 @@ function spawnEnemies(meleeEnemies, rangeEnemies){
     }
 }
 
+function drawEnemies(){
+    for(let enemy of totalEnemies){
+        enemy.update();
+        enemy.draw()
+        if(enemy.hasOwnProperty('projectiles')){
+            enemy.move('range')
+            for(let projectile of enemy.projectiles){
+                projectile.draw(enemy);
+            }
+        }else{
+            enemy.move('melee')
+        }
+    }
+}
+
+
+function drawItems(){
+    for (let item of totalItems){
+        item.draw();
+    }
+}
+
+function removeItems(){
+    totalItems = [];
+
+}
+
+
+function removeEnemies(){
+    totalEnemies = [];
+}

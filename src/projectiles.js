@@ -1,4 +1,5 @@
 const heroShootingSound = new Sound("./music/hero_shooting.wav");   
+let blueBulletImg = './images/projectiles/blue_bullet.png'
 
 
 class Projectile extends GameObject{
@@ -133,4 +134,10 @@ function shoot(e){
         )
     }
     
+}
+
+function drawProjectiles(){
+    for(let projectile of totalProjectiles){
+        projectile.draw(hero)
+    }
 }

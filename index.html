@@ -10,16 +10,26 @@
 </head>
 
 <body>
-	<div id="game-over"> <img src="./images/screens/game_over.png"></div>
-	<canvas id="canvas"></canvas>
+	<div id="game-win">
+		<img id="game-win-img" src="./images/screens/you_win.png" alt="">
+	</div>
+	<div id="game-over"> 
+		<img id="game-over-img" src="./images/screens/game_over.png">
+		<a href="#" onclick="start()"><img id="retry-btn" class="button" src="./images/buttons/retry_btn.png" alt=""></a>	
+	</div>
+	<!-- <div id="game-running"> -->
+		<!-- <h1>ENEMIES LEFT: <span>0</span></h1> -->
+		<canvas id="canvas"></canvas>
+	<!-- </div> -->
+
 	<div id="start-game">
-		<img id='game_title'src="./images/screens/title.png" alt="">
+		<img id="game-title"src="./images/screens/title.png" alt="">
 		<div id='controls'>
-			<img id='keys' src="./images/buttons/wasd.png" alt="">
-			<img id = 'mouse' src="./images/buttons/mouse.png" alt="">
+			<img id="keys" src="./images/buttons/wasd.png" alt="">
+			<img id = "mouse" src="./images/buttons/mouse.png" alt="">
 		</div>
 		<div>
-			<a class='button' href="#" onclick="start()"><img class="button" src="./images/buttons/start_btn.png" alt=""></a>	
+			<a href="#" onclick="start()"><img id="start-btn" class="button" src="./images/buttons/start_btn.png" alt=""></a>	
 		</div>	
 	</div>
 
