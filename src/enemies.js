@@ -108,7 +108,7 @@ class Enemy{
     draw(){
         this.calculateRowColumn();
         this.draw_sprite();
-        this.healthImg.src = `/images/ui/health_bar_${this.healthPoints}.png`
+        this.healthImg.src = `./images/ui/health_bar_${this.healthPoints}.png`
         ctx.drawImage(this.healthImg , this.x, this.y + this.height, this.healthImg.width, this.healthImg.height)
         collisionArray[this.row][this.column] = 9
     }

@@ -68,7 +68,7 @@ class Hero{
                     this.y,   //dy Canvas y coordinate where the image is positioned
                     this.width/this.numberOfFrames,   //dWidth Image width to be drawn
                     this.height);    //dHeight Image height to be drawn
-        this.healthImg.src = `/images/ui/health_bar_hero_${this.healthPoints}.png`
+        this.healthImg.src = `./images/ui/health_bar_hero_${this.healthPoints}.png`
         ctx.drawImage(this.healthImg , this.x, this.y + this.height, this.healthImg.width, this.healthImg.height)
 
     }        

@@ -119,6 +119,7 @@ function loop() {
     drawDecoration();
     
     for(let projectile of totalProjectiles){
+        //test
         projectile.draw(hero)
     }
     
