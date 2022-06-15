@@ -1,6 +1,6 @@
 body {
   font-family: sans-serif;
-  background-image: url('/images/screens/start_background.png');
+  background-image: url('../images/screens/start_background.png');
   background-repeat:no-repeat;
   background-position: center center;
   background-size: cover;
