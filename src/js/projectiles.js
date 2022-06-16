@@ -100,7 +100,6 @@ function shoot(e){
     e.preventDefault()
     if (hero.isAlive()){
         //Gets the click pos relative to canvas
-        
         let pos = getMousePos(canvas, e)
         let quadrant = 1;
         //Gets the click pos realive to player
