@@ -1,11 +1,13 @@
+//Sound variables
 const healingSound = new Sound("./music/healing.wav");
 const damagedSound = new Sound("./music/hero_damaged.wav")   
-const heroDeathImg = './images/hero/hero_death.png'
-let direction = 'up';
-let movement = false;
 const heroDestroyedSound = "./music/hero_dead.wav";   
 
+//Image variables
+const heroDeathImg = './images/hero/hero_death.png'
 
+let direction = 'up';
+let movement = false;
 
 
 class Hero extends AliveObject{
@@ -14,10 +16,10 @@ class Hero extends AliveObject{
         this.maxHealth = healthPoints;
     
     }
-
     
     draw(){
         this.update();
+        //If the hero is dead then sets parameters for death sound and sprite
         if(!this.isAlive()){
             this.numberOfFrames = 6;
             if(this.deathFrame <= this.numberOfFrames-1){
@@ -28,8 +30,8 @@ class Hero extends AliveObject{
                 this.timePerFrame = 300;
                 this.frameIndex = this.deathFrame;
             }else{
+                //Game is over when the death sprite is over
                 gameOver = true;
-                //alert('Game Over')
             }
         }
         ctx.drawImage(this.image, // Sprite Image
@@ -46,14 +48,14 @@ class Hero extends AliveObject{
         }
         
         healthDOM.innerHTML = this.healthPoints > 0 ?  (this.healthPoints-1)*10 : 0;
-            
         ctx.drawImage(this.healthImg , this.x, this.y + this.height, this.healthImg.width, this.healthImg.height)
     }        
 
     
-
+    //Checks if movement is allowed
     movementAllowed(movement){
         this.calculateRowColumn();
+        //Checks next matrix position depending on the next movement. 1(wall) and 2(static item) are forbidden
         switch(movement){
             case 'right':
                 return [1,2].includes(collisionArray[this.row][this.column+1]) ? false : true;
@@ -66,6 +68,7 @@ class Hero extends AliveObject{
         }          
     }
 
+    //Moves the hero using the keys WASD. Puts the current pos to 0(no obstacle) and the next to 8(hero)
     move(e){
         if(this.isAlive()){
             this.calculateRowColumn();
@@ -78,7 +81,6 @@ class Hero extends AliveObject{
                     collisionArray[this.row-1][this.column] = 8
                     movement = true;
                 }
-    
             }else if( e.keyCode === 83 ||  e === 'moveDown'){
                 // Key d pressed
                 direction = 'down';
@@ -111,30 +113,28 @@ class Hero extends AliveObject{
         }
     }
 
+    //Changes the hero sprite
     aim(e){
         if(this.isAlive()){
             if(movement){
                 if(mousePosPlayer.x >= 0){
-                    //this.image.src = './images/hero/hero_weapon_right.png' 
                     this.image.src = './images/hero/hero_run_right.png';
                 }else{
-                    //this.image.src = './images/hero/hero_weapon_left.png';
                     this.image.src = './images/hero/hero_run_left.png';
                 }
             }
             else{
                 if(mousePosPlayer.x >= 0){
-                    //this.image.src = './images/hero/hero_weapon_right.png' 
                     this.image.src = './images/hero/hero_stop_right.png';
                 }else{
-                    //this.image.src = './images/hero/hero_weapon_left.png';
                     this.image.src = './images/hero/hero_stop_left.png';
                 }
             }
         }
     }
 
-
+    /*Decrease the hero life when attacked. If enemy is a melee robot (explodes) and insta decrease but if enemy
+    is a range robot, each attack decreases life and moves the hero 1 free cell away*/
     receiveDamage(damage, enemy, enemyProjectile){
         this.calculateRowColumn();
 
@@ -160,6 +160,7 @@ class Hero extends AliveObject{
 
     }
 
+    //Checks for an adjacent free cell
     checkFreeAdjacentCell(){
         this.calculateRowColumn()
         if([0,3].includes(collisionArray[this.row-1][this.column])){
@@ -177,6 +178,7 @@ class Hero extends AliveObject{
 
     }
 
+    //Checks if hero is at a healing potion position and heals himself
     healing(){
         this.calculateRowColumn();
         for(let item of totalItems){
@@ -196,6 +198,7 @@ class Hero extends AliveObject{
     }
 }
 
+//Spawns the hero
 function spawnHero(){
     hero = new Hero('./images/hero/hero_stop_right.png',  //the spritesheet image
                     0,            //x position of hero

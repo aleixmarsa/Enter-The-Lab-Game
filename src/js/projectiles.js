@@ -13,8 +13,7 @@ class Projectile extends GameObject{
         this.projectileSound = new Sound(projectileSoundSrc)
 
         //Checks the ratio between x and y cick position.
-        //Depending on wich axis position is bigger calculates the speed for each axis
-        
+        //Depending on wich axis position is bigger, calculates differnt speed for each axis
         if(ratioXY >= ratioYX){
             this.speedY = speed/(ratioXY + 1);
             this.speedX = ratioXY * this.speedY;
@@ -24,7 +23,7 @@ class Projectile extends GameObject{
         }
     }
 
-
+    //Checks if an enemy receive an impact
     enemyImpact(){
         this.calculateRowColumn();
         for (let enemy of totalEnemies){
@@ -35,7 +34,7 @@ class Projectile extends GameObject{
         }
         totalProjectiles.splice(totalProjectiles.indexOf(this),1)
     }
-
+    //Checks if hero receceive an impact
     heroImpact(){
         this.calculateRowColumn();
         hero.calculateRowColumn();
@@ -83,6 +82,7 @@ class Projectile extends GameObject{
                 totalProjectiles.splice(totalProjectiles.indexOf(this),1)
     
             }else if(collisionArray[this.row][this.column] === 8 && shooter.constructor.name === 'RangeRobot' ){
+                //Collision with the hero
                 hero.receiveDamage(shooter.attackPoints, shooter, true);
                 shooter.projectiles.splice(shooter.projectiles.indexOf(this),1)
 
@@ -90,8 +90,6 @@ class Projectile extends GameObject{
             else{
                 shooter.constructor.name === 'Hero' ? totalProjectiles.splice(totalProjectiles.indexOf(this),1) : shooter.projectiles.splice(shooter.projectiles.indexOf(this),1);
             }
-        }else{
-            console.log('NaN')
         }
     }
 }

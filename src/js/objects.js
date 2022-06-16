@@ -1,5 +1,4 @@
 class GameObject{
-
     constructor(imageSrc, x ,y , width, height){
         this.image = new Image();
         this.image.src = imageSrc;

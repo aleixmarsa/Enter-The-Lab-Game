@@ -29,7 +29,7 @@ const mapArray = [
     1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, 1, 2, 0, 2, 1, 1, 2, 0, 0, 1,
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
-
+//Creates collision matrix from the colision array
 function createCollisionArray(mapCollisionArray){
     let collisionArrayRows = [];
     let rowSize = map.width/celPixels;
@@ -40,6 +40,7 @@ function createCollisionArray(mapCollisionArray){
     return collisionArrayRows;
 }
 
+//Builds from the array
 function buildNodes(){
     // create columns
     var nodeColumns = [];

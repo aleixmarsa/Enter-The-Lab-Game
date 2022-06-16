@@ -1,9 +1,12 @@
+/*Canvas variables*/
+
 const canvas = document.querySelector('#canvas');
 canvas.width = 800;
 canvas.height = 800;
 canvas.style.cursor = "crosshair";
 const ctx = canvas.getContext('2d');
 
+/*Global variables*/
 const celPixels = 32;
 let hero;
 let map;
@@ -16,6 +19,12 @@ let mousePos;
 let mousePosPlayer;
 let gameOver = false;
 let gameDifficult = 1;
+let requestId;
+let gameStarted = false;
+let meleeEnemies = 10;
+let rangeEnemies = 10;
+
+/*DOM variables*/
 const gameRunDOM = document.querySelector('#game-running');
 const gameOverDOM = document.querySelector('#game-over')
 const initDOM =  document.querySelector('#init-screen');
@@ -28,15 +37,8 @@ const hardModeDOM = document.querySelector('#hard');
 const difficultDOM = document.querySelector('#difficult-mode');
 
 
-let requestId;
-let gameStarted = false;
-let meleeEnemies = 10;
-let rangeEnemies = 10;
 
-
-
-
-//update function to update all the GameObjects
+/*Event listeners functions*/
 function update(object) {
     object.update();
 }
@@ -72,7 +74,22 @@ function mousePosition(e){
     hero.aim(e);
 }
 
+function addEventListeners(){
+    window.addEventListener('keydown', keyPressed)
+    window.addEventListener('mousemove', mousePosition)
+    window.addEventListener('click', mouseClick)
+    window.addEventListener('keyup', keyRelease)
+}
 
+function removeEventListeners(){
+    window.removeEventListener('keydown', keyPressed)
+    window.removeEventListener('mousemove', mousePosition)
+    window.removeEventListener('click', mouseClick)
+    window.removeEventListener('keyup', keyRelease)
+}
+
+
+/*Function to display de correct screen and play the correct music*/
 function gameStatus(){
     if(!gameOver){
         requestId = requestAnimationFrame(loop);
@@ -95,21 +112,36 @@ function gameStatus(){
     }
 }
 
-
-function addEventListeners(){
-    window.addEventListener('keydown', keyPressed)
-    window.addEventListener('mousemove', mousePosition)
-    window.addEventListener('click', mouseClick)
-    window.addEventListener('keyup', keyRelease)
+/*Function for the initial screen*/
+function initial(){
+    gameOverDOM.style.display = 'none'
+    gameWinDOM.style.display = 'none'
+    gameRunDOM.style.display = 'none'
+    settingsDOM.style.display = 'none'
+    initDOM.style.display = 'block';
+    gameStarted = false;
+    gameOver = false;
+    mapDone = false;
+    removeEnemies();
+    removeItems();
+    removeProjectiles();
+    gameOverMusic.stop();
+    gameWinMusic.stop();
+    backgroundMusic.stop();
 }
 
-function removeEventListeners(){
-    window.removeEventListener('keydown', keyPressed)
-    window.removeEventListener('mousemove', mousePosition)
-    window.removeEventListener('click', mouseClick)
-    window.removeEventListener('keyup', keyRelease)
+
+/*Function when settings button is pressed*/
+function settings(){
+    gameOverDOM.style.display = 'none'
+    gameWinDOM.style.display = 'none'
+    gameRunDOM.style.display = 'none'
+    initDOM.style.display = 'none';
+    settingsDOM.style.display = 'flex'
+
 }
 
+/*Checks the difficult selected*/
 function difficult(mode){
     if(mode ==='easy'){
         easyModeDOM.style.border = '1px solid #95cc4f'
@@ -139,13 +171,13 @@ function loop() {
     gameStatus();
 }
 
+/*Function when start and retry button is pressed*/
 function start(){
     initDOM.style.display = 'none';
     gameOverDOM.style.display = 'none'
     gameWinDOM.style.display = 'none'
     settingsDOM.style.display = 'none'
     gameRunDOM.style.display = 'block'
-    // canvas.style.display = 'block';
     gameStarted = true;
     gameOver = false;
     mapDone = false;
@@ -163,33 +195,7 @@ function start(){
     loop()
 }
 
-function initial(){
-    gameOverDOM.style.display = 'none'
-    gameWinDOM.style.display = 'none'
-    gameRunDOM.style.display = 'none'
-    settingsDOM.style.display = 'none'
-    initDOM.style.display = 'block';
-    gameStarted = false;
-    gameOver = false;
-    mapDone = false;
-    removeEnemies();
-    removeItems();
-    removeProjectiles();
-    gameOverMusic.stop();
-    gameWinMusic.stop();
-    backgroundMusic.stop();
-}
 
-
-
-function settings(){
-    gameOverDOM.style.display = 'none'
-    gameWinDOM.style.display = 'none'
-    gameRunDOM.style.display = 'none'
-    initDOM.style.display = 'none';
-    settingsDOM.style.display = 'flex'
-
-}
 
 
 
