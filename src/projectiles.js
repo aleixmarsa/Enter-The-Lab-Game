@@ -1,15 +1,16 @@
-const heroShootingSound = new Sound("./music/hero_shooting.wav");   
+const heroShootingSound = './music/hero_shooting.wav';   
 let blueBulletImg = './images/projectiles/blue_bullet.png'
 
 
 class Projectile extends GameObject{
-    constructor(imageSrc, x, y, width, height, quadrant, ratioXY, ratioYX, speed, damage){
+    constructor(imageSrc, x, y, width, height, quadrant, ratioXY, ratioYX, speed, damage, projectileSoundSrc){
         super(imageSrc, x ,y , width, height)
         this.quadrant = quadrant;
         this.ratioXY = ratioXY;
         this.ratioYX = ratioXY
         this.speed = speed;
         this.damage = damage;
+        this.projectileSound = new Sound(projectileSoundSrc)
 
         //Checks the ratio between x and y cick position.
         //Depending on wich axis position is bigger calculates the speed for each axis
@@ -99,7 +100,7 @@ function shoot(e){
     e.preventDefault()
     if (hero.isAlive()){
         //Gets the click pos relative to canvas
-        heroShootingSound.play();
+        
         let pos = getMousePos(canvas, e)
         let quadrant = 1;
         //Gets the click pos realive to player
@@ -120,7 +121,7 @@ function shoot(e){
         }else if( pos.x > 0 && pos.y > 0 ){
             quadrant = 4;
         }
-
+        console.log(heroShootingSound)
         totalProjectiles.push(
             new Projectile(blueBulletImg,
                 hero.x,
@@ -131,8 +132,10 @@ function shoot(e){
                 ratioXY,
                 ratioYX,
                 16,
-                hero.attackPoints)
+                hero.attackPoints,
+                heroShootingSound)
         )
+        totalProjectiles.at(-1).projectileSound.play();
     }
     
 }

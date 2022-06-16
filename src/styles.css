@@ -7,6 +7,14 @@ h1{
   font-size: 18px;
   display: inline;
 }
+
+h2{
+  font-family: 'Press Start 2P';
+  color: #95cc50;
+  font-size: 15px;
+  display: inline;
+}
+
 body {
   font-family: sans-serif;
   background-image: url('../images/screens/start_background.png');

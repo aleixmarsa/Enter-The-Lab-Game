@@ -6,23 +6,30 @@ const rangeImgDeath ='./images/enemies/range_death.png'
 const rangeImgStop = './images/enemies/range_enemy_stop_right.png';
 const rangeImgLeft = './images/enemies/range_enemy_run_left.png';
 const rangeImgRight = './images/enemies/range_enemy_run_right.png';
-
 let greenBulletImg = './images/projectiles/green_bullet.png'
 const healthItemImg = './images/items/potion.png';
 
 const enemyDestroyedSound ='./music/melee_destroyed.wav';   
+const enemyShootingSound = './music/enemy_shooting.wav' 
 
+
+let meleeAttack = 5;
+let rangeAttack = 1;
+let meleeHealth = 6;
+let rangeHealth = 6;
+let speed = 1;
 
 
 class Enemy extends AliveObject{
 
-    constructor(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames, healthPoints, attackPoints, deathSoundSrc){
+    constructor(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames, healthPoints, attackPoints, speed , deathSoundSrc){
         super(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames, healthPoints, attackPoints, deathSoundSrc)
         this.runImgLeft;
         this.runImgRight;    
         this.path;
         this.moving = false;
         this.heroDetected = false;
+        this.speed = speed;
     }
     
     checkZone(){
@@ -55,17 +62,17 @@ class Enemy extends AliveObject{
                     collisionArray[this.row][this.column] = 0
                     if (this.x > this.pathToHeroX){
                         this.image.src = this.runImgLeft;
-                        this.x -= 1;
+                        this.x -= this.speed;
                     }
                     else if(this.x < this.pathToHeroX){
                         this.image.src = this.runImgRight;
-                        this.x += 1;
+                        this.x += this.speed;
                     }
                     if (this.y > this.pathToHeroY){
-                        this.y -= 1;
+                        this.y -= this.speed;
                     }
                     else if (this.y < this.pathToHeroY){
-                        this.y += 1;
+                        this.y += this.speed;
                     }
                      this.calculateRowColumn();
                     collisionArray[this.row][this.column] = 9
@@ -133,8 +140,8 @@ class Enemy extends AliveObject{
 }
 
 class MeleeRobot extends Enemy{
-    constructor(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints, deathSoundSrc){
-        super(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints,deathSoundSrc)
+    constructor(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints, speed, deathSoundSrc){
+        super(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints, speed, deathSoundSrc)
         this.runImgLeft = meleeImgLeft;
         this.runImgRight = meleeImgRight;
         this.deathImg = meleeImgDeath;
@@ -168,8 +175,8 @@ class MeleeRobot extends Enemy{
 
 
 class RangeRobot extends Enemy{
-    constructor(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints, deathSoundSrc){
-        super(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints, deathSoundSrc)
+    constructor(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints, speed, deathSoundSrc){
+        super(imageSrc,x ,y , width, height, timePerFrame, numberOfFrames,healthPoints, attackPoints, speed, deathSoundSrc)
         this.runImgLeft = rangeImgLeft;
         this.runImgRight = rangeImgRight;
         this.deathImg = rangeImgDeath;
@@ -239,8 +246,10 @@ class RangeRobot extends Enemy{
                 ratioXY,
                 ratioYX,
                 10,
-                this.damage)
+                this.damage,
+                enemyShootingSound)
         )
+        this.projectiles.at(-1).projectileSound.play();
 
     }
     
@@ -266,7 +275,7 @@ function spawnEnemies(meleeEnemies, rangeEnemies){
             }
         }
         totalEnemies.push(
-            new MeleeRobot(meleeImgStop,column*celPixels, row*celPixels, 128, celPixels,150,4,6,7,enemyDestroyedSound)
+            new MeleeRobot(meleeImgStop,column*celPixels, row*celPixels, 128, celPixels,150,4,meleeHealth,(meleeAttack * gameDifficult)+1, speed * gameDifficult, enemyDestroyedSound)
         )
     }
     for(let i = 0; i < rangeEnemies; i++){
@@ -282,7 +291,7 @@ function spawnEnemies(meleeEnemies, rangeEnemies){
             }
         }
         totalEnemies.push(
-            new RangeRobot(rangeImgStop,column*celPixels, row*celPixels, 128, celPixels,150,4,6,1,enemyDestroyedSound)
+            new RangeRobot(rangeImgStop,column*celPixels, row*celPixels, 128, celPixels,150,4,rangeHealth,rangeAttack * gameDifficult, speed * gameDifficult, enemyDestroyedSound)
         )
     }
 }

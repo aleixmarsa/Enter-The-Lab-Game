@@ -15,6 +15,7 @@ let totalItems = [];
 let mousePos;
 let mousePosPlayer;
 let gameOver = false;
+let gameDifficult = 1;
 const gameRunDOM = document.querySelector('#game-running');
 const gameOverDOM = document.querySelector('#game-over')
 const initDOM =  document.querySelector('#init-screen');
@@ -31,9 +32,7 @@ let requestId;
 let gameStarted = false;
 let meleeEnemies = 10;
 let rangeEnemies = 10;
-const backgroundMusic = new Sound('./music/background_music.mp3');
-const gameOverMusic = new Sound('./music/game_over.mp3');   
-const gameWinMusic = new Sound('./music/game_win.mp3')
+
 
 
 
@@ -114,10 +113,12 @@ function difficult(mode){
     if(mode ==='easy'){
         easyModeDOM.style.border = '1px solid #95cc4f'
         hardModeDOM.style.border = 'none'
+        gameDifficult = 1;
     }
     else{
         hardModeDOM.style.border = '1px solid #95cc4f'
         easyModeDOM.style.border = 'none'
+        gameDifficult = 2;
     }
 }
 
@@ -142,7 +143,6 @@ function start(){
     gameWinDOM.style.display = 'none'
     settingsDOM.style.display = 'none'
     gameRunDOM.style.display = 'block'
-
     // canvas.style.display = 'block';
     gameStarted = true;
     gameOver = false;
