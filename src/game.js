@@ -25,12 +25,12 @@ const healthDOM = document.querySelector('#health-points')
 const settingsDOM = document.querySelector('#settings-screen')
 const easyModeDOM = document.querySelector('#easy');
 const hardModeDOM = document.querySelector('#hard');
-
+const difficultDOM = document.querySelector('#difficult-mode');
 
 
 let requestId;
 let gameStarted = false;
-let meleeEnemies = 10;
+let meleeEnemies = 0;
 let rangeEnemies = 10;
 
 
@@ -79,6 +79,7 @@ function gameStatus(){
         requestId = requestAnimationFrame(loop);
         if(map_done && hero.x > map.width){
             backgroundMusic.stop();
+            gameWinMusic.volume();
             gameWinMusic.play();
             cancelAnimationFrame(requestId)
             gameWinDOM.style.display = 'flex';
@@ -86,6 +87,7 @@ function gameStatus(){
         }
     }else{
         backgroundMusic.stop();
+        gameOverMusic.volume();
         gameOverMusic.play()
         cancelAnimationFrame(requestId)
         gameOverDOM.style.display = 'flex';
@@ -114,11 +116,14 @@ function difficult(mode){
         easyModeDOM.style.border = '1px solid #95cc4f'
         hardModeDOM.style.border = 'none'
         gameDifficult = 1;
+        difficultDOM.innerHTML = 'EASY';
     }
     else{
         hardModeDOM.style.border = '1px solid #95cc4f'
         easyModeDOM.style.border = 'none'
         gameDifficult = 2;
+        difficultDOM.innerHTML = 'HARD';
+
     }
 }
 
@@ -147,12 +152,12 @@ function start(){
     gameStarted = true;
     gameOver = false;
     mapDone = false;
+    gameOverMusic.stop();
+    backgroundMusic.volume();
+    backgroundMusic.play();
     removeEnemies();
     removeItems();
     removeProjectiles();
-    backgroundMusic.currentTime = 0;
-    gameOverMusic.stop();
-    backgroundMusic.play();
     spawnMap();
     collisionArray = createCollisionArray(mapArray);
     spawnHero();
@@ -174,13 +179,13 @@ function initial(){
     removeItems();
     removeProjectiles();
     gameOverMusic.stop();
+    gameWinMusic.stop();
     backgroundMusic.stop();
 }
 
 
 
 function settings(){
-    volume();
     gameOverDOM.style.display = 'none'
     gameWinDOM.style.display = 'none'
     gameRunDOM.style.display = 'none'

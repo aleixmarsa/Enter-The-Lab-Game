@@ -1,4 +1,4 @@
-const heroShootingSound = './music/hero_shooting.wav';   
+const heroShootingSound = './music/hero_shooting.wav';  
 let blueBulletImg = './images/projectiles/blue_bullet.png'
 
 

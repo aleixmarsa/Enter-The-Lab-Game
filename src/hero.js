@@ -139,6 +139,7 @@ class Hero extends AliveObject{
         this.calculateRowColumn();
 
         if( this.isAlive() ){
+            damagedSound.volume();
             damagedSound.play();
             this.healthPoints -= damage;
             if(enemy.constructor.name === 'RangeRobot' && !enemyProjectile){

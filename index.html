@@ -30,7 +30,7 @@
 	<div id="game-running">
 		<div id="game-information">
 			<h2>HEALTH POINTS: <span id="health-points">100</span></h2>
-			<h2>DIFFICULT: <span id="health-points">100</span></h2>
+			<h2>DIFFICULT: <span id="difficult-mode">EASY</span></h2>
 			<h2>ENEMIES LEFT: <span id="enemies-left">0</span></h2>
 		</div>
 		<canvas id="canvas"></canvas>
@@ -55,7 +55,7 @@
 		<div id="settings-adjustment">
 			<div class="setting">
 				<h1>VOLUME:</h1>
-				<input onclick="volume()" type="range" min="1" max="100" value="50" class="slider" id="myRange">
+				<input onclick="gameVolume()" type="range" min="1" max="100" value="50" class="slider" id="myRange">
 				<span id="volume-value"></span>
 			</div>
 			<div class ="setting">
