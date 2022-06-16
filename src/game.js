@@ -30,7 +30,7 @@ const difficultDOM = document.querySelector('#difficult-mode');
 
 let requestId;
 let gameStarted = false;
-let meleeEnemies = 0;
+let meleeEnemies = 10;
 let rangeEnemies = 10;
 
 
@@ -70,7 +70,6 @@ function mousePosition(e){
     mousePosPlayer.x = mousePos.x - hero.x;
     mousePosPlayer.y = mousePos.y - hero.y;
     hero.aim(e);
-    //console.log('Mouse position: ' + mousePos.x + ',' + mousePos.y);
 }
 
 
@@ -126,8 +125,6 @@ function difficult(mode){
 
     }
 }
-
-
 
 //The Game Loop
 function loop() {

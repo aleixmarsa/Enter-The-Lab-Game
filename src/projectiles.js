@@ -121,7 +121,6 @@ function shoot(e){
         }else if( pos.x > 0 && pos.y > 0 ){
             quadrant = 4;
         }
-        console.log(heroShootingSound)
         totalProjectiles.push(
             new Projectile(blueBulletImg,
                 hero.x,

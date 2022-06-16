@@ -183,6 +183,7 @@ class Hero extends AliveObject{
             item.calculateRowColumn();
             if(this.row === item.row && this.column === item.column){
                 if(this.healthPoints < this.maxHealth){
+                    healingSound.volume();
                     healingSound.play();
                     this.healthPoints+=2;
                     totalItems.splice(totalItems.indexOf(item),1)

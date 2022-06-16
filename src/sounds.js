@@ -9,7 +9,6 @@ class Sound {
         this.sound.setAttribute("controls", "none");
         this.sound.style.display = "none";
         document.body.appendChild(this.sound);
-        console.log(this.sound.volume)
     }
 
     play(){

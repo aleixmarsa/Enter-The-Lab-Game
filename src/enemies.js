@@ -125,7 +125,6 @@ class Enemy extends AliveObject{
 
     generateItem(){
         let random = Math.random()
-                console.log(random)
                 if(random > 0.5){
                     totalItems.push(
                         new GameObject(healthItemImg,
