@@ -10,12 +10,22 @@
 </head>
 
 <body>
+
 	<div id="game-win">
 		<img id="game-win-img" src="./images/screens/you_win.png" alt="">
+		<div id="menu-win-btn">
+			<a href="#" onclick="initial()"><img class="btn" src="./images/buttons/menu_btn.png" alt=""></a>
+		</div>
+		
 	</div>
+
 	<div id="game-over"> 
 		<img id="game-over-img" src="./images/screens/game_over.png">
-		<a href="#" onclick="start()"><img id="retry-btn" class="button" src="./images/buttons/retry_btn.png" alt=""></a>	
+		<div class ="buttons">
+			<a href="#" onclick="start()"><img class="btn" class="button" src="./images/buttons/retry_btn.png" alt=""></a>
+			<a href="#" onclick="initial()"><img class="btn" src="./images/buttons/menu_btn.png" alt=""></a>
+		</div>
+
 	</div>
 	<div id="game-running">
 		<div id="game-information">
@@ -23,20 +33,44 @@
 			<h1>ENEMIES LEFT: <span id="enemies-left">0</span></h1>
 		</div>
 		<canvas id="canvas"></canvas>
-		<canvas id="canvas"></canvas>
 
 	</div>
 
-	<div id="start-game">
+	<div id="init-screen">
 		<img id="game-title"src="./images/screens/title.png" alt="">
 		<div id='controls'>
 			<img id="keys" src="./images/buttons/wasd.png" alt="">
 			<img id = "mouse" src="./images/buttons/mouse.png" alt="">
 		</div>
-		<div>
-			<a href="#" onclick="start()"><img id="start-btn" class="button" src="./images/buttons/start_btn.png" alt=""></a>	
+		<div class ="buttons">
+			<a href="#" onclick="start()"><img id="start-btn" src="./images/buttons/start_btn.png" alt=""></a>
+			<a href="#" onclick="settings()"><img id="settings-btn" src="./images/buttons/settings_btn.png" alt=""></a>
 		</div>	
 	</div>
+
+
+	<div id="settings-screen">
+		<img id="game-title"src="./images/screens/settings.png" alt="">
+		<div id="settings-adjustment">
+			<div class="setting">
+				<h1>VOLUME:</h1>
+				<input onclick="volume()" type="range" min="1" max="100" value="50" class="slider" id="myRange">
+				<span id="volume-value"></span>
+			</div>
+			<div class ="setting">
+				<h1>DIFFICULT:</h1>
+				<div id = "difficult">
+					<h1 onclick="difficult('easy')" id="easy">EASY</h1>
+					<h1 onclick="difficult('hard')" id="hard">HARD</h1>
+				</div>
+			</div>
+		</div>
+
+		<div id ="settings-buttons">
+			<a href="#" onclick="initial()"><img id="menu-btn" src="./images/buttons/menu_btn.png" alt=""></a>
+		</div>
+	</div>
+
 
 	<script src="src/sounds.js"></script>
 	<script src="src/objects.js"></script>

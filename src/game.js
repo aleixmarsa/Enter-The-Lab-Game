@@ -17,16 +17,20 @@ let mousePosPlayer;
 let gameOver = false;
 const gameRunDOM = document.querySelector('#game-running');
 const gameOverDOM = document.querySelector('#game-over')
-const startDOM =  document.querySelector('#start-game');
+const initDOM =  document.querySelector('#init-screen');
 const gameWinDOM = document.querySelector('#game-win')
 const enemiesDOM = document.querySelector('#enemies-left')
 const healthDOM = document.querySelector('#health-points')
+const settingsDOM = document.querySelector('#settings-screen')
+const easyModeDOM = document.querySelector('#easy');
+const hardModeDOM = document.querySelector('#hard');
+
 
 
 let requestId;
 let gameStarted = false;
-let meleeEnemies = 5;
-let rangeEnemies = 5;
+let meleeEnemies = 10;
+let rangeEnemies = 10;
 const backgroundMusic = new Sound('./music/background_music.mp3');
 const gameOverMusic = new Sound('./music/game_over.mp3');   
 const gameWinMusic = new Sound('./music/game_win.mp3')
@@ -48,6 +52,7 @@ function keyRelease(e){
 
 function mouseClick(e){
     if(gameStarted){
+        e.preventDefault();
         shoot(e);
     }
 }
@@ -77,16 +82,45 @@ function gameStatus(){
             backgroundMusic.stop();
             gameWinMusic.play();
             cancelAnimationFrame(requestId)
-            gameWinDOM.style.display = 'block';
+            gameWinDOM.style.display = 'flex';
+            removeEventListeners();
         }
     }else{
         backgroundMusic.stop();
         gameOverMusic.play()
         cancelAnimationFrame(requestId)
         gameOverDOM.style.display = 'flex';
+        removeEventListeners();
 
     }
 }
+
+
+function addEventListeners(){
+    window.addEventListener('keydown', keyPressed)
+    window.addEventListener('mousemove', mousePosition)
+    window.addEventListener('click', mouseClick)
+    window.addEventListener('keyup', keyRelease)
+}
+
+function removeEventListeners(){
+    window.removeEventListener('keydown', keyPressed)
+    window.removeEventListener('mousemove', mousePosition)
+    window.removeEventListener('click', mouseClick)
+    window.removeEventListener('keyup', keyRelease)
+}
+
+function difficult(mode){
+    if(mode ==='easy'){
+        easyModeDOM.style.border = '1px solid #95cc4f'
+        hardModeDOM.style.border = 'none'
+    }
+    else{
+        hardModeDOM.style.border = '1px solid #95cc4f'
+        easyModeDOM.style.border = 'none'
+    }
+}
+
 
 
 //The Game Loop
@@ -94,39 +128,66 @@ function loop() {
     map.clear();
     map.draw();
     hero.draw();
+    drawEnemies(totalEnemies)
+    drawObjects(totalProjectiles, hero);
+    drawObjects(totalItems)
     drawDecoration();
-    drawProjectiles();
-    drawEnemies();
-    drawItems();
     checkMap()   
     gameStatus();
 }
 
 function start(){
-    console.log(startDOM)
-    startDOM.style.display = 'none';
+    initDOM.style.display = 'none';
     gameOverDOM.style.display = 'none'
     gameWinDOM.style.display = 'none'
+    settingsDOM.style.display = 'none'
     gameRunDOM.style.display = 'block'
+
     // canvas.style.display = 'block';
-    window.addEventListener('keydown', keyPressed)
-    window.addEventListener('mousemove', mousePosition)
-    window.addEventListener('click', mouseClick)
-    window.addEventListener('keyup', keyRelease)
     gameStarted = true;
     gameOver = false;
     mapDone = false;
     removeEnemies();
-    removeItems()
+    removeItems();
+    removeProjectiles();
+    backgroundMusic.currentTime = 0;
     gameOverMusic.stop();
     backgroundMusic.play();
     spawnMap();
     collisionArray = createCollisionArray(mapArray);
     spawnHero();
     spawnEnemies(meleeEnemies,rangeEnemies);
+    addEventListeners();
     loop()
 }
 
+function initial(){
+    gameOverDOM.style.display = 'none'
+    gameWinDOM.style.display = 'none'
+    gameRunDOM.style.display = 'none'
+    settingsDOM.style.display = 'none'
+    initDOM.style.display = 'block';
+    gameStarted = false;
+    gameOver = false;
+    mapDone = false;
+    removeEnemies();
+    removeItems();
+    removeProjectiles();
+    gameOverMusic.stop();
+    backgroundMusic.stop();
+}
+
+
+
+function settings(){
+    volume();
+    gameOverDOM.style.display = 'none'
+    gameWinDOM.style.display = 'none'
+    gameRunDOM.style.display = 'none'
+    initDOM.style.display = 'none';
+    settingsDOM.style.display = 'flex'
+
+}
 
 
 

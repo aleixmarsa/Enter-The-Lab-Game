@@ -13,6 +13,7 @@ body {
   background-repeat:no-repeat;
   background-position: center center;
   background-size: cover;
+  margin-bottom: 0;
 }
 
 #game-running{
@@ -20,7 +21,7 @@ body {
   height: 800px;
   padding-left: 0;
   padding-right: 0;
-  margin-bottom: auto;
+  margin-bottom: 70px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -47,12 +48,47 @@ body {
   margin-top: 100px;
 }
 
-#retry-btn{
+
+#game-win{
+  position: absolute;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+}
+
+#game-win-img{
+  margin-top: 100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+
+.buttons{
+  width: 800px;
   margin-top: 120px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#menu-win-btn{
+  margin-top: 80px;
+}
+
+#init-menu-img{
   width: 300px;
 }
 
-#retry-btn:hover{
+.btn{
+  width: 300px;
+}
+
+.btn:hover{
   width: 310px;
 }
 
@@ -66,7 +102,7 @@ body {
   margin-right: auto;
 }
 
-#start-game{
+#init-screen{
   display: block;
   width: 800px;
   height: 800px;
@@ -90,7 +126,7 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  margin-top: 50px;
+  margin-top: 10px;
 
 }
 
@@ -114,24 +150,124 @@ body {
 
 #start-btn{
   display: block;
-  margin-top: 100px;
-  margin-left: 240px;
-  width: 300px;
+  width: 250px;
 }
 
 #start-btn:hover{
-  width: 310px;
+  width: 260px;
 }
 
+#settings-btn{
+  width: 380px;
+}
+#settings-btn:hover{
+  width: 390px;
+}
 
-#game-win{
-  position: absolute;
+#settings-screen{
   display: none;
+  min-width: 100%;
+  min-height: 100%;
+  flex-direction: column;
+  align-items: left;
+  margin-bottom: 116px;
+}
 
+.setting {
+  margin-left: 25%;
+  margin-top: 5%;
+  width: 20%; /* Width of the outside container */
+  display: flex;
+  flex-direction: row;
+}
+
+.slider {
+  margin-top: 8px;
+  margin-left: 20px;
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 100%; /* Full-width */
+  height: 25px; /* Specified height */
+  background: black; /* Grey background */
+  border: 1px solid #95cc4f;
+  outline: none; /* Remove outline */
+  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1; /* Fully shown on mouse-over */
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #95cc4f; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+.slider::-moz-range-thumb {
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #95cc4f; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+
+#difficult{
+  min-width: 200px;
+  margin-left: 20px;
+  margin-top: 0px;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
 
 }
 
-#game-win-img{
-  margin-left: 529px;
-  margin-top: 200px;
+#easy{
+  border: 1px solid #95cc4f;
+  padding: 8px;
+  margin-top: 5px;
+  max-height: 25px;
+}
+
+#easy:hover{
+  cursor: pointer;
+}
+
+#hard{
+  padding: 8px;
+  margin-top: 5px;
+  max-height: 25px;
+}
+
+
+#hard:hover{
+  cursor: pointer;
+}
+
+#volume-value{
+  font-family: 'Press Start 2P';
+  color: #95cc50;  
+  font-size: 18px;
+  margin-left: 10px;
+  margin-top: 12px;
+}
+
+#settings-buttons{
+  margin-top: 190px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#settings-adjustment{
+  margin-top: 50px;
+}
+
+#menu-btn{
+  width:250px;
 }

@@ -96,6 +96,7 @@ class Projectile extends GameObject{
 }
 
 function shoot(e){
+    e.preventDefault()
     if (hero.isAlive()){
         //Gets the click pos relative to canvas
         heroShootingSound.play();
@@ -136,8 +137,6 @@ function shoot(e){
     
 }
 
-function drawProjectiles(){
-    for(let projectile of totalProjectiles){
-        projectile.draw(hero)
-    }
+function removeProjectiles(){
+    totalProjectiles = [];
 }

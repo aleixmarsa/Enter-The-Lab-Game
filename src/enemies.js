@@ -260,7 +260,10 @@ function spawnEnemies(meleeEnemies, rangeEnemies){
         while(!created){
             column = Math.floor(Math.random()*collisionArray[0].length)
             row = Math.floor(Math.random()*collisionArray.length)
-            if(collisionArray[row][column] === 0 && collisionArray[row+1][column] === 0) created = true;
+            if(collisionArray[row][column] === 0 && collisionArray[row+1][column] === 0){
+                collisionArray[row][column] = 9;
+                created = true;
+            }
         }
         totalEnemies.push(
             new MeleeRobot(meleeImgStop,column*celPixels, row*celPixels, 128, celPixels,150,4,6,7,enemyDestroyedSound)
@@ -273,7 +276,10 @@ function spawnEnemies(meleeEnemies, rangeEnemies){
         while(!created){
             column = Math.floor(Math.random()*collisionArray[0].length)
             row = Math.floor(Math.random()*collisionArray.length)
-            if(collisionArray[row][column] === 0 && collisionArray[row+1][column] === 0) created = true;
+            if(collisionArray[row][column] === 0 && collisionArray[row+1][column] === 0){
+                collisionArray[row][column] = 9;
+                created = true;
+            }
         }
         totalEnemies.push(
             new RangeRobot(rangeImgStop,column*celPixels, row*celPixels, 128, celPixels,150,4,6,1,enemyDestroyedSound)
@@ -297,12 +303,6 @@ function drawEnemies(){
     enemiesDOM.innerHTML= totalEnemies.length;
 }
 
-
-function drawItems(){
-    for (let item of totalItems){
-        item.draw();
-    }
-}
 
 function removeItems(){
     totalItems = [];

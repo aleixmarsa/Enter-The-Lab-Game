@@ -1,4 +1,4 @@
-- Netejar i refactoritzar
-- Afegir soroll quan l'heroi rep mal
+-POSAR NOM!
+
 - Canviar posició des d'on dispara.
 - Afegir boss

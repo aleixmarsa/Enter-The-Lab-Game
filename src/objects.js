@@ -100,3 +100,13 @@ class AliveObject extends SpriteObject{
 
 
 }
+
+function drawObjects(array, character){
+    for (let object of array){
+        object.draw(character);
+    }
+}
+
+function removeObjects(array){
+    array = [];
+}
