@@ -1,95 +1,124 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <title>Enter the lab</title>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Eliminate all the enemies!" />
+    <meta name="author" content="Aleix Marsà Sabrià" />
+    <link rel="icon" href="./images/favicon/favicon.png" type="image/png" />
+    <link rel="stylesheet" href="./src/css/styles.css" />
+  </head>
 
-<head>
-	<title>Enter the lab</title>
-	<meta charset="UTF-8" />
-	<meta name="description" content="Eliminate all the enemies!">
-	<meta name="author" content="Aleix Marsà Sabrià">
-	<link rel="icon" href="./images/favicon/favicon.png" type="image/png">
-	<link rel="stylesheet" href="./src/css/styles.css">
-</head>
+  <body>
 
-<body>
+    <div id="game-win">
+      <img id="game-win-img" src="./images/screens/you_win.png" alt="" />
+      <div id="menu-win-btn">
+        <a href="#" onclick="initial()"
+          ><img class="btn" src="./images/buttons/menu_btn.png" alt=""
+        /></a>
+      </div>
+    </div>
 
-	<div id="game-win">
-		<img id="game-win-img" src="./images/screens/you_win.png" alt="">
-		<div id="menu-win-btn">
-			<a href="#" onclick="initial()"><img class="btn" src="./images/buttons/menu_btn.png" alt=""></a>
-		</div>
-		
-	</div>
+    <div id="game-over">
+      <img id="game-over-img" src="./images/screens/game_over.png" />
+      <div id="over-buttons">
+        <a href="#" onclick="start()"
+          ><img
+            class="btn"
+            class="button"
+            src="./images/buttons/retry_btn.png"
+            alt=""
+        /></a>
+        <a href="#" onclick="initial()"
+          ><img class="btn" src="./images/buttons/menu_btn.png" alt=""
+        /></a>
+      </div>
+    </div>
 
-	<div id="game-over"> 
-		<img id="game-over-img" src="./images/screens/game_over.png">
-		<div id ="over-buttons">
-			<a href="#" onclick="start()"><img class="btn" class="button" src="./images/buttons/retry_btn.png" alt=""></a>
-			<a href="#" onclick="initial()"><img class="btn" src="./images/buttons/menu_btn.png" alt=""></a>
-		</div>
+    <div id="game-running">
+      <div id="game-information">
+        <h2>HEALTH POINTS: <span id="health-points">100</span></h2>
+        <h2>DIFFICULT: <span id="difficult-mode">EASY</span></h2>
+        <h2>ENEMIES LEFT: <span id="enemies-left">0</span></h2>
+      </div>
+      <canvas id="canvas"></canvas>
+    </div>
 
-	</div>
-	<div id="game-running">
-		<div id="game-information">
-			<h2>HEALTH POINTS: <span id="health-points">100</span></h2>
-			<h2>DIFFICULT: <span id="difficult-mode">EASY</span></h2>
-			<h2>ENEMIES LEFT: <span id="enemies-left">0</span></h2>
-		</div>
-		<canvas id="canvas"></canvas>
+    <div id="init-screen">
+      <img id="game-title" src="./images/screens/title.png" alt="" />
+      <div id="controls">
+        <img id="keys" src="./images/buttons/wasd.png" alt="" />
+        <img id="mouse" src="./images/buttons/mouse.png" alt="" />
+      </div>
+      <div id="init-buttons">
+        <a href="#" onclick="start()"
+          ><img id="start-btn" src="./images/buttons/start_btn.png" alt=""
+        /></a>
+        <a href="#" onclick="settings()"
+          ><img
+            id="settings-btn"
+            src="./images/buttons/settings_btn.png"
+            alt=""
+        /></a>
+      </div>
 
-	</div>
+      <div id="contact">
+        <div id="icons">
+          <a href="https://github.com/aleixmarsa"
+            ><i class="fa fa-github fa-2x"></i
+          ></a>
+          <a href="https://www.linkedin.com/in/aleix-marsà-sabrià-991a21141"
+            ><i class="fab fa-linkedin fa-2x"></i
+          ></a>
+        </div>
+        <h3>by ALEIX MARSÀ SABRIÀ</h3>
+      </div>
+    </div>
 
-	<div id="init-screen">
-		<img id="game-title"src="./images/screens/title.png" alt="">
-		<div id='controls'>
-			<img id="keys" src="./images/buttons/wasd.png" alt="">
-			<img id = "mouse" src="./images/buttons/mouse.png" alt="">
-		</div>
-		<div id ="init-buttons">
-			<a href="#" onclick="start()"><img id="start-btn" src="./images/buttons/start_btn.png" alt=""></a>
-			<a href="#" onclick="settings()"><img id="settings-btn" src="./images/buttons/settings_btn.png" alt=""></a>
-		</div>
-		<div id="contact">
-			<div id="icons">
-				<a href="https://github.com/aleixmarsa"><i class="fa fa-github fa-2x" ></i></a>
-				<a href="https://www.linkedin.com/in/aleix-marsà-sabrià-991a21141"><i class="fab fa-linkedin fa-2x"></i></a>
-			</div>
-			<h3>by ALEIX MARSÀ SABRIÀ</h3>	
-		</div>
-	</div>
+    <div id="settings-screen">
+      <img id="game-title" src="./images/screens/settings.png" alt="" />
+      <div id="settings-adjustment">
+        <div class="setting">
+          <h1>VOLUME:</h1>
+          <input
+            onclick="gameVolume()"
+            type="range"
+            min="1"
+            max="100"
+            value="50"
+            class="slider"
+            id="myRange"
+          />
+          <span id="volume-value"></span>
+        </div>
+        <div class="setting">
+          <h1>DIFFICULT:</h1>
+          <div id="difficult">
+            <h1 onclick="difficult('easy')" id="easy">EASY</h1>
+            <h1 onclick="difficult('hard')" id="hard">HARD</h1>
+          </div>
+        </div>
+      </div>
+      <div id="settings-buttons">
+        <a href="#" onclick="initial()"
+          ><img id="menu-btn" src="./images/buttons/menu_btn.png" alt=""
+        /></a>
+      </div>
+    </div>
 
-	<div id="settings-screen">
-		<img id="game-title"src="./images/screens/settings.png" alt="">
-		<div id="settings-adjustment">
-			<div class="setting">
-				<h1>VOLUME:</h1>
-				<input onclick="gameVolume()" type="range" min="1" max="100" value="50" class="slider" id="myRange">
-				<span id="volume-value"></span>
-			</div>
-			<div class ="setting">
-				<h1>DIFFICULT:</h1>
-				<div id = "difficult">
-					<h1 onclick="difficult('easy')" id="easy">EASY</h1>
-					<h1 onclick="difficult('hard')" id="hard">HARD</h1>
-				</div>
-			</div>
-		</div>
-
-		<div id ="settings-buttons">
-			<a href="#" onclick="initial()"><img id="menu-btn" src="./images/buttons/menu_btn.png" alt=""></a>
-		</div>
-	</div>
-
-	<script src="https://kit.fontawesome.com/010a4afca7.js" crossorigin="anonymous"></script>
-	<script src="src/js/sounds.js"></script>
-	<script src="src/js/objects.js"></script>
-	<script src="src/js/map.js"></script>
-	<script src="src/js/pathfinder.js"></script>
-	<script src="src/js/projectiles.js"></script>
-	<script src="src/js/decoration.js"></script>
-	<script src="src/js/hero.js"></script>
-	<script src="src/js/enemies.js"></script>
-	<script src="src/js/game.js"></script>
-	
-</body>
-
+    <script
+      src="https://kit.fontawesome.com/010a4afca7.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="src/js/sounds.js"></script>
+    <script src="src/js/objects.js"></script>
+    <script src="src/js/map.js"></script>
+    <script src="src/js/pathfinder.js"></script>
+    <script src="src/js/projectiles.js"></script>
+    <script src="src/js/decoration.js"></script>
+    <script src="src/js/hero.js"></script>
+    <script src="src/js/enemies.js"></script>
+    <script src="src/js/game.js"></script>
+  </body>
 </html>
