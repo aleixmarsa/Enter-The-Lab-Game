@@ -285,6 +285,7 @@ class RangeRobot extends Enemy{
 //Spawns melee and range robot at random position
 function spawnEnemies(meleeEnemies, rangeEnemies){
     for(let i = 0; i < meleeEnemies; i++){
+        
         let created = false;
         let column;
         let row;

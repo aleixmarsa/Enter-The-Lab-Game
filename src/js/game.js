@@ -89,7 +89,7 @@ function removeEventListeners(){
 }
 
 
-/*Function to display de correct screen and play the correct music*/
+/*Detects if game is ober or not and displays the correct screen*/
 function gameStatus(){
     if(!gameOver){
         requestId = requestAnimationFrame(loop);
@@ -130,6 +130,29 @@ function initial(){
     backgroundMusic.stop();
 }
 
+/*Function when start and retry button is pressed*/
+function start(){
+    initDOM.style.display = 'none';
+    gameOverDOM.style.display = 'none'
+    gameWinDOM.style.display = 'none'
+    settingsDOM.style.display = 'none'
+    gameRunDOM.style.display = 'block'
+    gameStarted = true;
+    gameOver = false;
+    mapDone = false;
+    gameOverMusic.stop();
+    backgroundMusic.volume();
+    backgroundMusic.play();
+    removeEnemies();
+    removeItems();
+    removeProjectiles();
+    spawnMap();
+    collisionArray = createCollisionArray(mapArray);
+    spawnHero();
+    spawnEnemies(meleeEnemies,rangeEnemies);
+    addEventListeners();
+    loop()
+}
 
 /*Function when settings button is pressed*/
 function settings(){
@@ -171,29 +194,7 @@ function loop() {
     gameStatus();
 }
 
-/*Function when start and retry button is pressed*/
-function start(){
-    initDOM.style.display = 'none';
-    gameOverDOM.style.display = 'none'
-    gameWinDOM.style.display = 'none'
-    settingsDOM.style.display = 'none'
-    gameRunDOM.style.display = 'block'
-    gameStarted = true;
-    gameOver = false;
-    mapDone = false;
-    gameOverMusic.stop();
-    backgroundMusic.volume();
-    backgroundMusic.play();
-    removeEnemies();
-    removeItems();
-    removeProjectiles();
-    spawnMap();
-    collisionArray = createCollisionArray(mapArray);
-    spawnHero();
-    spawnEnemies(meleeEnemies,rangeEnemies);
-    addEventListeners();
-    loop()
-}
+
 
 
 

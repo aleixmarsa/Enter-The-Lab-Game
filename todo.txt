@@ -1,4 +1,0 @@
--POSAR NOM!
-
-- Canviar posició des d'on dispara.
-- Afegir boss
