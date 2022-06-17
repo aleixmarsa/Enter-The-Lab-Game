@@ -45,15 +45,6 @@ class Projectile extends GameObject {
     }
     totalProjectiles.splice(totalProjectiles.indexOf(this), 1);
   }
-  //Checks if hero receceive an impact
-  heroImpact() {
-    this.calculateRowColumn();
-    hero.calculateRowColumn();
-    if (this.row === hero.row && this.column === hero.column) {
-      hero.receiveDamage(this.damage);
-    }
-    totalProjectiles.splice(totalProjectiles.indexOf(this), 1);
-  }
 
   draw(shooter) {
     this.calculateRowColumn();
