@@ -21,8 +21,8 @@ let gameOver = false;
 let gameDifficult = 1;
 let requestId;
 let gameStarted = false;
-let meleeEnemies = 10;
-let rangeEnemies = 10;
+let numMeleeEnemies = 10;
+let numRangeEnemies = 10;
 
 /*DOM variables*/
 const gameRunDOM = document.querySelector("#game-running");
@@ -145,7 +145,9 @@ function start() {
   spawnMap();
   collisionArray = createCollisionArray(mapArray);
   spawnHero();
-  spawnEnemies(meleeEnemies, rangeEnemies);
+  spawnEnemies(numMeleeEnemies, 'melee');
+  spawnEnemies(numRangeEnemies, 'range');
+  // spawnEnemies(meleeEnemies, rangeEnemies);
   addEventListeners();
   loop();
 }

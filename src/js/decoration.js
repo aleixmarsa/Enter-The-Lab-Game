@@ -46,7 +46,9 @@ totalDecorative.push(
   new SpriteObject(greenScreenImg, 640, 651, 97, 17, 300, 3)
 );
 
-totalDecorative.push(new SpriteObject(ironhackImg, 428, 9, 873, 22, 300, 9));
+totalDecorative.push(
+  new SpriteObject(ironhackImg, 428, 9, 873, 22, 300, 9)
+);
 
 /*Draws each decorative object*/
 function drawDecoration() {

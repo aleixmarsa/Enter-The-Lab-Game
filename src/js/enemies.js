@@ -332,32 +332,7 @@ class RangeRobot extends Enemy {
 
   //Aiming and shooting range robot funciton
   aim() {
-    //Gets the click pos relative to canvas
-    let pos = {
-      x: this.x,
-      y: this.y,
-    };
-    let quadrant = 1;
-    //Gets the click pos realive to player
-    pos.x = hero.x - pos.x;
-    pos.y = hero.y - pos.y;
-    if (pos.x === 0) {
-      pos.x = 1;
-    } else if (pos.y === 0) {
-      pos.y = 1;
-    }
-    //Calculates XY and YX ratio
-    const ratioXY = Math.abs(pos.x / pos.y);
-    const ratioYX = Math.abs(pos.y / pos.x);
-
-    //Calculates the quadrant
-    if (pos.x < 0 && pos.y < 0) {
-      quadrant = 2;
-    } else if (pos.x < 0 && pos.y > 0) {
-      quadrant = 3;
-    } else if (pos.x > 0 && pos.y > 0) {
-      quadrant = 4;
-    }
+     let quadrantInfo = calculateQuadrant(null, this);
     //Creates the projectile object
     this.projectiles.push(
       new Projectile(
@@ -366,9 +341,9 @@ class RangeRobot extends Enemy {
         this.y,
         12,
         12,
-        quadrant,
-        ratioXY,
-        ratioYX,
+        quadrantInfo.quadrant,
+        quadrantInfo.ratioXY,
+        quadrantInfo.ratioYX,
         10,
         this.damage,
         enemyShootingSound
@@ -387,9 +362,8 @@ class RangeRobot extends Enemy {
   }
 }
 
-//Spawns melee and range robot at random position
-function spawnEnemies(meleeEnemies, rangeEnemies) {
-  for (let i = 0; i < meleeEnemies; i++) {
+function spawnEnemies(number, type) {
+  for (let i = 0; i < number; i++) {
     let created = false;
     let column;
     let row;
@@ -407,55 +381,42 @@ function spawnEnemies(meleeEnemies, rangeEnemies) {
       }
     }
     //Add new enemy to enemies array
-    totalEnemies.push(
-      new MeleeRobot(
-        meleeImgStop,
-        column * celPixels,
-        row * celPixels,
-        128,
-        celPixels,
-        150,
-        4,
-        meleeHealth,
-        meleeAttack * gameDifficult + 1,
-        speed * gameDifficult,
-        enemyDestroyedSound
-      )
-    );
-  }
-  for (let i = 0; i < rangeEnemies; i++) {
-    let created = false;
-    let column;
-    let row;
-    //Finds a valid position
-    while (!created) {
-      column = Math.floor(Math.random() * collisionArray[0].length);
-      row = Math.floor(Math.random() * collisionArray.length);
-      //Checks if is a valid position
-      if (
-        collisionArray[row][column] === 0 &&
-        collisionArray[row + 1][column] === 0
-      ) {
-        collisionArray[row][column] = 9;
-        created = true;
-      }
+    if (type === 'melee') {
+      totalEnemies.push(
+        new MeleeRobot(
+          meleeImgStop,
+          column * celPixels,
+          row * celPixels,
+          128,
+          celPixels,
+          150,
+          4,
+          meleeHealth,
+          meleeAttack * gameDifficult + 1,
+          speed * gameDifficult,
+          enemyDestroyedSound
+        )
+      );
+    } else if (type === 'range') {
+      //Add new enemy to enemies array
+      totalEnemies.push(
+        new RangeRobot(
+          rangeImgStop,
+          column * celPixels,
+          row * celPixels,
+          128,
+          celPixels,
+          150,
+          4,
+          rangeHealth,
+          rangeAttack * gameDifficult,
+          speed * gameDifficult,
+          enemyDestroyedSound
+        )
+      );
+    }else{
+        console.log(`Enemy: ${type} is not a valid type.`)
     }
-    //Add new enemy to enemies array
-    totalEnemies.push(
-      new RangeRobot(
-        rangeImgStop,
-        column * celPixels,
-        row * celPixels,
-        128,
-        celPixels,
-        150,
-        4,
-        rangeHealth,
-        rangeAttack * gameDifficult,
-        speed * gameDifficult,
-        enemyDestroyedSound
-      )
-    );
   }
 }
 

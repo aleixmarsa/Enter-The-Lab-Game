@@ -110,30 +110,46 @@ class Projectile extends GameObject {
   }
 }
 
+function calculateQuadrant(e, shooter) {
+  let pos;
+  let shooterType = shooter.constructor.name;
+  if (shooterType === "Hero") {
+    //Gets the click position relative to cnvas 
+    pos = getMousePos(canvas, e);
+    //Gets the click position realive to hero
+    pos.x = pos.x - hero.x;
+    pos.y = pos.y - hero.y;
+  } else if (shooterType === "RangeRobot") {
+    //Gets the projectile direction from robot to hero
+    pos = {
+      x: hero.x - shooter.x,
+      y: hero.y - shooter.y,
+    };
+  }
+  let quadrantInfo = {};
+
+  if (pos.x === 0) {
+    pos.x = 1;
+  } else if (pos.y === 0) {
+    pos.y = 1;
+  }
+  quadrantInfo.ratioXY = Math.abs(pos.x / pos.y);
+  quadrantInfo.ratioYX = Math.abs(pos.y / pos.x);/*  */
+  quadrantInfo.quadrant = 1;
+  if (pos.x < 0 && pos.y < 0) {
+    quadrantInfo.quadrant = 2;
+  } else if (pos.x < 0 && pos.y > 0) {
+    quadrantInfo.quadrant = 3;
+  } else if (pos.x > 0 && pos.y > 0) {
+    quadrantInfo.quadrant = 4;
+  }
+  return quadrantInfo;
+}
+
 function shoot(e) {
   e.preventDefault();
   if (hero.isAlive()) {
-    //Gets the click pos relative to canvas
-    let pos = getMousePos(canvas, e);
-    let quadrant = 1;
-    //Gets the click pos realive to player
-    pos.x = pos.x - hero.x;
-    pos.y = pos.y - hero.y;
-    if (pos.x === 0) {
-      pos.x = 1;
-    } else if (pos.y === 0) {
-      pos.y = 1;
-    }
-    const ratioXY = Math.abs(pos.x / pos.y);
-    const ratioYX = Math.abs(pos.y / pos.x);
-
-    if (pos.x < 0 && pos.y < 0) {
-      quadrant = 2;
-    } else if (pos.x < 0 && pos.y > 0) {
-      quadrant = 3;
-    } else if (pos.x > 0 && pos.y > 0) {
-      quadrant = 4;
-    }
+    let quadrantInfo = calculateQuadrant(e, hero);
     totalProjectiles.push(
       new Projectile(
         blueBulletImg,
@@ -141,9 +157,9 @@ function shoot(e) {
         hero.y,
         12,
         12,
-        quadrant,
-        ratioXY,
-        ratioYX,
+        quadrantInfo.quadrant,
+        quadrantInfo.ratioXY,
+        quadrantInfo.ratioYX,
         16,
         hero.attackPoints,
         heroShootingSound

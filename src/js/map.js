@@ -1,6 +1,7 @@
 const mapImg = "./images/maps/map_lvl1.png";
 
-//1--> wall/item   2--> items you can't pass through but can be shot through  3--> enemy free zone (initial area)
+/*1--> wall/item   2--> items you can't pass through but can be shot through  
+3--> enemy free zone (initial area) 0--> no obstacles/wall*/
 const mapArray = [
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
   1, 1, 3, 3, 1, 1, 1, 1, 0, 2, 2, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 3,
