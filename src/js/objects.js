@@ -107,6 +107,10 @@ class AliveObject extends SpriteObject {
     }
     return false;
   }
+
+  comparePositions(source, target, offsetRow, offsetColumn){
+    return (source.row === target.row + offsetRow && source.column === target.column + offsetColumn);
+  }
 }
 
 function drawObjects(array, character) {

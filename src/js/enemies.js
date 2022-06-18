@@ -317,10 +317,10 @@ class RangeRobot extends Enemy {
     this.calculateRowColumn();
     hero.calculateRowColumn();
     if (
-      (hero.row === this.row + 1 && hero.column === this.column) ||
-      (hero.column === this.column + 1 && hero.row === this.row) ||
-      (hero.column === this.column - 1 && hero.row === this.row) ||
-      (hero.row === this.row - 1 && hero.column === this.column)
+      this.comparePositions(this, hero, -1, 0) ||
+      this.comparePositions(this, hero, 0, -1) ||
+      this.comparePositions(this, hero, +1, 0) ||
+      this.comparePositions(this, hero, 0, +1)
     ) {
       hero.receiveDamage(this.attackPoints, this);
     }
@@ -332,7 +332,7 @@ class RangeRobot extends Enemy {
 
   //Aiming and shooting range robot funciton
   aim() {
-     let quadrantInfo = calculateQuadrant(null, this);
+    let quadrantInfo = calculateQuadrant(null, this);
     //Creates the projectile object
     this.projectiles.push(
       new Projectile(
@@ -352,7 +352,6 @@ class RangeRobot extends Enemy {
     //Current projectile sound
     this.projectiles.at(-1).projectileSound.play();
   }
-
   //Range robots receives doubble damage
   receiveDamage(damage) {
     this.healthPoints -= damage * 2;
@@ -381,7 +380,7 @@ function spawnEnemies(number, type) {
       }
     }
     //Add new enemy to enemies array
-    if (type === 'melee') {
+    if (type === "melee") {
       totalEnemies.push(
         new MeleeRobot(
           meleeImgStop,
@@ -397,7 +396,7 @@ function spawnEnemies(number, type) {
           enemyDestroyedSound
         )
       );
-    } else if (type === 'range') {
+    } else if (type === "range") {
       //Add new enemy to enemies array
       totalEnemies.push(
         new RangeRobot(
@@ -414,8 +413,8 @@ function spawnEnemies(number, type) {
           enemyDestroyedSound
         )
       );
-    }else{
-        console.log(`Enemy: ${type} is not a valid type.`)
+    } else {
+      console.log(`Enemy: ${type} is not a valid type.`);
     }
   }
 }

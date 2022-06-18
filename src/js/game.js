@@ -52,7 +52,7 @@ function keyRelease(e) {
 function mouseClick(e) {
   if (gameStarted) {
     e.preventDefault();
-    shoot(e);
+    hero.shoot(e);
   }
 }
 
@@ -147,7 +147,6 @@ function start() {
   spawnHero();
   spawnEnemies(numMeleeEnemies, 'melee');
   spawnEnemies(numRangeEnemies, 'range');
-  // spawnEnemies(meleeEnemies, rangeEnemies);
   addEventListeners();
   loop();
 }

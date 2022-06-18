@@ -153,41 +153,53 @@ class Hero extends AliveObject {
   //Changes the hero sprite
   aim(e) {
     if (this.isAlive()) {
+      let state = "stop";
       if (movement) {
-        if (mousePosPlayer.x >= 0) {
-          this.image.src = "./images/hero/hero_run_right.png";
-        } else {
-          this.image.src = "./images/hero/hero_run_left.png";
-        }
+        state = "run";
+      }
+      if (mousePosPlayer.x >= 0) {
+        this.image.src = `./images/hero/hero_${state}_right.png`;
       } else {
-        if (mousePosPlayer.x >= 0) {
-          this.image.src = "./images/hero/hero_stop_right.png";
-        } else {
-          this.image.src = "./images/hero/hero_stop_left.png";
-        }
+        this.image.src = `./images/hero/hero_${state}_left.png`;
       }
     }
   }
+
+ shoot(e) {
+    e.preventDefault();
+    if (hero.isAlive()) {
+      let quadrantInfo = calculateQuadrant(e, hero);
+      totalProjectiles.push(
+        new Projectile(
+          blueBulletImg,
+          hero.x,
+          hero.y,
+          12,
+          12,
+          quadrantInfo.quadrant,
+          quadrantInfo.ratioXY,
+          quadrantInfo.ratioYX,
+          16,
+          hero.attackPoints,
+          heroShootingSound
+        )
+      );
+      totalProjectiles.at(-1).projectileSound.play();
+    }
+  }
+
+
 
   /*Decrease the hero life when attacked. If enemy is a melee robot (explodes) and insta decrease but if enemy
     is a range robot, each attack decreases life and moves the hero 1 free cell away*/
   receiveDamage(damage, enemy, enemyProjectile) {
     this.calculateRowColumn();
-
     if (this.isAlive()) {
       damagedSound.volume();
       damagedSound.play();
       this.healthPoints -= damage;
       if (enemy.constructor.name === "RangeRobot" && !enemyProjectile) {
-        if (this.row < enemy.row) {
-          this.move(this.checkFreeAdjacentCell());
-        } else if (this.row > enemy.row) {
-          this.move(this.checkFreeAdjacentCell());
-        } else if (this.column > enemy.column) {
-          this.move(this.checkFreeAdjacentCell());
-        } else {
-          this.move(this.checkFreeAdjacentCell());
-        }
+        this.move(this.checkFreeAdjacentCell());
       }
     }
     if (this.healthPoints < 0) {
@@ -217,7 +229,7 @@ class Hero extends AliveObject {
     this.calculateRowColumn();
     for (let item of totalItems) {
       item.calculateRowColumn();
-      if (this.row === item.row && this.column === item.column) {
+      if (this.comparePositions(this, item, 0, 0)) {
         if (this.healthPoints < this.maxHealth) {
           healingSound.volume();
           healingSound.play();

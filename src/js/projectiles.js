@@ -119,7 +119,7 @@ function calculateQuadrant(e, shooter) {
     //Gets the click position realive to hero
     pos.x = pos.x - hero.x;
     pos.y = pos.y - hero.y;
-  } else if (shooterType === "RangeRobot") {
+  } else{
     //Gets the projectile direction from robot to hero
     pos = {
       x: hero.x - shooter.x,
@@ -144,29 +144,6 @@ function calculateQuadrant(e, shooter) {
     quadrantInfo.quadrant = 4;
   }
   return quadrantInfo;
-}
-
-function shoot(e) {
-  e.preventDefault();
-  if (hero.isAlive()) {
-    let quadrantInfo = calculateQuadrant(e, hero);
-    totalProjectiles.push(
-      new Projectile(
-        blueBulletImg,
-        hero.x,
-        hero.y,
-        12,
-        12,
-        quadrantInfo.quadrant,
-        quadrantInfo.ratioXY,
-        quadrantInfo.ratioYX,
-        16,
-        hero.attackPoints,
-        heroShootingSound
-      )
-    );
-    totalProjectiles.at(-1).projectileSound.play();
-  }
 }
 
 function removeProjectiles() {
