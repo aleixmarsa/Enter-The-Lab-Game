@@ -168,7 +168,8 @@ class Hero extends AliveObject {
  shoot(e) {
     e.preventDefault();
     if (hero.isAlive()) {
-      let quadrantInfo = calculateQuadrant(e, hero);
+      let clickPos = getMousePos(canvas, e);
+      let quadrantInfo = calculateQuadrant(hero, clickPos);
       totalProjectiles.push(
         new Projectile(
           blueBulletImg,

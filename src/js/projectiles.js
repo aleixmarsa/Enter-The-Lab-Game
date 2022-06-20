@@ -110,22 +110,14 @@ class Projectile extends GameObject {
   }
 }
 
-function calculateQuadrant(e, shooter) {
-  let pos;
-  let shooterType = shooter.constructor.name;
-  if (shooterType === "Hero") {
-    //Gets the click position relative to cnvas 
-    pos = getMousePos(canvas, e);
-    //Gets the click position realive to hero
-    pos.x = pos.x - hero.x;
-    pos.y = pos.y - hero.y;
-  } else{
-    //Gets the projectile direction from robot to hero
-    pos = {
-      x: hero.x - shooter.x,
-      y: hero.y - shooter.y,
-    };
-  }
+function calculateQuadrant(shooter, target) {
+
+  //Gets the projectile direction from robot to hero
+  let pos = {
+    x: target.x - shooter.x,
+    y: target.y - shooter.y,
+  };
+
   let quadrantInfo = {};
 
   if (pos.x === 0) {

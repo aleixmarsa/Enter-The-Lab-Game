@@ -332,7 +332,7 @@ class RangeRobot extends Enemy {
 
   //Aiming and shooting range robot funciton
   aim() {
-    let quadrantInfo = calculateQuadrant(null, this);
+    let quadrantInfo = calculateQuadrant(this, hero);
     //Creates the projectile object
     this.projectiles.push(
       new Projectile(
