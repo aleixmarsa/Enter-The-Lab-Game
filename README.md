@@ -13,9 +13,11 @@
     + <ins>Ranged enemies:</ins> Follow and shoot you until you die.
   <br>
 ![Ranged](/images/readme/ranged.png)
+  <br>
     + <ins>Melee enemies:</ins> Follow and explode when they reach you
   <br>
 ![Melee](/images/readme/melee.png)
+  <br>
   
 ## Starting screen
 ![Starting screen](/images/readme/starting-screen.png)
