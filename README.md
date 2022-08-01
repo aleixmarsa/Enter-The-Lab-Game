@@ -10,9 +10,11 @@
 ## Enemies
 - Enemies will follow you finding the shortest path.
 - There are two kind of enemies:
-    + Ranged enemies: Follow and shoot you until you die.
+    + <ins>Ranged enemies:</ins> Follow and shoot you until you die.
+  <br>
 ![Ranged](/images/readme/ranged.png)
-    + Melee enemies: Follow and explode when they reach you
+    + <ins>Melee enemies:</ins> Follow and explode when they reach you
+  <br>
 ![Melee](/images/readme/melee.png)
   
 ## Starting screen
